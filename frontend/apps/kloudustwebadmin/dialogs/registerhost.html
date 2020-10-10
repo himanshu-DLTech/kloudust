@@ -1,0 +1,33 @@
+<style>
+body {width: 350px;}
+
+input, input:-internal-autofill-previewed, input:-internal-autofill-selected {
+    width: 100%;
+    border-style: none;
+    outline: none;
+    text-align: left;
+    background-color: transparent;
+    transition: background-color 5000s ease-in-out 0s;
+    border-bottom: 1px solid darkgray;
+    font-family: inherit;
+    font-size: smaller;
+    display: block;
+    color: #444444;
+}
+
+input.error {color: red;}
+</style>
+
+<input id="hostname" type="text" placeholder="{{i18n.Hostname}}">
+<p>&nbsp;</p>
+
+<input id="password" type="password" placeholder="{{i18n.RootPassword}}">
+<p>&nbsp;</p>
+
+<input id="hostkey" type="text" placeholder="{{i18n.Hostkey}}">
+<p>&nbsp;</p>
+
+<script>
+function onOK(element) {monkshu_env.components["dialog-box"].submit(element);}
+</script>
+    
