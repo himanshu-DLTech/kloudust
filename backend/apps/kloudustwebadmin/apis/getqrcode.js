@@ -1,8 +1,10 @@
 /* 
  * (C) 2020 TekMonks. All rights reserved.
  */
-const totp = require(`${__dirname}/lib/totp.js`);
-const userid = require(`${__dirname}/lib/userid.js`);
+
+const totp = require(`${APP_CONSTANTS.KLOUDUST_DIR}/lib/totp.js`);
+const kloudust = require(`${APP_CONSTANTS.KLOUDUST_DIR}/kloudust`);
+const dbAbstractor = require(`${APP_CONSTANTS.KLOUDUST_DIR}/lib/dbAbstractor.js`);
 const qrcodeToDataURLAsync = require("util").promisify(require("qrcode").toDataURL);
 
 exports.doService = async jsonReq => {
@@ -10,7 +12,7 @@ exports.doService = async jsonReq => {
 	
 	LOG.debug("Got QR Code request for ID: " + jsonReq.id);
 
-	const result = await userid.getTOTPSec(jsonReq.id); const totpsec = result.result?result.totpsec:null;
+	kloudust.init(); const result = await dbAbstractor.getUsersTOTPSecret(jsonReq.id); const totpsec = result?result:null;
 	if (totpsec) {
         const img = await qrcodeToDataURLAsync(totp.getTOTPURL(jsonReq.provider, totpsec));
         return {result: true, totpsec, img};

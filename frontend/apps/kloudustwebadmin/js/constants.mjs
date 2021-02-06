@@ -29,7 +29,7 @@ export const APP_CONSTANTS = {
     API_KLOUDUSTCMD: API_PATH+"/kloudustcmd",
     BCRYPT_SALT: "$2a$10$VFyiln/PpFyZc.ABoi4ppf",
     USERID: "userid",
-    PWPH: "pwph",
+    USERPW: "pw",
     MIN_PW_LENGTH: 10,
     TIMEOUT: 600000,
     USERNAME: "username",
