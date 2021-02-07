@@ -11,9 +11,13 @@ exports.doService = async jsonReq => {
 
 	kloudust.init(); const result = await dbAbstractor.loginUser(jsonReq.id, jsonReq.pass, jsonReq.otp);
 
-	if (result) LOG.info(`User logged in: ${jsonReq.id}`); else LOG.error(`Bad login for: ${jsonReq.id}`);
-
-	return {result: true, name: result.name, id: result.id, org: result.org};
+	if (result) {
+		LOG.info(`User logged in: ${jsonReq.id}`); 
+		result.result = true; return result;
+	} else {
+		LOG.error(`Bad login for: ${jsonReq.id}`);
+		return CONSTANTS.FALSE_RESULT;
+	}
 }
 
 const validateRequest = jsonReq => (jsonReq && jsonReq.id && jsonReq.pass && jsonReq.otp);

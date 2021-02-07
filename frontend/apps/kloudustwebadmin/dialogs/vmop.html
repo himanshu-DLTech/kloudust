@@ -1,0 +1,46 @@
+<style>
+body {width: 350px;}
+
+input, input:-internal-autofill-previewed, input:-internal-autofill-selected {
+    width: 100%;
+    border-style: none;
+    outline: none;
+    text-align: left;
+    background-color: transparent;
+    transition: background-color 5000s ease-in-out 0s;
+    border-bottom: 1px solid darkgray;
+    font-family: inherit;
+    font-size: smaller;
+    display: block;
+    color: #444444;
+}
+
+select {
+    padding: 10px;
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid lightgray;
+    outline: none;
+    color: #444444;
+}
+
+input.error {color: red;}
+</style>
+
+<input id="vmname" type="text" placeholder="{{i18n.VMName}}">
+<p>&nbsp;</p>
+
+<select id="vmop" onchange="if (this.selectedIndex==5) this.parentElement.querySelector('#deleteVM').value='deleteVM'">
+    <option value="start">Start</option>
+    <option value="reboot">Reboot</option>
+    <option value="forcestop">Stop</option>
+    <option value="autostart">Set to autostart</option>
+    <option value="noautostart">Set to not autostart</option>
+    <option value="delete">Delete</option>
+</select>
+<input type="hidden" id="deleteVM">
+<p>&nbsp;</p>
+
+<script>
+function onOK(element) {monkshu_env.components["dialog-box"].submit(element);}
+</script>

@@ -31,7 +31,7 @@ export const APP_CONSTANTS = {
     USERID: "userid",
     USERPW: "pw",
     MIN_PW_LENGTH: 10,
-    TIMEOUT: 600000,
+    TIMEOUT: 3600000,
     USERNAME: "username",
     USERORG: "userorg",
     USER_ROLE: "user",

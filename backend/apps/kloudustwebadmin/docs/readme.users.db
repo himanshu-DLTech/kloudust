@@ -1,7 +1,5 @@
-This is a SQLIte3 based user registration DB.
+To login use this information or register a new account
 
-See the file createDB.sql for details.
-
-Default user name: thecompany@tekmonks.com
-Default password: testing123
-Default TOTP Secret: KURSKKSGHFGW2RTEPU3WKMREO4TECO2M
+Default user name: root@tekmonks.com
+Default password: Kloudust#$562A
+Default TOTP Secret: 65WL62TVXJIHCFYZ6QTWZXXY6XC6BGHV

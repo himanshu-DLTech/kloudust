@@ -46,7 +46,6 @@ span#rightheader > span-with-menu#person {
 div#maincontent {
 	position: absolute;
 	top: 120px;
-	width: 100vw;
 	display: flex;
 	flex-flow: row;
 	place-content: space-between;
@@ -155,10 +154,10 @@ div#output > div#console {
 
 <div id="maincontent">
 	<div><img src="./img/server.svg" onclick="main.registerHost(this)"><span>Register a host</span></div>
-	<div><img src="./img/vm.svg"><span>New VM</span></div>
-	<div><img src="./img/monitor.svg"><span>Monitoring</span></div>
-	<div><img src="./img/manage.svg"><span>Manage VM</span></div>
-	<div><img src="./img/network.svg"><span>Network</span></div>
+	<div><img src="./img/vm.svg" onclick="main.newVM(this)"><span>New VM</span></div>
+	<div><img src="./img/monitor.svg" onclick="window.open('http://watchman.monboss.com:8080/apps/monkvision/index.html', '_blank')"><span>Monitoring</span></div>
+	<div><img src="./img/manage.svg" onclick="main.vmOp(this)"><span>Manage VM</span></div>
+	<div><img src="./img/network.svg" onclick="main.run(this)"><span>Run Kloudust API</span></div>
 </div>
 
 <div id="output">

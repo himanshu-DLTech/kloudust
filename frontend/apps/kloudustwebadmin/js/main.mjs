@@ -27,14 +27,35 @@ async function showOTPQRCode(_element) {
     });
 }
 
-function registerHost(_element) {
-    monkshu_env.components['dialog-box'].showDialog(`${APP_CONSTANTS.DIALOGS_PATH}/registerhost.html`, true, true, {}, "dialog", ["hostname","password","hostkey"], async result=>{
+function registerHost() {
+    _runKloudustCommand(`${APP_CONSTANTS.DIALOGS_PATH}/registerhost.html`, 
+        ["hostname","password","hostkey"],"addHost centos8 {{{hostname}}} root {{{password}}} {{{hostkey}}}");
+}
+
+function newVM() {
+    _runKloudustCommand(`${APP_CONSTANTS.DIALOGS_PATH}/newvm.html`, 
+        ["hostname", "vmname", "vmdescription", "cores", "memory", "disk", "image", "imagetype"],
+        "createVM {{{hostname}}} {{{vmname}}} \\\"{{{vmdescription}}}\\\" {{{cores}}} {{{memory}}} {{{disk}}} {{{image}}} {{{imagetype}}}");
+}
+
+function vmOp() {
+    _runKloudustCommand(`${APP_CONSTANTS.DIALOGS_PATH}/vmop.html`, 
+        ["vmname", "vmop", "deleteVM"],
+        "{{^deleteVM}}powerOpVm {{{vmname}}} {{{vmop}}}{{/deleteVM}}{{#deleteVM}}deleteVM {{{vmname}}}{{/deleteVM}}");
+}
+
+const run = _ => _runKloudustCommand(`${APP_CONSTANTS.DIALOGS_PATH}/run.html`, ["run"], "{{{run}}}");
+
+function _runKloudustCommand(template, values, command) {
+    monkshu_env.components['dialog-box'].showDialog(template, true, true, {}, "dialog", values, async result=>{
         monkshu_env.components['dialog-box'].hideDialog("dialog");
-        const cmd = ["-e", `initHost centos8 ${result.hostname} root ${result.password} ${result.hostkey}`];
+        if (!Mustache) await $$.require("/framework/3p/mustache.min.js");
+        const cmd = ["-u", session.get(APP_CONSTANTS.USERID), "-p", session.get(APP_CONSTANTS.USERPW),
+            "-e", Mustache.render(command, result)];
         _outputLog(`Running command - ${cmd}`, true);
         const cmdResult = await apiman.rest(APP_CONSTANTS.API_KLOUDUSTCMD, "POST", {cmd}, true, false);
-        if (cmdResult) {_outputLog(cmdResult.stdout); _outputLog(cmdResult.stderr); _outputLog(`Exit code: ${cmdResult.exitCode}`);}
-        else _outputLog("Command failed");
+        if (cmdResult) {_outputLog(cmdResult.stdout); _outputLog(cmdResult.stderr); _outputLog(`Success! Exit code: ${cmdResult.exitCode}`);}
+        else _outputLog(`Failed!`);
     });
 }
 
@@ -53,4 +74,4 @@ function _expandOutput() {
     document.querySelector("span#uparrow").click();
 }
 
-export const main = {changePassword, showOTPQRCode, registerHost};
+export const main = {changePassword, showOTPQRCode, registerHost, newVM, vmOp, run};

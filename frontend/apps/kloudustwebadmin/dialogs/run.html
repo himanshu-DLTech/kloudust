@@ -1,8 +1,9 @@
 <style>
 body {width: 350px;}
 
-input, input:-internal-autofill-previewed, input:-internal-autofill-selected {
+textarea, textarea:-internal-autofill-previewed, textarea:-internal-autofill-selected {
     width: 100%;
+    height: 4em;
     border-style: none;
     outline: none;
     text-align: left;
@@ -13,18 +14,11 @@ input, input:-internal-autofill-previewed, input:-internal-autofill-selected {
     font-size: smaller;
     display: block;
     color: #444444;
+    resize: vertical;
 }
-
-input.error {color: red;}
 </style>
 
-<input id="hostname" type="text" placeholder="{{i18n.Hostname}}">
-<p>&nbsp;</p>
-
-<input id="password" type="password" placeholder="{{i18n.RootPassword}}">
-<p>&nbsp;</p>
-
-<input id="hostkey" type="text" placeholder="{{i18n.Hostkey}}">
+<textarea id="run" rows="4" placeholder="{{i18n.KloudustCommand}}"></textarea>
 <p>&nbsp;</p>
 
 <script>

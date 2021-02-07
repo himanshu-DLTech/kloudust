@@ -38,5 +38,11 @@ export const i18n = {
 "InternalError": "Internal error",
 "Hostname": "Hostname or IP",
 "RootPassword": "Root Password",
-"Hostkey": "SSH ED25519 MD5 Hostkey"
+"Hostkey": "SSH ED25519 MD5 Hostkey",
+"VMName": "VM Name",
+"VMDescription": "VM Description",
+"Cores": "Cores",
+"Memory": "Memory",
+"Disk": "Disk",
+"KloudustCommand": "Kloudust API Command"
 }
