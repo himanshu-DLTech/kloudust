@@ -1,8 +1,4 @@
 {
-    "/apps/kloudustwebadmin/login" : "/apis/login.js?needsToken=false&addsToken=sub:access",
-    "/apps/kloudustwebadmin/register" : "/apis/register.js?needsToken=false&addsToken=sub:access",
-    "/apps/kloudustwebadmin/changepassword" : "/apis/changepassword.js?key=fheiwu98237hjief8923ydewjidw834284hwqdnejwr79389&needsToken=true",
-    "/apps/kloudustwebadmin/validatetotp" : "/apis/validatetotp.js?get=true&key=fheiwu98237hjief8923ydewjidw834284hwqdnejwr79389&needsToken=true",
-    "/apps/kloudustwebadmin/getqrcode" : "/apis/getqrcode.js?get=true&key=fheiwu98237hjief8923ydewjidw834284hwqdnejwr79389&needsToken=true",
-    "/apps/kloudustwebadmin/kloudustcmd" : "/apis/kloudustcmd.js?key=fheiwu98237hjief8923ydewjidw834284hwqdnejwr79389&needsToken=true"
+    "/apps/{{app}}/login" : "/apis/login.js?needsToken=false&addsToken=sub:access",
+    "/apps/{{app}}/kloudustcmd" : "/apis/kloudustcmd.js?key=fheiwu98237hjief8923ydewjidw834284hwqdnejwr79389&needsToken=true"
 }

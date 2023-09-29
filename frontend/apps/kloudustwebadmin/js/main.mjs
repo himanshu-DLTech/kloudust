@@ -38,6 +38,12 @@ function newVM() {
         "createVM {{{hostname}}} {{{vmname}}} \\\"{{{vmdescription}}}\\\" {{{cores}}} {{{memory}}} {{{disk}}} {{{image}}} {{{imagetype}}}");
 }
 
+function newKDS() {
+    _runKloudustCommand(`${APP_CONSTANTS.DIALOGS_PATH}/newkds.html`, 
+        ["hostname", "vmname", "vmdescription", "cores", "memory"],
+        "createKDS {{{hostname}}} {{{vmname}}} \\\"{{{vmdescription}}}\\\" {{{cores}}} {{{memory}}}");
+}
+
 function vmOp() {
     _runKloudustCommand(`${APP_CONSTANTS.DIALOGS_PATH}/vmop.html`, 
         ["vmname", "vmop", "deleteVM"],
@@ -74,4 +80,4 @@ function _expandOutput() {
     document.querySelector("span#uparrow").click();
 }
 
-export const main = {changePassword, showOTPQRCode, registerHost, newVM, vmOp, run};
+export const main = {changePassword, showOTPQRCode, registerHost, newVM, newKDS, vmOp, run};

@@ -158,14 +158,13 @@ span#signin > span > a {
 
 <div class="lgbox">
 	<span><br><br>{{i18n.LoginMsg}}<br><br></span>
-	<login-box roles="[APP_CONSTANTS.GUEST_ROLE, APP_CONSTANTS.USER_ROLE]" routeOnSuccess="./main.html"></login-box>
+	<login-box roles='["{{{APP_CONSTANTS.GUEST_ROLE}}}", "{{{APP_CONSTANTS.USER_ROLE}}}"]' routeOnSuccess="./main.html"></login-box>
 </div>
 
 <div class="langbox">
 	<span class="langsel" onclick="language.changeLanguage('en')">English</span>&nbsp;&nbsp;
 	<span class="langsel" onclick="language.changeLanguage('hi')">हिंदी</span>&nbsp;&nbsp;
 	<span class="langsel" onclick="language.changeLanguage('ja')">日本語</span>
-	<span class="langsel" onclick="language.changeLanguage('th')">&nbsp;ภาษาไทย</span>
 	<span class="langsel" onclick="language.changeLanguage('zh')">中文</span>
 </div>	
 </body>

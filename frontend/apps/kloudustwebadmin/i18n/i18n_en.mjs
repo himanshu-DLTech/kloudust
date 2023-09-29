@@ -1,5 +1,5 @@
 export const i18n = {
-"Title" : "Kloudust Admin Console",
+"Title" : "Kloudust Console",
 "logintagline": "Hybrid Cloud",
 "loginsubtag": "Secure, integrated, and easy to use. Try it today and see how you can change your organization.",
 "learn":"Learn More",
@@ -44,5 +44,7 @@ export const i18n = {
 "Cores": "Cores",
 "Memory": "Memory",
 "Disk": "Disk",
-"KloudustCommand": "Kloudust API Command"
+"KloudustCommand": "Kloudust API Command",
+"DBName": "DB Name",
+"DBDescription": "DB Description",
 }

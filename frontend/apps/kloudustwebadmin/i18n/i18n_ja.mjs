@@ -45,5 +45,7 @@ export const i18n = {
 "Cores": "Cores",
 "Memory": "Memory",
 "Disk": "Disk",
-"KloudustCommand": "Kloudust Command"
+"KloudustCommand": "Kloudust Command",
+"DBName": "DB Name",
+"DBDescription": "DB Description",
 }

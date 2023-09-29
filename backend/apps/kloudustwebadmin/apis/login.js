@@ -1,23 +1,42 @@
-/* 
- * (C) 2015 TekMonks. All rights reserved.
+/**
+ * Login for Kloudust web admin. Needs Tekmonks Unified Login
+ * to work.
+ * 
+ * (C) 2023 TekMonks. All rights reserved.
  */
-const kloudust = require(`${APP_CONSTANTS.KLOUDUST_DIR}/kloudust`);
-const dbAbstractor = require(`${APP_CONSTANTS.KLOUDUST_DIR}/lib/dbAbstractor.js`);
+
+const conf = require(`${KLOUDUST_CONSTANTS.CONF_DIR}/tekmonkslogin.json`);
+const API_JWT_VALIDATION = `${conf.tekmonkslogin_backend}/apps/loginapp/validatejwt`;
 
 exports.doService = async jsonReq => {
 	if (!validateRequest(jsonReq)) {LOG.error("Validation failure."); return CONSTANTS.FALSE_RESULT;}
-	
-	LOG.debug("Got login request for ID: " + jsonReq.id);
+    
+    let tokenValidationResult; try {
+        tokenValidationResult = await httpClient.fetch(`${API_JWT_VALIDATION}?jwt=${jsonReq.jwt}`);
+    } catch (err) {
+        LOG.error(`Network error validating JWT token ${jsonReq.jwt}, validation failed.`);
+        return CONSTANTS.FALSE_RESULT;
+    }
 
-	kloudust.init(); const result = await dbAbstractor.loginUser(jsonReq.id, jsonReq.pass, jsonReq.otp);
+	if (!tokenValidationResult.ok) {
+        LOG.error(`Fetch error validating JWT token ${jsonReq.jwt}, validation failed.`);
+        return CONSTANTS.FALSE_RESULT;
+    }
 
-	if (result) {
-		LOG.info(`User logged in: ${jsonReq.id}`); 
-		result.result = true; return result;
-	} else {
-		LOG.error(`Bad login for: ${jsonReq.id}`);
-		return CONSTANTS.FALSE_RESULT;
-	}
+    const responseJSON = await tokenValidationResult.json();
+    if ((!responseJSON.result) || (responseJSON.jwt != jsonReq.jwt)) {
+        LOG.error(`Validation error when validating JWT token ${jsonReq.jwt}.`);
+        return CONSTANTS.FALSE_RESULT;
+    }
+
+    try {
+        const _decodeBase64 = string => Buffer.from(string, "base64").toString("utf8");
+        const jwtClaims = JSON.parse(_decodeBase64(jsonReq.jwt.split(".")[1]));
+        return {...jwtClaims , ...CONSTANTS.TRUE_RESULT};
+    } catch (err) {
+        LOG.error(`Bad JWT token passwed for login ${jsonReq.jwt}, validation succeeded but decode failed.`);
+        return CONSTANTS.FALSE_RESULT;
+    }
 }
 
-const validateRequest = jsonReq => (jsonReq && jsonReq.id && jsonReq.pass && jsonReq.otp);
+const validateRequest = jsonReq => jsonReq && jsonReq.jwt;

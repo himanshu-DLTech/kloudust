@@ -5,7 +5,7 @@
 
 const path = require("path");
 
-APP_ROOT = `${path.resolve(`${__dirname}/../../`)}`;
+APP_ROOT = `${path.resolve(`${__dirname}/../`)}`;
 
 exports.APP_ROOT = APP_ROOT;
 exports.KLOUDUST_DIR = `${APP_ROOT}/3p/kloudust`;

@@ -18,7 +18,7 @@ exports.doService = async jsonReq => {
 	LOG.debug(`Running Kloudust command: ${jsonReq.cmd}`);
 	const nodePath = process.argv[0];
 	const results = await _processExecAsync(agentConf["shellexecprefix_"+process.platform], nodePath, 
-		[`${APP_CONSTANTS.KLOUDUST_DIR}/kloudust`, ...jsonReq.cmd], true);
+		[`${KLOUDUST_CONSTANTS.KLOUDUST_DIR}/kloudust`, ...jsonReq.cmd], true);
 	return {result:results.exitCode?false:true, exitCode: results.exitCode||0, stdout: results.stdout, stderr: results.stderr};
 }
 
