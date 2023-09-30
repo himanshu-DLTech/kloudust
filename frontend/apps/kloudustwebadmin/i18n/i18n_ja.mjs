@@ -1,7 +1,7 @@
 export const i18n = {
 "Title" : "Kloudust管理コンソール",
 "logintagline": "kloudustクラウドコンピューティング",
-"loginsubtag": "安全で統合され、使いやすい。 今日それを試して、あなたの組織を変えることができる方法を見てください。",
+"loginsubtag": "安全、プライベート、そして使いやすい。 大幅なコスト削減を実現する次世代クラウドを体験してください。",
 "learn":"もっと詳しく知る",
 "Name": "Name",
 "Email": "Email",

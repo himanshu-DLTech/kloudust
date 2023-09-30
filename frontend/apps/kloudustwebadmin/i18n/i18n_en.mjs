@@ -1,7 +1,7 @@
 export const i18n = {
 "Title" : "Kloudust Console",
 "logintagline": "Hybrid Cloud",
-"loginsubtag": "Secure, integrated, and easy to use. Try it today and see how you can change your organization.",
+"loginsubtag": "Secure, private, and easy to use. Experience the next generation cloud with signifacnt cost savings.",
 "learn":"Learn More",
 "Name": "Name",
 "Email": "Email",
