@@ -1,4 +1,4 @@
 {
-    "/apps/{{app}}/login" : "/apis/login.js?needsToken=false&addsToken=sub:access",
+    "/apps/{{app}}/login" : "/apis/login.js?get=true&needsToken=false&addsToken=sub:access",
     "/apps/{{app}}/kloudustcmd" : "/apis/kloudustcmd.js?key=fheiwu98237hjief8923ydewjidw834284hwqdnejwr79389&needsToken=true"
 }

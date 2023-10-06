@@ -2,11 +2,16 @@
 @import url('./fonts/appfonts.css');
 
 body {
-	margin: 0; padding: 0;
+	margin: 0em; padding: 0;
 	font-family: 'Red Hat Text';
 	background-color: #2b2d2f;
 	width: 100%;
 	height: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	min-height: 640px;
 }
 
 a:link {text-decoration:none; color:black;}    /* unvisited link */
@@ -14,24 +19,21 @@ a:visited {text-decoration:none;} /* visited link */
 a:hover {text-decoration:underline;}   /* mouse over link */
 a:active {text-decoration:underline;}  /* selected link */
 
-.advtextbox{
-	position: absolute;
-    top: 50%;
-    left: 4em;
+div#advtextbox{
+    margin-left: 4em;
     color: #ffffff;
     text-align: center;
     width: 40%;
-    transform: translateY(-50%);
     overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
 	max-width: 25em;
 }
-.advtextbox img#logo {width: 100%;}
-.advtextbox > h1 {font-weight: 250;}
-.advtextbox > h2 {font-weight: 250; font-size: medium;}
-.advtextbox > span.button {
+div#advtextbox img#logo {width: 100%;}
+div#advtextbox h1 {font-weight: 250;}
+div#advtextbox h2 {font-weight: 250; font-size: medium;}
+div#advtextbox span.button {
 	background-color: #ffffff;
 	border-radius: 1em;
 	padding: 1em;
@@ -42,23 +44,23 @@ a:active {text-decoration:underline;}  /* selected link */
     color: #4c4c4c;
 }
 
-.lgbox {
-	position: absolute;
-	top: max(80px, calc(50% - 22%));
-	left: max(400px, calc(70% - 160px));
-	width: 320px;
+div#lgbox {
 	background-color: #ffffff;
-	border-radius: 20px;
-	box-shadow: -2px 6px 53px -23px rgba(0,0,0,0.75);
-	padding: 10px 20px 10px 20px;
+	border-radius: 2em;
+	padding: 2em 4em;
+	margin-right: 6em;
+	cursor: default;
+	transition: all 0.3s ease-out;
+}
+div#lgbox:hover {transform: scale(1.02); cursor: pointer;}
+div#lgbox span {
+	width: 100%;
+    display: block;
+    margin-top: 0.5em;
 	text-align: center;
-	font-size: smaller;
-	padding-right: 40px;
 }
-div.lgbox > span {
-	font-weight: 600;
-	font-size: small;
-}
+div#lgbox span.error {color: #b54646}
+div#lgbox img {height: 4em; width: 100%;}
 
 .langbox {
 	position: absolute;
@@ -85,19 +87,24 @@ div.lgbox > span {
 	
 	<script type="module">
 	import {language} from "./js/language.mjs"; monkshu_env.apps[APP_CONSTANTS.APP_NAME].language = language;
+	import {tkmlogin} from "./3p/tkmlogin.mjs"; monkshu_env.apps[APP_CONSTANTS.APP_NAME].tkmlogin = tkmlogin;
 	</script>
 </head>
 
 <body>
-<div class="advtextbox">
+<div id="advtextbox">
 	<img id="logo" src="./img/logob.png">
 	<h1>{{i18n.logintagline}}</h1>
 	<h2>{{i18n.loginsubtag}}</h2>
 	<span class="button" onclick="window.open('http://teleworkr.com', '_blank')">{{i18n.learn}}</span>
 </div>
 
-<div class="lgbox">
-	<span><br><br>{{i18n.LoginMsg}}<br><br></span>
+<div id="lgbox" onclick='monkshu_env.apps[APP_CONSTANTS.APP_NAME].tkmlogin.login("{{{i18n.Title}}}",
+		"{{#_org_monkshu_makeLink}}{{{APP_CONSTANTS.LOGINRESULT_HTML}}}{{/_org_monkshu_makeLink}}", 
+		"{{{APP_CONSTANTS.API_PATH}}}/login?op=getotk", "#2b2d2f", "{{{APP_CONSTANTS.TKMLOGINAPP_URL}}}",)'>
+	<img src="./img/tkmlogodark.svg">
+	{{#url._error}}<span class="error">{{i18n.LoginFailed}}</span>{{/url._error}}
+	<span>{{i18n.LoginMsg}}</span>
 </div>
 
 <div class="langbox">

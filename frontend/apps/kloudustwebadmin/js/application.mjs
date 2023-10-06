@@ -1,6 +1,7 @@
-/* 
+/**
+ * Main webapp entry point. 
  * (C) 2015 TekMonks. All rights reserved.
- * License: MIT - see enclosed license.txt file.
+ * License: See enclosed license.txt file.
  */
  
 import {router} from "/framework/js/router.mjs";
@@ -31,8 +32,9 @@ const init = async hostname => {
 const main = async _ => {
 	await _addPageLoadInterceptors(); await _readConfig(); await _registerComponents();
 
-	const decodedURL = new URL(router.decodeURL(window.location.href));
-	if (securityguard.isAllowed(decodedURL.href)) router.loadPage(decodedURL.href);
+	const decodedURL = new URL(router.decodeURL(window.location.href)), 
+		justURL = new URL(`${decodedURL.protocol}//${decodedURL.hostname}${decodedURL.pathname}`).href;
+	if (securityguard.isAllowed(justURL)) router.loadPage(decodedURL.href);
 	else router.loadPage(APP_CONSTANTS.LOGIN_HTML);
 }
 

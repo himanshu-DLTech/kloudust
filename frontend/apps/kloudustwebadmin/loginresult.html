@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+
+	<link href="./img/favicon.png" rel="icon" type="image/x-icon">
+	
+	<title>{{i18n.Title}}</title>
+	
+	<script type="module">
+	import {tkmlogin} from "./3p/tkmlogin.mjs"; 
+	import {router} from "/framework/js/router.mjs";
+	import {loginmanager} from "./js/loginmanager.mjs"; 
+ 
+    const result = await tkmlogin.verify("{{{APP_CONSTANTS.API_PATH}}}/login?op=verify", 
+		router.decodeURL(window.location.href));
+	loginmanager.handleLoginResult(result);
+	</script>
+</head>
+</html>

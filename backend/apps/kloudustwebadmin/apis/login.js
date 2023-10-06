@@ -5,12 +5,24 @@
  * (C) 2023 TekMonks. All rights reserved.
  */
 
-const conf = require(`${KLOUDUST_CONSTANTS.CONF_DIR}/tekmonkslogin.json`);
+const serverutils = require(`${CONSTANTS.LIBDIR}/utils.js`);
+const httpClient = require(`${CONSTANTS.LIBDIR}/httpClient.js`);
+
+const conf = require(`${KLOUDUST_CONSTANTS.CONF_DIR}/config.json`);
 const API_JWT_VALIDATION = `${conf.tekmonkslogin_backend}/apps/loginapp/validatejwt`;
 
 exports.doService = async jsonReq => {
 	if (!validateRequest(jsonReq)) {LOG.error("Validation failure."); return CONSTANTS.FALSE_RESULT;}
     
+    if (jsonReq.op == "getotk") return _getOTK(jsonReq);
+    else return await _verifyJWT(jsonReq);
+}
+
+function _getOTK(_jsonReq) {
+    return {...CONSTANTS.TRUE_RESULT, otk: serverutils.generateUUID(false)};
+}
+
+async function _verifyJWT(jsonReq) {
     let tokenValidationResult; try {
         tokenValidationResult = await httpClient.fetch(`${API_JWT_VALIDATION}?jwt=${jsonReq.jwt}`);
     } catch (err) {
@@ -39,4 +51,4 @@ exports.doService = async jsonReq => {
     }
 }
 
-const validateRequest = jsonReq => jsonReq && jsonReq.jwt;
+const validateRequest = jsonReq => jsonReq && ((jsonReq.op=="verify" && jsonReq.jwt) || jsonReq.op=="getotk");

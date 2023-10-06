@@ -1,6 +1,7 @@
-/* 
+/**
+ * Main constant for the app.
  * (C) 2015 TekMonks. All rights reserved.
- * License: MIT - see enclosed license.txt file.
+ * License: See enclosed license.txt file.
  */
 const FRONTEND = "https://{{{hostname}}}";
 const BACKEND = "https://{{{hostname}}}:9090";
@@ -8,12 +9,14 @@ const APP_NAME = "kloudustwebadmin";
 const APP_PATH = `${FRONTEND}/apps/${APP_NAME}`;
 const API_PATH = `${BACKEND}/apps/${APP_NAME}`;
 const CONF_PATH = `${FRONTEND}/apps/${APP_NAME}/conf`;
+const INDEX_HTML = APP_PATH+"/index.html";
+const MAIN_HTML = APP_PATH+"/main.html";
+const LOGIN_HTML = APP_PATH+"/login.html";
+const LOGINRESULT_HTML = APP_PATH+"/loginresult.html";
 
 export const APP_CONSTANTS = {
-    FRONTEND, BACKEND, APP_PATH, APP_NAME, CONF_PATH,
-    INDEX_HTML: APP_PATH+"/index.html",
-    MAIN_HTML: APP_PATH+"/main.html",
-    LOGIN_HTML: APP_PATH+"/login.html",
+    FRONTEND, BACKEND, APP_PATH, APP_NAME, CONF_PATH, API_PATH,
+    INDEX_HTML, MAIN_HTML, LOGIN_HTML, LOGINRESULT_HTML,
 
     DIALOGS_PATH: APP_PATH+"/dialogs",
 
@@ -32,8 +35,8 @@ export const APP_CONSTANTS = {
     USER_ROLE: "user",
     GUEST_ROLE: "guest",
     PERMISSIONS_MAP: {
-        user:[window.location.origin, APP_PATH+"/main.html", APP_PATH+"/login.html", $$.MONKSHU_CONSTANTS.ERROR_HTML], 
-        guest:[window.location.origin, APP_PATH+"/login.html", $$.MONKSHU_CONSTANTS.ERROR_HTML]
+        user:[window.location.origin, MAIN_HTML, LOGIN_HTML, LOGINRESULT_HTML, APP_PATH+$$.MONKSHU_CONSTANTS.ERROR_HTML], 
+        guest:[window.location.origin, LOGIN_HTML, LOGINRESULT_HTML, $$.MONKSHU_CONSTANTS.ERROR_HTML]
     },
     API_KEYS: {"*":"fheiwu98237hjief8923ydewjidw834284hwqdnejwr79389"},
     KEY_HEADER: "X-API-Key"
