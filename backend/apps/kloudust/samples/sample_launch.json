@@ -1,0 +1,545 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Add User Cloud Admin",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","kdsuperadmin@tekmonks.com","-p","password","-e","addUser kdsuperadmin@tekmonks.com \\\"Cloud Superadmin\\\" TekMonks cloudadmin true"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Add User Tekmonks Admin",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","kdsuperadmin@tekmonks.com","-p","password","-e","addUser root@tekmonks.com \\\"TekMonks Root\\\" TekMonks admin"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Add Project",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-s","Default Project","-e","addProject"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Delete Project",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","deleteProject"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Add Host - Password change",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-e","addHost ubuntu22 host_ip root host_password \"6a:26:d9:45:d2:c2:8e:86:02:72:74:a8:47:d9:13:9d\""]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Add Host 2 - Password change",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-e","addHost rhel9_compatible host2_ip root host_password \"22:04:c4:5d:2d:fd:c4:79:42:92:de:d9:58:c2:33:3b\""]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Add Host - No password change",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-e","addHost ubuntu22 host_ip root host_password \"6a:26:d9:45:d2:c2:8e:86:02:72:74:a8:47:d9:13:9d\" nochange"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Add Host 2 - No password change",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-e","addHost rhel9_compatible host2_ip root host_password \"22:04:c4:5d:2d:fd:c4:79:42:92:de:d9:58:c2:33:3b\" nochange"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Delete Host",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-e","deleteHost host_ip"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Add Image - Windows 10",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-e","addImage host_ip https://www.googleapis.com/drive/v3/files/153LWfon_rBbYkPcOPiJakUH0bJZajXWm?alt=media&key=AIzaSyAA9ERw-9LZVEohRYtCWka_TQc6oXmvcVU&supportsAllDrives=True windows10.iso"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Add Image - Ubuntu 22.04 LTS Server Cloud Image",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-e","addImage host_ip https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img ubuntu22_04-server-amd64-release.img"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Add Image - Ubuntu 22.04 LTS Desktop",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-e","addImage host_ip https://releases.ubuntu.com/jammy/ubuntu-22.04.3-desktop-amd64.iso ubuntu22.iso"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Add Image - Ubuntu 22.04 LTS Desktop - Server 2",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-e","addImage host2_ip https://releases.ubuntu.com/jammy/ubuntu-22.04.3-desktop-amd64.iso ubuntu22.iso"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Add Image - Rocky Linux 9",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-e","addImage host_ip https://download.rockylinux.org/pub/rocky/9/isos/x86_64/Rocky-9.2-x86_64-minimal.iso rocky9.iso"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Add Image - Rocky Linux 9 - Server 2",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-e","addImage host2_ip https://download.rockylinux.org/pub/rocky/9/isos/x86_64/Rocky-9.2-x86_64-minimal.iso rocky9.iso"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Create Windows 10 VDI",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","createVM host_ip windows10_02 \\\"Windows 10 VDI - 02\\\" 2 8192 40 windows10.iso win10"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Create Ubuntu 22_04 Server from Cloud Image",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","createVM host_ip ubuntu22server_01 \\\"Ubuntu 22 Server VM - 01\\\" 2 8192 30 ubuntu22_04-server-amd64-release.img ubuntu-lts-latest \\\"{system_info: {default_user: {name: tekmonks, home: /home/tekmonks, sudo: 'ALL=(ALL) NOPASSWD:ALL'}}, password: DLT4TekMonks, chpasswd: {expire: false}, hostname: kdtestubuntu2204, ssh_pwauth: true, package_upgrade: true, packages: [net-tools], runcmd: null}\\\""]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Create Ubuntu 22_04 Desktop from ISO",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","createVM host_ip ubuntu22_01 \\\"Ubuntu 22 VM - 01\\\" 2 8192 30 ubuntu22.iso ubuntu-lts-latest"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Create Ubuntu 22_04 Desktop from ISO - Second Server",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","createVM host2_ip ubuntu22_02 \\\"Ubuntu 22 VM - 02\\\" 2 8192 30 ubuntu22.iso ubuntu-lts-latest"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Create Rocky 9 from ISO - Server 2",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","createVM host2_ip rocky9_01 \\\"Rocky 9 VM - 01\\\" 2 8192 30 rocky9.iso rocky9"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Create CentOS 8 VM from ISO",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","createVM host_ip centos8_01 \\\"CentOS 8 VM - 01\\\" 2 8192 30 centos8.iso centos8"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Create KDS Service",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","createKDS host_ip kds01 \\\"KDS - 01\\\" 4 8192"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Restore snapshot - Ubuntu 22_01 Snapshot1",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","restoreSnapshot ubuntu22_01 snapshot1"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Restore snapshot - Ubuntu 22_01 Snapshot2",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","restoreSnapshot ubuntu22_01 snapshot2 start"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Host Info",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","getHostInfo host_ip"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - VM Info",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","getVMInfo ubuntu22_01"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Rename VM",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","renameVM ubuntu22_01 ubuntu22_01"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Clone VM",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","cloneVM windows10_02 windows10_03"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Snapshot VM Ubuntu 22_01 Snapshot1",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","snapshot ubuntu22_01 snapshot1"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Snapshot VM Ubuntu 22_01 Snapshot2",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","snapshot ubuntu22_01 snapshot2"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Delete VM - Ubuntu 22_01",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","deleteVM ubuntu22_01"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Delete VM - Ubuntu 22_02",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","deleteVM ubuntu22_02"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Delete VM Snapshot",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","deleteSnapshot ubuntu22_01 ubuntu22_01_snapshot1"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Start VM Ubuntu 22_01",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","powerOpVM ubuntu22_01 start"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Start VM Ubuntu 22_02",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","powerOpVM ubuntu22_02 start"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Start VM Rocky 9_01 - Server 2",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","powerOpVM rocky9_01 start"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Reboot VM",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","powerOpVM ubuntu22_01 reboot"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Hard Reboot VM",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","powerOpVM ubuntu22_01 hardboot"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Set VM to autostart",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","powerOpVM ubuntu22_01 autostart"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Set VM to not autostart",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","powerOpVM ubuntu22_01 noautostart"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Forceshut VM",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","powerOpVM ubuntu22_01 forcestop"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Reboot Host",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-e","rebootHost host_ip"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Reboot Host 2",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-e","rebootHost host2_ip"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - List Host Catalog",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-e","listCatalog host_ip"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - List VMs for Host",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","listVMsForHost host_ip"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - List VMs for Project",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","listVMsForProject"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - List VM Snapshots",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","listSnapshots ubuntu22_01"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Find VNC - Ubuntu 22_01",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","findVNC ubuntu22_01"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Find VNC - Rocky 9_01",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","findVNC rocky9_01"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Find IP - Ubuntu 22_01",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","findIP ubuntu22_01"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Find IP - Ubuntu 22_01 - User 2",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","thecompany@tekmonks.com","-p","password","-j","default","-e","findIP ubuntu22_01"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Find IP - Rocky9_01",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","findIP rocky9_01"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Find KDS Login",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","findKDSLogin kds01"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kloudust - Sample Custom Host Command",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\kloudust",
+            "args": ["-k","-u","root@tekmonks.com","-p","password","-j","default","-e","customCmd host_ip \"C:\\Users\\Rohit Kapoor\\source\\kloudust\\samples\\diskFreeOnHost.sh\""]
+        }
+    ]
+}

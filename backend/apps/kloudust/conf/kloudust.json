@@ -1,0 +1,6 @@
+{
+    "tekmonkslogin_backend": "https://login.tekmonks.com:8443",
+	"HOST_TYPES": ["rhel9", "rhel9_compatible", "ubuntu22"],
+    "OS_MAPPINGS": [],
+    "INIT_MODULES": ["lib/dbAbstractor.js", "lib/jobs.js"]
+}

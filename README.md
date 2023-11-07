@@ -1,4 +1,4 @@
-# Kloudust Web Admin
-Kloudust Project. Web Admin.
+# kloudust
+Kloudust - TekMonks Hybrid Cloud 
 
-Standard Monkshu app, so regular Monkshu instructions apply on installation etc.
+For commercial license please contact your TekMonks Sales Representative or sales@tekmonks.com

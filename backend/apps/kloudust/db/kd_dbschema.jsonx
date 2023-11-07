@@ -1,0 +1,33 @@
+[
+    "BEGIN TRANSACTION",
+    
+    // this is a user table - authentication is via Tekmonks' unified login
+    "CREATE TABLE users(id varchar not null primary key, name varchar not null, \
+        org varchar not null, role varchar not null)",
+
+    // this hosts the host machines
+    "CREATE TABLE hosts(hostname varchar not null primary key, hostaddress varchar not null, \
+        type varchar not null, rootid varchar not null, rootpw varchar not null, \
+        hostkey varchar not null, cores integer not null, memory integer not null, \
+        disk integer not null, networkspeed integer not null, processor varchar not null, \
+        processorarchitecture varchar not null, sockets integer not null, synctimestamp integer default 0)",
+
+    // host resources container table
+    "CREATE TABLE hostresources(name varchar not null primary key, uri varchar not null, \
+        processorarchitecture varchar not null, description varchar)",
+        
+    // VMs container table
+    "CREATE TABLE vms(id varchar not null primary key, name varchar not null, \
+        description varchar, hostname varchar not null, org varchar not null, \
+        projectid varchar not null, os varchar not null, cpus integer not null, \
+        memory integer not null, disk integer not null, creationcmd varchar not null)",
+
+    // Projects for an ORG
+    "CREATE TABLE projects(id varchar not null primary key, name varchar not null, \
+        org varchar not null, description varchar default '')",
+
+    // User to project mapping
+    "CREATE TABLE projectusermappings(userid varchar not null, projectid varchar not null)",
+
+    "COMMIT TRANSACTION"
+]

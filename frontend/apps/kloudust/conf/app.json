@@ -1,0 +1,12 @@
+{
+    "TIMEOUT": 600000,
+    "MOBILE_MEDIA_QUERY_START": "<style>@media only screen and (max-width: 959px) {",
+    "MOBILE_MEDIA_QUERY_END": "}</style>",
+    "MOBILE_MEDIA_QUERY_LANDSCAPE_START": "<style>@media only screen and (max-width: 959px) and (orientation: landscape) {",
+    "MOBILE_MEDIA_QUERY_LANDSCAPE_END": "}</style>",
+    "MOBILE_MEDIA_QUERY_PORTRAIT_START": "<style>@media only screen and (max-width: 959px) and (orientation: portrait) {",
+    "MOBILE_MEDIA_QUERY_PORTRAIT_END": "}</style>",
+    "COMPONENTS": ["components/dialog-box", "components/span-with-menu" ],
+    "APP_ABOUT_URL": "https://tekmonks.com/",
+    "TKMLOGINAPP_URL": "https://login.tekmonks.com"
+}

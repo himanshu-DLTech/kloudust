@@ -1,0 +1,100 @@
+#!/usr/bin/env node
+/** 
+ * (C) 2020 TekMonks. All rights reserved.
+ * License: See enclosed LICENSE file.
+ */
+global.KLOUD_CONSTANTS = require(`${__dirname}/lib/constants.js`);
+
+const fs = require("fs");
+const path = require("path");
+const utils = require(`${KLOUD_CONSTANTS.LIBDIR}/utils.js`);
+const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
+const processargs = require(`${KLOUD_CONSTANTS.MONKSHU_BACKEND_LIBDIR}/processargs.js`);
+
+const CMD_LINE_ARGS = { "__description": "Kloudust - (C) TekMonks\nHybrid Cloud Platform.",
+    "k": {long: "color", required: false, help: "Colored console option."}, 
+    "f": {long: "file", required: true, help: "Filepath. The path to the file is required if specified."},
+    "u": {long: "user", required: true, help: "User ID. The value is required if specified."},
+    "p": {long: "password", required: true, help: "Password for the user. The value is required if user is specified."},
+    "t": {long: "otp", required: true, help: "One time code for the user. The value is required if user is specified."},
+    "j": {long: "project", required: true, help: "Project name. The value is required if specified."},
+    "s": {long: "setup", required: false, help: "Running in setup mode. Only allowed from command line."},
+    "e": {long: "execute", required: true, help: "Single command to execute. The value is required if specified."}  };
+
+let initComplete = false;   // init flag
+
+module.exports.initAsync = async _ => {
+    if (initComplete) return; 
+    for (const initModule of KLOUD_CONSTANTS.CONF.INIT_MODULES) {
+        const module = require(KLOUD_CONSTANTS.ROOTDIR+"/"+initModule);
+        await module.initAsync();
+    }
+    initComplete= true;
+}
+
+module.exports.kloudust = async function(inprocessArgs) {
+    const args = inprocessArgs||processargs.getArgs(CMD_LINE_ARGS);
+
+    if (args.color) KLOUD_CONSTANTS.COLORED_OUT = true;
+
+    if (args.setup && KLOUD_CONSTANTS.env._command_line_execution) KLOUD_CONSTANTS.env._setup_mode = true;
+
+    await exports.initAsync(); // init Kloudust this is needed to login the user below
+
+    if (!args.user) _showHelpAndExit(); else await _loginUserOrExit(args);
+
+    if (args.file) {
+        KLOUD_CONSTANTS.LOGBARE(CMD_LINE_ARGS.__description);
+
+        let fileToExec = _resolvePath(args.file[0]);
+        KLOUD_CONSTANTS.LOGINFO(`Starting execution: ${fileToExec}`);
+
+        fileToExec = fs.readFileSync(fileToExec);
+        for (const execLine of fileToExec.split(";")) {
+            if (execLine.trim() == "" || execLine.trim().startsWith("#")) continue;    // skip empty or comment lines
+            if (!await _execCommand(utils.parseArgs(execLine))) KLOUD_CONSTANTS.EXITFAILED();
+        }
+
+        KLOUD_CONSTANTS.EXITOK();
+    } else if (args.execute) {
+        KLOUD_CONSTANTS.LOGBARE(CMD_LINE_ARGS.__description);
+
+        if (await _execCommand(utils.parseArgs(args.execute[0]))) KLOUD_CONSTANTS.EXITOK(); else KLOUD_CONSTANTS.EXITFAILED();
+    } else _showHelpAndExit();  // nothing to do
+}
+
+function _showHelpAndExit() {
+    KLOUD_CONSTANTS.LOGBARE(processargs.helpInformation(CMD_LINE_ARGS), KLOUD_CONSTANTS.COLORS.red); 
+    KLOUD_CONSTANTS.EXITFAILED();
+}
+
+async function _loginUserOrExit(args) {
+    const password = args.password?.[0] || await _readFromConsole("Password? ");
+    const totp = args.otp?.[0] || await _readFromConsole("One Time Code? ");
+    if (!await dbAbstractor.loginUser(args.user[0], args.project?.[0], password, totp)) {
+        KLOUD_CONSTANTS.LOGERROR("User not authorized."); KLOUD_CONSTANTS.EXITFAILED(); }
+}
+
+async function _execCommand(params) {
+    const command = params[0]; const cmdParams = params.slice(1);
+    try {
+        const module = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/${command}.js`);
+        return await module.exec(cmdParams);
+    } catch (err) {
+        KLOUD_CONSTANTS.LOGERROR(err); return false;
+    }
+}
+ 
+function _resolvePath(file) {
+    if (fs.existsSync(file)) return path.resolve(file);
+    else return (path.resolve(`${__dirname}/${file}`));
+}
+
+async function _readFromConsole(prompt) {
+    return new Promise(resolve => {
+        const rl = require("readline").createInterface({input: process.stdin, output: process.stdout});
+        rl.question(prompt, answer => {rl.close(); resolve(answer);});
+    })
+}
+
+if (require.main === module) {KLOUD_CONSTANTS.env._command_line_execution = true; module.exports.kloudust();}
