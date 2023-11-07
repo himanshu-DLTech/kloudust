@@ -1,4 +1,4 @@
 # kloudust
-Kloudust - TekMonks Hybrid Cloud 
+Kloudust - Tekmonks Hybrid Cloud 
 
-For commercial license please contact your TekMonks Sales Representative or sales@tekmonks.com
+For commercial license please contact your Tekmonks Sales Representative or sales@tekmonks.com
