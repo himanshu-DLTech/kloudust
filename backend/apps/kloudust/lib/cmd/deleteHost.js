@@ -10,4 +10,4 @@
   * Removes the gives host as a Kloudust hypervisor
   * @param {array} params The incoming params - must be - ip
   */
- module.exports.exec = async params => await dbAbstractor.deleteHostFromDB(params[0]);
+ module.exports.exec = async params => {return {result: await dbAbstractor.deleteHostFromDB(params[0]), err: "", out: ""}}

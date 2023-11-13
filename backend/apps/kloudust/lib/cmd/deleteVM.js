@@ -29,7 +29,9 @@ module.exports.exec = async function(params) {
         ]
     }
 
-    if (await xforge(xforgeArgs)==0) {
-        return dbAbstractor.deleteVM(params[0]); 
-    } else return false;
+    const results = await xforge(xforgeArgs);
+    if (results.result) {
+        if (await dbAbstractor.deleteVM(params[0])) return results;
+        else {KLOUD_CONSTANTS.LOGERROR("DB failed"); return {...results, result: false};}
+    } else return results;
 }

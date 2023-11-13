@@ -1,6 +1,8 @@
 /** 
  * listVMs.js - Lists the host VMs - either all or running (default)
  * 
+ * Params - 0 - The host name
+ * 
  * (C) 2020 TekMonks. All rights reserved.
  * License: See enclosed LICENSE file.
  */
@@ -17,13 +19,14 @@ module.exports.exec = async function(params) {
     if (!hostInfo) {KLOUD_CONSTANTS.LOGERROR("Bad hostname or host not found"); return false;}
     const vms = await dbAbstractor.listVMsForCloudAdmin(params[0], true);
 
+    let out = "";
     if (vms) {
-        KLOUD_CONSTANTS.LOGINFO("VM information from the database follows.");
-        for (const vm of vms) KLOUD_CONSTANTS.LOGINFO(JSON.stringify(vm));
+        out += "VM information from the database follows.";
+        for (const vm of vms) out += "\n"+JSON.stringify(vm);
     }
 
     if (hostInfo) {
-        KLOUD_CONSTANTS.LOGINFO("VM information from the specific host follows.");
+        out += "\n"+"VM information from the specific host follows.";
         const xforgeArgs = {
             colors: KLOUD_CONSTANTS.COLORED_OUT, 
             file: `${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/samples/remoteCmd.xf.js`,
@@ -32,6 +35,7 @@ module.exports.exec = async function(params) {
                 `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/listVMs.sh`
             ]
         }
-        return (await xforge(xforgeArgs)==0)?true:false; 
-    } else return true;
+        const xforgeResults = await xforge(xforgeArgs); 
+        out += "\n"+hostResults.stdout; return {out, ...xforgeResults};
+    } else return {result: true, out, err: ""};
 }

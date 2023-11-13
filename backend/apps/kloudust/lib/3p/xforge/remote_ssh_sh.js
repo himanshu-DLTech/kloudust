@@ -50,13 +50,15 @@ function processExec(cmdProcessorArray, script, paramsArray, stream, callback) {
     let stdout = "", stderr = "";
 
     shellProcess.stdout.on("data", data => {
-        stdout += String.fromCharCode.apply(null, data);
-        if (stream) KLOUD_CONSTANTS.LOGINFO(`[SSH_CMD] [PID:${shellProcess.pid}]\n${data}`);
+        const outStr = String.fromCharCode.apply(null, data);
+        stdout += `[SSH_CMD PID:${shellProcess.pid}] [OUT]\n${outStr}`;
+        if (stream) KLOUD_CONSTANTS.LOGINFO(`[SSH_CMD PID:${shellProcess.pid}] [OUT]\n${outStr}`);
     });
 
     shellProcess.stderr.on("data", data => {
-        stderr += String.fromCharCode.apply(null, data);
-        if (stream) KLOUD_CONSTANTS.LOGWARN(`[SSH_CMD] [PID:${shellProcess.pid}]\n${data}`);
+        const errStr = String.fromCharCode.apply(null, data);
+        stderr += `[SSH_CMD PID:${shellProcess.pid}] [ERROR]\n${errStr}`;
+        if (stream) KLOUD_CONSTANTS.LOGWARN(`[SSH_CMD PID:${shellProcess.pid}] [ERROR]\n${errStr}`);
     });
 
     shellProcess.on("exit", exitCode => {

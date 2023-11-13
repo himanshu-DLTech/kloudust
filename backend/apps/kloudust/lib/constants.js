@@ -32,16 +32,10 @@ exports.LOGERROR = e => console.error(_getColoredMessage(`[ERROR] ${_getErrorMes
 exports.LOGWARN = s => console.warn(_getColoredMessage(`[WARN] ${s}\n`, colors.yellow));
 exports.LOGEXEC = s => console.info(_getColoredMessage(`[EXEC] ${s}\n`, colors.blue));
 exports.LOGUNAUTH = s => console.info(_getColoredMessage("[ERROR] User is not authorized for this action.\n", colors.red));
+exports.UNDER_MONKSHU = true;
 
-exports.EXITOK = _ => {
-    if (!_allowExit) {setTimeout(exports.EXITOK, 1000); return;}  // exit only when done, check again in 1 second
-    exports.LOGINFO("Success, done."); process.exit(0);
-}
-exports.EXITFAILED = _ => {
-    if (!_allowExit) {setTimeout(exports.EXITFAILED, 1000); return;}  // exit only when done, check again in 1 second
-    exports.LOGERROR("Failed."); process.exit(1);
-}
-
+exports.EXITOK = _ => exports.LOGINFO("Success, done.");
+exports.EXITFAILED = _ => exports.LOGERROR("Failed."); 
 let _allowExit = true;
 exports.exitallow = allowFlag => _allowExit = allowFlag;
 

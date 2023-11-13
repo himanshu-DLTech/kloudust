@@ -25,5 +25,5 @@ module.exports.exec = async function(params) {
         ]
     }
 
-    return (await xforge(xforgeArgs)==0)?true:false;
+    return await xforge(xforgeArgs);
 }

@@ -373,14 +373,16 @@ exports.getUserForEmail = async (email, org=KLOUD_CONSTANTS.env.org) => {
     if (users && users.length && checkOrg(users[0].org)) return users[0]; else return null;
 }
 
+/** Returns the total number of users in the cloud database */
+exports.getUserCount = async _ => ((await _db().getQuery("select * from users"))?.length)||0;
+
 /**
  * Logs the given user in and sets up for environment variables
  * @param {string} email The email
- * @param {string} password The password
- * @param {totp} totp The OTP
+ * @param {string} project The project the user will work on
  * @return true on success and false otherwise
  */
-exports.loginUser = async (email, project, _password, _totp) => {
+exports.loginUser = async (email, project) => {
     if (KLOUD_CONSTANTS.env._setup_mode) {
         KLOUD_CONSTANTS.env.username = "Setup admin";
         KLOUD_CONSTANTS.env.userid = email;
@@ -394,9 +396,7 @@ exports.loginUser = async (email, project, _password, _totp) => {
     if (!users || !users.length) return false;  // bad ID 
     const project_check = (users[0].role == KLOUD_CONSTANTS.ROLES.ORG_ADMIN || 
         users[0].role == KLOUD_CONSTANTS.ROLES.CLOUD_ADMIN) ? true : await exports.checkUserBelongsToProject(email, project, users[0].org);
-    if (!project_check) return false;  // not part of this project       
-
-    // add  code for Tekmonks Unified Login here
+    if (!project_check) return false;  // not part of this project    
     
     KLOUD_CONSTANTS.env.username = users[0].name;
     KLOUD_CONSTANTS.env.userid = users[0].id.toLocaleLowerCase();

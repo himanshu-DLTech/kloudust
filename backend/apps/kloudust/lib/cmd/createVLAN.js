@@ -27,8 +27,9 @@ module.exports.exec = async function(params) {
         ]
     }
 
-    if (await xforge(xforgeArgs)==0) {
-        if (await dbAbstractor.addVMToDB(params[1], params[2], params[0], "centos8", params[3], params[4], "30")) return true;
-        else {KLOUD_CONSTANTS.LOGERROR("DB failed"); return false;}
-    } else return false;
+    const results = await xforge(xforgeArgs);
+    if (results.result) {
+        if (await dbAbstractor.addVMToDB(params[1], params[2], params[0], "centos8", params[3], params[4], "30")) return results;
+        else {KLOUD_CONSTANTS.LOGERROR("DB failed"); return {...results, result: false};}
+    } else return results;
 }

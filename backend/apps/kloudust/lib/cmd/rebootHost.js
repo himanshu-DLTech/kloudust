@@ -25,6 +25,6 @@ module.exports.exec = async function(params) {
         ]
     }
 
-    await xforge(xforgeArgs);
-    return true;    // reboot always will return 1 as if successful, there is still a network error
+    const results = await xforge(xforgeArgs);
+    return {...results, result: true};    // reboot always will return 1 as if successful, there is still a network error
 }

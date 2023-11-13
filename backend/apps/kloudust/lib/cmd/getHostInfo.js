@@ -19,5 +19,5 @@ module.exports.exec = async function(params) {
 
     KLOUD_CONSTANTS.LOGINFO(`Host information follows for ${params[0]}`+formattedOut);
 
-    return true;
+    return {result: true, err: "", out: ""};
 }

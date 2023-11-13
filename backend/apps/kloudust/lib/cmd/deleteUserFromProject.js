@@ -18,5 +18,5 @@ const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
 module.exports.exec = async function(params) {
     const email = params[0], project = roleman.isOrgAdminLoggedIn()?params[1]:KLOUD_CONSTANTS.env.prj;
 
-    return await dbAbstractor.removeUserFromProject(email, project);
+    return {result: await dbAbstractor.removeUserFromProject(email, project), err: "", out: ""};
 }

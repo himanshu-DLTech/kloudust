@@ -15,8 +15,8 @@ module.exports.exec = async function() {
     const vms = await dbAbstractor.listVMs();
 
     if (vms) {
-        KLOUD_CONSTANTS.LOGINFO("VM information from the database follows.");
-        for (const vm of vms) KLOUD_CONSTANTS.LOGINFO(JSON.stringify(vm));
-        return true;
+        let out = "VM information from the database follows.";
+        for (const vm of vms) out += "\n"+JSON.stringify(vm);
+        return {result: true, err: "", out};
     } else return false;
 }

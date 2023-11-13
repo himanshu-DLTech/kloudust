@@ -20,5 +20,5 @@ module.exports.exec = async function(params) {
         
     const project = roleman.getNormalizedProject(params[0]||KLOUD_CONSTANTS.env.prj);
     const org = roleman.getNormalizedOrg(params[1]||KLOUD_CONSTANTS.env.org);
-    return await dbAbstractor.deleteProject(project, org);
+    return {result: await dbAbstractor.deleteProject(project, org), err: "", out: ""};
 }

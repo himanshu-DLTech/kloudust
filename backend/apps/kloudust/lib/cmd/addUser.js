@@ -17,8 +17,7 @@ const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
  * @param {array} params The incoming params - must be - email, name, password, org
  */
 module.exports.exec = async function(params) {
-    const setup_mode = KLOUD_CONSTANTS.env._setup_mode;
-    if ((!setup_mode) && (!roleman.checkAccess(roleman.ACTIONS.edit_org))) {
+    if ((!KLOUD_CONSTANTS.env._setup_mode) && (!roleman.checkAccess(roleman.ACTIONS.edit_org))) {
         KLOUD_CONSTANTS.LOGERROR("User is unauthorized for this operation.");; return false; }
 
     const _accountExists = async email => {
@@ -29,6 +28,7 @@ module.exports.exec = async function(params) {
     const email = params[0], name = params[1], org = roleman.getNormalizedOrg(params[2]), role = params[3];
     if (await _accountExists(email)) {KLOUD_CONSTANTS.LOGERROR("Account already exists or unauthorized."); return false;}  
 
-    return await dbAbstractor.addUserToDB(email, name, org, (roleman.isCloudAdminLoggedIn() ||
+    const result = await dbAbstractor.addUserToDB(email, name, org, (roleman.isCloudAdminLoggedIn() ||
         roleman.isOrgAdminLoggedIn()) ? role : KLOUD_CONSTANTS.ROLES.USER);
+    return {result, out: "", err: ""};
 }

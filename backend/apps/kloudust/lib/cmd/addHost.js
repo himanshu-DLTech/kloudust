@@ -38,11 +38,13 @@ module.exports.exec = async function(params) {
         ]
     }
 
-    if (await xforge(xforgeArgs)==0) {
+    const results = await xforge(xforgeArgs);
+    if (results.exitCode==0) {
         if (await dbAbstractor.addHostToDB(params[0], params[1], params[2].toLowerCase(), params[3], newPassword, 
             params[5], parseInt(params[6]), parseInt(params[7]), parseInt(params[8]), parseInt(params[9]), params[10], 
-                params[11], parseInt(params[12]))) return true; else {_showError(newPassword, params[2], params[3]); return false;}
-    } else {_showError(newPassword, params[2], params[3]); return false;}
+                params[11], parseInt(params[12]))) return {result: true, out: results.stdout, err: results.stderr}; 
+        else {_showError(newPassword, params[2], params[3]); return {result: false, out: results.stdout, err: results.stderr};}
+    } else {_showError(newPassword, params[2], params[3]); return {result: false, out: results.stdout, err: results.stderr};}
 }
 
 function _showError(newPassword, userid, oldPassword) {

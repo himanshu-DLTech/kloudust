@@ -32,7 +32,7 @@ module.exports.exec = async function(params) {
         return true;
     }
 
-    let returnResult = true; const updateTimestamp = Date.now();
+    let returnResult = {result: true, out: "", err: ""}; const updateTimestamp = Date.now();
     for (const hostinfo of hostinfos) {        
         const xforgeArgs = {
             colors: KLOUD_CONSTANTS.COLORED_OUT, 
@@ -46,10 +46,10 @@ module.exports.exec = async function(params) {
 
         const runAsJob = params[4].toLowerCase() == "true", retryOnFailure = params[5].toLowerCase() == "true";
         const update_function = async _ => {
-            const hostUpdateResult = (await xforge(xforgeArgs)==0)?true:false;
-            if (!hostUpdateResult) {    // on error at least update other hosts, it relieves cloud network pressure later for recovery
+            const hostUpdateResults = await xforge(xforgeArgs);
+            if (!hostUpdateResults.result) {    // on error at least update other hosts, it relieves cloud network pressure later for recovery
                 KLOUD_CONSTANTS.LOGERROR(`Error updating host ${hostinfo.hostname} with image ${params[0]}${retryOnFailure?", retrying":""}`);
-                if (!runAsJob) returnResult = false;    // jobs run async to the execution call so no sense they update results
+                if (!runAsJob) returnResult = hostUpdateResults;    // jobs run async to the execution call so no sense they update results
                 if (retryOnFailure) jobs.add(update_function);  // on failure add the job back so the host does get updated eventually
             } else await dbAbstractor.updateHostSynctime(hostinfo.hostname, updateTimestamp);
         }

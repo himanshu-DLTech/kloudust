@@ -19,5 +19,6 @@ module.exports.exec = async function(params) {
         KLOUD_CONSTANTS.LOGERROR("User is unauthorized for this operation."); return false; }
 
     const org = roleman.getNormalizedOrg(params[1]||KLOUD_CONSTANTS.env.org);
-    return await dbAbstractor.addProject(KLOUD_CONSTANTS.env.prj, params[0]||"", org);   // add project for user and org
+    const result = await dbAbstractor.addProject(KLOUD_CONSTANTS.env.prj, params[0]||"", org);   // add project for user and org
+    return {result, out: "", err: ""};
 }
