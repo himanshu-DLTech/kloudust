@@ -14,10 +14,10 @@ const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
  */
 module.exports.exec = async function(params) {
     const hostInfo = await dbAbstractor.getHostEntry(params[0]); 
-    if (!hostInfo) {KLOUD_CONSTANTS.LOGERROR("Bad hostname or host not found"); return false;}
+    if (!hostInfo) {params.consoleHandlers.LOGERROR("Bad hostname or host not found"); return false;}
 
     if ((params[7]||"").trim().length == 0) {
-        KLOUD_CONSTANTS.LOGWARN("Missing VM type, assuming generic Linux");
+        params.consoleHandlers.LOGWARN("Missing VM type, assuming generic Linux");
         params[7] = "linux2018";
     }
 
@@ -25,6 +25,7 @@ module.exports.exec = async function(params) {
     const xforgeArgs = {
         colors: KLOUD_CONSTANTS.COLORED_OUT, 
         file: `${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/samples/remoteCmd.xf.js`,
+        console: params.consoleHandlers,
         other: [
             hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey,
             `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/createVM.sh`,
@@ -38,6 +39,6 @@ module.exports.exec = async function(params) {
     const results = await xforge(xforgeArgs);
     if (results.result) {
         if (await dbAbstractor.addVMToDB(params[1], params[2], params[0], params[6], params[3], params[4], params[5])) return results;
-        else {KLOUD_CONSTANTS.LOGERROR("DB failed"); return {...results, result: false};}
+        else {params.consoleHandlers.LOGERROR("DB failed"); return {...results, result: false};}
     } else return results;
 }

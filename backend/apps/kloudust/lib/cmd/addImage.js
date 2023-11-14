@@ -22,13 +22,13 @@ const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
  * @param {array} params The incoming params, see above for params
  */
 module.exports.exec = async function(params) {
-    if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {KLOUD_CONSTANTS.LOGUNAUTH(); return false; }
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {params.consoleHandlers.LOGUNAUTH(); return false; }
 
     if (!await dbAbstractor.addHostResource(params[0], params[1], params[2].toLowerCase(), params[3])) return false;
 
     const hostinfos = await dbAbstractor.getHostsMatchingProcessorArchitecture(params[2].toLowerCase());
     if ((!hostinfos) || (!hostinfos.length)) {
-        KLOUD_CONSTANTS.LOGWARN(`No hosts found matching processor architecture for image ${params[0]}.`);
+        params.consoleHandlers.LOGWARN(`No hosts found matching processor architecture for image ${params[0]}.`);
         return true;
     }
 
@@ -37,6 +37,7 @@ module.exports.exec = async function(params) {
         const xforgeArgs = {
             colors: KLOUD_CONSTANTS.COLORED_OUT, 
             file: `${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/samples/remoteCmd.xf.js`,
+            console: params.consoleHandlers,
             other: [
                 hostinfo.hostaddress, hostinfo.rootid, hostinfo.rootpw, hostinfo.hostkey, 
                 `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/addImage.sh`,
@@ -48,7 +49,7 @@ module.exports.exec = async function(params) {
         const update_function = async _ => {
             const hostUpdateResults = await xforge(xforgeArgs);
             if (!hostUpdateResults.result) {    // on error at least update other hosts, it relieves cloud network pressure later for recovery
-                KLOUD_CONSTANTS.LOGERROR(`Error updating host ${hostinfo.hostname} with image ${params[0]}${retryOnFailure?", retrying":""}`);
+                params.consoleHandlers.LOGERROR(`Error updating host ${hostinfo.hostname} with image ${params[0]}${retryOnFailure?", retrying":""}`);
                 if (!runAsJob) returnResult = hostUpdateResults;    // jobs run async to the execution call so no sense they update results
                 if (retryOnFailure) jobs.add(update_function);  // on failure add the job back so the host does get updated eventually
             } else await dbAbstractor.updateHostSynctime(hostinfo.hostname, updateTimestamp);

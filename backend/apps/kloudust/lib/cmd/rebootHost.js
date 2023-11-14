@@ -14,11 +14,12 @@ const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
  */
 module.exports.exec = async function(params) {
     const hostInfo = await dbAbstractor.getHostEntry(params[0]); 
-    if (!hostInfo) {KLOUD_CONSTANTS.LOGERROR("Bad hostname or host not found"); return false;}
+    if (!hostInfo) {params.consoleHandlers.LOGERROR("Bad hostname or host not found"); return false;}
 
     const xforgeArgs = {
         colors: KLOUD_CONSTANTS.COLORED_OUT, 
         file: `${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/samples/remoteCmd.xf.js`,
+        console: params.consoleHandlers,
         other: [
             hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey,
             `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/rebootHost.sh`

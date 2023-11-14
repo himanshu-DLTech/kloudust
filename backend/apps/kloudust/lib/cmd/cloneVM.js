@@ -14,14 +14,15 @@ const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
  */
 module.exports.exec = async function(params) {
     const vm = await dbAbstractor.getVM(params[0]);
-    if (!vm) {KLOUD_CONSTANTS.LOGERROR("Bad VM name or VM not found"); return false;}
+    if (!vm) {params.consoleHandlers.LOGERROR("Bad VM name or VM not found"); return false;}
     
     const hostInfo = await dbAbstractor.getHostEntry(vm.hostname); 
-    if (!hostInfo) {KLOUD_CONSTANTS.LOGERROR("Bad hostname or host not found"); return false;}
+    if (!hostInfo) {params.consoleHandlers.LOGERROR("Bad hostname or host not found"); return false;}
 
     const xforgeArgs = {
         colors: KLOUD_CONSTANTS.COLORED_OUT, 
         file: `${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/samples/remoteCmd.xf.js`,
+        console: params.consoleHandlers,
         other: [
             hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey,
             `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/cloneVM.sh`,
@@ -32,6 +33,6 @@ module.exports.exec = async function(params) {
     const results = await xforge(xforgeArgs);
     if (results.result) {
         if (await dbAbstractor.addVMToDB(params[1], vm.description, vm.hostname, vm.os, vm.cpus, vm.memory, vm.disk)) return results;
-        else {KLOUD_CONSTANTS.LOGERROR("DB failed"); return {...results, result: false};}
+        else {params.consoleHandlers.LOGERROR("DB failed"); return {...results, result: false};}
     } else return results;
 }

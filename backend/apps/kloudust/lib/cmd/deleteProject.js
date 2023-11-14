@@ -16,7 +16,7 @@ const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
  */
 module.exports.exec = async function(params) {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_org)) { 
-        KLOUD_CONSTANTS.LOGERROR("User is unauthorized for this operation."); return false; }
+        params.consoleHandlers.LOGERROR("User is unauthorized for this operation."); return false; }
         
     const project = roleman.getNormalizedProject(params[0]||KLOUD_CONSTANTS.env.prj);
     const org = roleman.getNormalizedOrg(params[1]||KLOUD_CONSTANTS.env.org);

@@ -14,14 +14,15 @@ const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
  */
 module.exports.exec = async function(params) {
     const hostInfo = await dbAbstractor.getHostEntry(params[0]); 
-    if (!hostInfo) {KLOUD_CONSTANTS.LOGERROR("Bad hostname or host not found"); return false;}
+    if (!hostInfo) {params.consoleHandlers.LOGERROR("Bad hostname or host not found"); return false;}
 
     const xforgeArgs = {
         colors: KLOUD_CONSTANTS.COLORED_OUT, 
         file: `${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/samples/remoteCmd.xf.js`,
+        console: params.consoleHandlers,
         other: [
             hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey,
-            `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/createKDS.sh`,
+            `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/createVLAN.sh`,
             params[1], params[2], params[3], params[4], KLOUD_CONSTANTS.env.org, 
             KLOUD_CONSTANTS.env.prj
         ]
@@ -30,6 +31,6 @@ module.exports.exec = async function(params) {
     const results = await xforge(xforgeArgs);
     if (results.result) {
         if (await dbAbstractor.addVMToDB(params[1], params[2], params[0], "centos8", params[3], params[4], "30")) return results;
-        else {KLOUD_CONSTANTS.LOGERROR("DB failed"); return {...results, result: false};}
+        else {params.consoleHandlers.LOGERROR("DB failed"); return {...results, result: false};}
     } else return results;
 }

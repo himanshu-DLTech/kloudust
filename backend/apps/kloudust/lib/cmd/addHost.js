@@ -24,10 +24,10 @@ const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
  *                        handle streaming consoles
  */
 module.exports.exec = async function(params) {
-    if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {consoleHandlers.LOGUNAUTH(); return false;}
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {params.consoleHandlers.LOGUNAUTH(); return false;}
 
     if ((!KLOUD_CONSTANTS.CONF.HOST_TYPES.includes(params[2].toLowerCase()))) {
-        consoleHandlers.LOGERROR(`Only ${KLOUD_CONSTANTS.CONF.HOST_TYPES.join(", ")} are supported.`); return false;}
+        params.consoleHandlers.LOGERROR(`Only ${KLOUD_CONSTANTS.CONF.HOST_TYPES.join(", ")} are supported.`); return false;}
 
     const newPassword = params[13].toLowerCase() == "nochange" ? params[4] : cryptoMod.randomBytes(32).toString("hex");
     const xforgeArgs = {
