@@ -12,7 +12,8 @@ const colors = {
 }
 
 exports.COLORED_OUT = false;
-const _getColoredMessage = (s, colorfunc) => exports.COLORED_OUT?colorfunc(s):s;
+exports.COLORS = colors;
+const _getColoredMessage = (s, colorfunc) => exports.COLORED_OUT && (!global.LOG) ? colorfunc(s) : s;
 
 exports.env = {};
 exports.LIBDIR = path.resolve(__dirname);
@@ -26,16 +27,25 @@ exports.MONKSHU_BACKEND_LIBDIR = `${exports.LIBDIR}/3p/monkshu/backend/server/li
 exports.ROLES = Object.freeze({CLOUD_ADMIN: "cloudadmin", ORG_ADMIN: "orgadmin", USER: "user"});
 
 exports.COLORS = colors;
-exports.LOGBARE = (s, color=colors.green) => console.info(_getColoredMessage(`${s}\n`, color));
-exports.LOGINFO = s => console.info(_getColoredMessage(`[INFO] ${s}\n`, colors.green));
-exports.LOGERROR = e => console.error(_getColoredMessage(`[ERROR] ${_getErrorMessage(e)}\n`, colors.red));
-exports.LOGWARN = s => console.warn(_getColoredMessage(`[WARN] ${s}\n`, colors.yellow));
-exports.LOGEXEC = s => console.info(_getColoredMessage(`[EXEC] ${s}\n`, colors.blue));
-exports.LOGUNAUTH = s => console.info(_getColoredMessage("[ERROR] User is not authorized for this action.\n", colors.red));
+exports.UNAUTH_MSG = "User is not authorized for this action";
+exports.SUCCESS_MSG = "Success, done.";
+exports.FAILED_MSG = "Failed.";
+exports.LOGBARE = (s, color=colors.green) => (LOG?LOG.info:console.info).apply(LOG?LOG:console,
+    [_getColoredMessage(`${s}${LOG?"":"\n"}`, color)]);
+exports.LOGINFO = s => (LOG?LOG.info:console.info).apply(LOG?LOG:console,
+    [_getColoredMessage(`[INFO] ${s}${LOG?"":"\n"}`, colors.green)]);
+exports.LOGERROR = e => (LOG?LOG.error:console.error).apply(LOG?LOG:console,
+    [_getColoredMessage(`[ERROR] ${_getErrorMessage(e)}${LOG?"":"\n"}`, colors.red)]);
+exports.LOGWARN = s => (LOG?LOG.warn:console.warn).apply(LOG?LOG:console,
+    [_getColoredMessage(`[WARN] ${s}${LOG?"":"\n"}`, colors.yellow)]);
+exports.LOGEXEC = s => (LOG?LOG.info:console.info).apply(LOG?LOG:console,
+    [_getColoredMessage(`[EXEC] ${s}${LOG?"":"\n"}`, colors.blue)]);
+exports.LOGUNAUTH = _ => (LOG?LOG.error:console.error).apply(LOG?LOG:console,
+    [_getColoredMessage(`[ERROR] ${exports.UNAUTH_MSG}${LOG?"":"\n"}`, colors.red)]);
 exports.UNDER_MONKSHU = true;
 
-exports.EXITOK = _ => exports.LOGINFO("Success, done.");
-exports.EXITFAILED = _ => exports.LOGERROR("Failed."); 
+exports.EXITOK = s => exports.LOGINFO((s?s+" ":"")+exports.SUCCESS_MSG);
+exports.EXITFAILED = s => exports.LOGERROR((s?s+" ":"")+exports.FAILED_MSG); 
 let _allowExit = true;
 exports.exitallow = allowFlag => _allowExit = allowFlag;
 

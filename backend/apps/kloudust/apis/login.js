@@ -17,7 +17,7 @@ const conf = require(`${KLOUD_CONSTANTS.CONFDIR}/kloudust.json`);
 const API_JWT_VALIDATION = `${conf.tekmonkslogin_backend}/apps/loginapp/validatejwt`;
 
 exports.doService = async jsonReq => {
-	if (!validateRequest(jsonReq)) {LOG.error("Validation failure."); return CONSTANTS.FALSE_RESULT;}
+	if (!validateRequest(jsonReq)) {KLOUD_CONSTANTS.LOGERROR("Validation failure."); return CONSTANTS.FALSE_RESULT;}
     
     if (jsonReq.op == "getotk") return _getOTK(jsonReq);
     else if (jsonReq.op == "verify") return await _verifyJWT(jsonReq);
@@ -38,18 +38,18 @@ async function _verifyJWT(jsonReq) {
         tokenValidationResult = await httpClient.fetch(
             `${API_JWT_VALIDATION}?jwt=${jsonReq.jwt}${jsonReq.cmdline?"&noonce=true":""}`);
     } catch (err) {
-        LOG.error(`Network error validating JWT token ${jsonReq.jwt}, validation failed.`);
+        KLOUD_CONSTANTS.LOGERROR(`Network error validating JWT token ${jsonReq.jwt}, validation failed.`);
         return CONSTANTS.FALSE_RESULT;
     }
 
 	if (!tokenValidationResult.ok) {
-        LOG.error(`Fetch error validating JWT token ${jsonReq.jwt}, validation failed.`);
+        KLOUD_CONSTANTS.LOGERROR(`Fetch error validating JWT token ${jsonReq.jwt}, validation failed.`);
         return CONSTANTS.FALSE_RESULT;
     }
 
     const responseJSON = await tokenValidationResult.json();
     if ((!responseJSON.result) || (responseJSON.jwt != jsonReq.jwt)) {
-        LOG.error(`Validation error when validating JWT token ${jsonReq.jwt}.`);
+        KLOUD_CONSTANTS.LOGERROR(`Validation error when validating JWT token ${jsonReq.jwt}.`);
         return CONSTANTS.FALSE_RESULT;
     }
 
@@ -58,7 +58,7 @@ async function _verifyJWT(jsonReq) {
         const jwtClaims = JSON.parse(_decodeBase64(jsonReq.jwt.split(".")[1]));
         return {...jwtClaims , ...CONSTANTS.TRUE_RESULT};
     } catch (err) {
-        LOG.error(`Bad JWT token passwed for login ${jsonReq.jwt}, validation succeeded but decode failed.`);
+        KLOUD_CONSTANTS.LOGERROR(`Bad JWT token passwed for login ${jsonReq.jwt}, validation succeeded but decode failed.`);
         return CONSTANTS.FALSE_RESULT;
     }
 }

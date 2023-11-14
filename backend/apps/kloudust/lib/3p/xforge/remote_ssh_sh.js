@@ -22,22 +22,23 @@ const agentConf = {
  * @param {object} conf Contains {user, password, and host}
  * @param {string} remote_script The script to run, path to it
  * @param {object} extra_params The array of parameters
- * @param {boolean} stream If set to true, output will be streamed to logs as it happens
+ * @param {Object} streamer If set, output will be streamed to it as it happens, must have member functions 
+ *                          LOGINFO, LOGERROR, LOGWARN etc.
  * @param {object} callback err = exitCode in case or error or null otherwise,stdout,stderr
  */
-exports.runRemoteSSHScript = (conf, remote_script, extra_params, stream, callback) => {
+exports.runRemoteSSHScript = (conf, remote_script, extra_params, streamer, callback) => {
     const script = path.normalize(`${__dirname}/ssh_cmd.${process.platform == "win32"?"bat":"sh"}`);
 
-    expandExtraParams(extra_params, remote_script, (err, expanded_remote_script) => {
+    _expandExtraParams(extra_params, remote_script, (err, expanded_remote_script) => {
         if (err) {callback({"result":false, "err":err, "msg": err.toString()}); return;}
 
-        processExec( agentConf["shellexecprefix_"+process.platform], script, 
+        _processExec( agentConf["shellexecprefix_"+process.platform], script, 
             [conf.user, conf.password, conf.hostkey, expanded_remote_script, conf.host], 
-            stream, callback );
+            streamer, callback );
     });    
 }
 
-function processExec(cmdProcessorArray, script, paramsArray, stream, callback) {
+function _processExec(cmdProcessorArray, script, paramsArray, streamer, callback) {
     const spawnArray = cmdProcessorArray.slice(0);
 
     const quoter = process.platform == "win32" ? '"':"'";
@@ -52,13 +53,13 @@ function processExec(cmdProcessorArray, script, paramsArray, stream, callback) {
     shellProcess.stdout.on("data", data => {
         const outStr = String.fromCharCode.apply(null, data);
         stdout += `[SSH_CMD PID:${shellProcess.pid}] [OUT]\n${outStr}`;
-        if (stream) KLOUD_CONSTANTS.LOGINFO(`[SSH_CMD PID:${shellProcess.pid}] [OUT]\n${outStr}`);
+        if (streamer) streamer.LOGINFO(`[SSH_CMD PID:${shellProcess.pid}] [OUT]\n${outStr}`);
     });
 
     shellProcess.stderr.on("data", data => {
         const errStr = String.fromCharCode.apply(null, data);
         stderr += `[SSH_CMD PID:${shellProcess.pid}] [ERROR]\n${errStr}`;
-        if (stream) KLOUD_CONSTANTS.LOGWARN(`[SSH_CMD PID:${shellProcess.pid}] [ERROR]\n${errStr}`);
+        if (streamer) streamer.LOGWARN(`[SSH_CMD PID:${shellProcess.pid}] [ERROR]\n${errStr}`);
     });
 
     shellProcess.on("exit", exitCode => {
@@ -67,13 +68,13 @@ function processExec(cmdProcessorArray, script, paramsArray, stream, callback) {
     });
 }
 
-function expandExtraParams(extra_params, remote_script, callback) {
+function _expandExtraParams(extra_params, remote_script, callback) {
     if (!extra_params || !extra_params.length) {callback(null, remote_script); return;}
 
     fs.readFile(remote_script, "utf-8", (err, data) => {
         if (err) {callback(err, null); return;}
 
-        for (const [i,param] of extra_params.entries()) data = replaceAll(data, "{"+i+"}", param);
+        for (const [i,param] of extra_params.entries()) data = _replaceAll(data, "{"+i+"}", param);
 
         const tmpFile = path.resolve(os.tmpdir()+"/"+(Math.random().toString(36)+'00000000000000000').slice(2, 11));
         fs.writeFile(tmpFile, data, err => {
@@ -83,7 +84,7 @@ function expandExtraParams(extra_params, remote_script, callback) {
     });
 }
 
-function replaceAll(str, find, replace) {
+function _replaceAll(str, find, replace) {
     find = find.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");;
 
     str = str.replace(new RegExp(find, 'g'), replace);
