@@ -23,6 +23,7 @@ const CMD_LINE_ARGS = { "__description": "Kloudust - (C) TekMonks\nHybrid Cloud 
 
 let initComplete = false;   // init flag
 
+/** Inits the Kloudust runtime. Can check for double initialization so safe to call multiple times. */
 exports.initAsync = async _ => {
     if (initComplete) return; 
     for (const initModule of KLOUD_CONSTANTS.CONF.INIT_MODULES) {
@@ -49,8 +50,8 @@ exports.initAsync = async _ => {
  * In process example
  *  {"user": "id@email.com", "project": "project_id", "execute": "command_to_execute"}
  * 
- * @param inprocessArgs 
- * @returns 
+ * @param {Object} inprocessArgs The in-process arguments object as documented above
+ * @returns {result: true or false, out: the out stream concatenated, err: the error stream contatenated}
  */
 exports.kloudust = async function(inprocessArgs) {
     const args = inprocessArgs||processargs.getArgs(CMD_LINE_ARGS);
