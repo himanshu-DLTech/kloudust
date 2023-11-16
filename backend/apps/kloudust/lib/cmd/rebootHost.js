@@ -1,6 +1,8 @@
 /** 
  * rebootHost.js - Reboots the Hypervisor host
  * 
+ * Params - 0 - Host name
+ * 
  * (C) 2020 TekMonks. All rights reserved.
  * License: See enclosed LICENSE file.
  */
@@ -14,7 +16,9 @@ const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
  * @param {array} params The incoming params - must be - type (centos8 only for now), ip, user id, password, ssh hostkey
  */
 module.exports.exec = async function(params) {
-    const hostInfo = await dbAbstractor.getHostEntry(params[0]); 
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
+    
+    const hostname = params[0], hostInfo = await dbAbstractor.getHostEntry(hostname); 
     if (!hostInfo) {params.consoleHandlers.LOGERROR("Bad hostname or host not found"); return CMD_CONSTANTS.FALSE_RESULT();}
 
     const xforgeArgs = {

@@ -27,16 +27,19 @@ const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 module.exports.exec = async function(params) {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
 
-    if ((!KLOUD_CONSTANTS.CONF.HOST_TYPES.includes(params[2].toLowerCase()))) {
+    const [hostname, hostip, ostype, adminid, adminpass, hostsshkey, cores, memory, disk, netspeed, processor, 
+        processorarchitecture, sockets, nochangepassword] = [...params];
+
+    if ((!KLOUD_CONSTANTS.CONF.HOST_TYPES.includes(ostype.toLowerCase()))) {
         params.consoleHandlers.LOGERROR(`Only ${KLOUD_CONSTANTS.CONF.HOST_TYPES.join(", ")} are supported.`); return CMD_CONSTANTS.FALSE_RESULT();}
 
-    const newPassword = params[13].toLowerCase() == "nochange" ? params[4] : cryptoMod.randomBytes(32).toString("hex");
+    const newPassword = nochangepassword.toLowerCase() == "nochange" ? adminpass : cryptoMod.randomBytes(32).toString("hex");
     const xforgeArgs = {
         colors: KLOUD_CONSTANTS.COLORED_OUT, 
         console: params.consoleHandlers,
         file: `${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/samples/remoteCmd.xf.js`,
         other: [
-            params[1], params[3], params[4], params[5], 
+            hostip, adminid, adminpass, hostsshkey, 
             `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/addHost.sh`,
             newPassword
         ]
@@ -44,10 +47,10 @@ module.exports.exec = async function(params) {
 
     const results = await xforge(xforgeArgs);
     if (results.exitCode==0) {
-        if (await dbAbstractor.addHostToDB(params[0], params[1], params[2].toLowerCase(), params[3], newPassword, 
-            params[5], parseInt(params[6]), parseInt(params[7]), parseInt(params[8]), parseInt(params[9]), params[10], 
-                params[11], parseInt(params[12]))) return {result: true, out: results.stdout, err: results.stderr}; 
-        else {_showError(newPassword, params[2], params[3], params.consoleHandlers||KLOUD_CONSTANTS.LOG); return {
+        if (await dbAbstractor.addHostToDB(hostname, hostip, ostype.toLowerCase(), adminid, newPassword, 
+                hostsshkey, parseInt(cores), parseInt(memory), parseInt(disk), parseInt(netspeed), processor, 
+                processorarchitecture, parseInt(sockets))) return {result: true, out: results.stdout, err: results.stderr}; 
+        else {_showError(newPassword, adminid, adminpass, params.consoleHandlers||KLOUD_CONSTANTS.LOG); return {
             result: false, out: results.stdout, err: results.stderr};}
     } else {_showError(newPassword, params[2], params[3], params.consoleHandlers||KLOUD_CONSTANTS.LOG); return {
         result: false, out: results.stdout, err: results.stderr};}

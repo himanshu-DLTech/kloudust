@@ -2,8 +2,7 @@
  * addUser.js - Adds the given user to org as an operator. Only org admins can add or remove
  * org users.
  * 
- * Params - 0 - email, 1 - name, 2 - org, 3 - role (if current user is admin or super-admin),
- *  4 - setup mode - if true and if the program was executed via command line call
+ * Params - 0 - email, 1 - name, 2 - org, 3 - role (if current user is admin or super-admin)
  * 
  * (C) 2020 TekMonks. All rights reserved.
  * License: See enclosed LICENSE file.

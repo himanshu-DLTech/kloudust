@@ -9,6 +9,7 @@ if (!global.KLOUD_CONSTANTS) global.KLOUD_CONSTANTS = require(`${__dirname}/lib/
 
 const utils = require(`${KLOUD_CONSTANTS.LIBDIR}/utils.js`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
+const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 const processargs = require(`${KLOUD_CONSTANTS.MONKSHU_BACKEND_LIBDIR}/processargs.js`);
 
 const CMD_LINE_ARGS = { "__description": "Kloudust - (C) TekMonks\nHybrid Cloud Platform.",
@@ -75,7 +76,7 @@ exports.kloudust = async function(inprocessArgs) {
         let out = "", err = "";
         for (const execLine of fileToExec.split(";")) {
             if (execLine.trim() == "" || execLine.trim().startsWith("#")) continue;    // skip empty or comment lines
-            const results = await _execCommand(utils.parseArgs(execLine), consoleHandler); 
+            const results = await _execCommand(utils.parseArgs(execLine), consoleHandler, args.project); 
             out += `${results.out}\n`; err += `${results.err}\n`
             if (!results.result) {consoleHandler.EXITFAILED(); return {...CONSTANTS.FALSE_RESULT, out, err};}
         }
@@ -84,7 +85,7 @@ exports.kloudust = async function(inprocessArgs) {
     } else if (args.execute) {
         consoleHandler.LOGBARE(CMD_LINE_ARGS.__description);
 
-        const results = await _execCommand(utils.parseArgs(args.execute[0]), consoleHandler);
+        const results = await _execCommand(utils.parseArgs(args.execute[0]), consoleHandler, args.project);
         if (results.result) {consoleHandler.EXITOK(); return {...results, ...CONSTANTS.TRUE_RESULT};}
         else {consoleHandler.EXITFAILED(); return {...results, ...CONSTANTS.FALSE_RESULT};}
     } else {_showHelpAndExit(consoleHandler); return {...CONSTANTS.FALSE_RESULT, err: "", out: ""};} // nothing to do
@@ -101,13 +102,19 @@ async function _loginUser(args, consoleHandler) {
     return true;
 }
 
-async function _execCommand(params, consoleHandler) {
+async function _execCommand(params, consoleHandler, project) {
     const command = params[0]; const cmdParams = params.slice(1); cmdParams.consoleHandlers = consoleHandler;
+    if (!CMD_CONSTANTS.PROJECT_EXCLUDED_COMMANDS.includes(command) && (!project)) {
+        consoleHandler.LOGERROR(`Error, project name is needed for this command.`); 
+        return {result: false, out: "", err: "Missing project name."};
+    }
+
     try {
         const module = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/${command}.js`);
         return await module.exec(cmdParams);
     } catch (err) {
-        consoleHandler.LOGERROR(err); return {result: false, stdout: "", stderr: err.toString()};
+        consoleHandler.LOGERROR(`${err.toString()}${err.stack?"\n"+err.stack:""}`); 
+        return {result: false, out: "", err: err.toString()};
     }
 }
 

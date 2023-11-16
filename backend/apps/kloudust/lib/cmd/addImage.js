@@ -37,14 +37,16 @@ const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 module.exports.exec = async function(params) {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT(); }
 
-    const hostinfos = await dbAbstractor.getHostsMatchingProcessorArchitecture(params[2].toLowerCase());
+    const [imgname, imguri, processorarchitecture, description, extrainfo, runasjob, retryjob] = [...params];
+
+    const hostinfos = await dbAbstractor.getHostsMatchingProcessorArchitecture(processorarchitecture.toLowerCase());
     if ((!hostinfos) || (!hostinfos.length)) {
-        params.consoleHandlers.LOGWARN(`No hosts found matching processor architecture for image ${params[0]}.`);
+        params.consoleHandlers.LOGWARN(`No hosts found matching processor architecture for image ${imgname}.`);
         return CMD_CONSTANTS.FALSE_RESULT();
     }
 
-    if (!await dbAbstractor.addHostResource(params[0], params[1], params[2].toLowerCase(), params[3]||"", params[4]||"")) 
-        return CMD_CONSTANTS.FALSE_RESULT();
+    if (!await dbAbstractor.addHostResource(imgname, imguri, processorarchitecture.toLowerCase(), description||"", 
+        extrainfo||"")) return CMD_CONSTANTS.FALSE_RESULT();
 
     const returnResult = {result: true, out: "", err: ""}, updateTimestamp = Date.now();
     for (const hostinfo of hostinfos) {        
@@ -55,16 +57,16 @@ module.exports.exec = async function(params) {
             other: [
                 hostinfo.hostaddress, hostinfo.rootid, hostinfo.rootpw, hostinfo.hostkey, 
                 `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/addImage.sh`,
-                params[1], params[0].toLowerCase()
+                imguri, imgname.toLowerCase()
             ]
         }
 
-        const runAsJob = params[5].toLowerCase() == "true", retryOnFailure = params[6].toLowerCase() == "true";
+        const runAsJob = runasjob.toLowerCase() == "true", retryOnFailure = retryjob.toLowerCase() == "true";
         const update_function = async _ => {
             const hostUpdateResults = await xforge(xforgeArgs);
             returnResult.out += hostUpdateResults.out; returnResult.err += hostUpdateResults.err; 
             if (!hostUpdateResults.result) {    // on error at least update other hosts, it relieves cloud network pressure later for recovery
-                params.consoleHandlers.LOGERROR(`Error updating host ${hostinfo.hostname} with image ${params[0]}${retryOnFailure?", retrying":""}`);
+                params.consoleHandlers.LOGERROR(`Error updating host ${hostinfo.hostname} with image ${imgname}${retryOnFailure?", retrying":""}`);
                 if (!runAsJob) returnResult.result = false;    // jobs run async to the execution call so no sense they update results
                 if (retryOnFailure) jobs.add(update_function);  // on failure add the job back so the host does get updated eventually
             } else await dbAbstractor.updateHostSynctime(hostinfo.hostname, updateTimestamp);

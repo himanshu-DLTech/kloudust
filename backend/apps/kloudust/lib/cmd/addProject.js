@@ -19,7 +19,9 @@ module.exports.exec = async function(params) {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_org)) { 
         params.consoleHandlers.LOGERROR("User is unauthorized for this operation."); return CMD_CONSTANTS.FALSE_RESULT(); }
 
-    const org = roleman.getNormalizedOrg(params[1]||KLOUD_CONSTANTS.env.org);
-    const result = await dbAbstractor.addProject(KLOUD_CONSTANTS.env.prj, params[0]||"", org);   // add project for user and org
+    const [description, org_in] = [...params];
+
+    const org = roleman.getNormalizedOrg(org_in||KLOUD_CONSTANTS.env.org);
+    const result = await dbAbstractor.addProject(KLOUD_CONSTANTS.env.prj, description||"", org);   // add project for user and org
     return {result, out: "", err: ""};
 }

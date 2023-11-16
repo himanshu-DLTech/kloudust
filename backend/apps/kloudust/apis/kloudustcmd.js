@@ -22,9 +22,9 @@ exports.doService = async (jsonReq, _servObject, headers, _url, _apiconf) => {
 }
 
 function _streamHandler(id, info, warn, err) {
-	if (info && info.trim() != "") KLOUD_CONSTANTS.LOGINFO(`[${id}] ${info}`);
-	if (warn && warn.trim() != "") KLOUD_CONSTANTS.LOGWARN(`[${id}] ${warn}`);
-	if (err && err.trim() != "") KLOUD_CONSTANTS.LOGERROR(`[${id}] ${err}`);
+	if (info && info.toString().trim() != "") KLOUD_CONSTANTS.LOGINFO(`[${id}] ${info}`);
+	if (warn && warn.toString().trim() != "") KLOUD_CONSTANTS.LOGWARN(`[${id}] ${warn}`);
+	if (err && err.toString().trim() != "") KLOUD_CONSTANTS.LOGERROR(`[${id}] ${err}`);
 }
 
 const validateRequest = jsonReq => jsonReq && jsonReq.cmd;

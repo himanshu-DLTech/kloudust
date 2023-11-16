@@ -241,7 +241,7 @@
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
             "args": ["-k","-u","rvkapoor@tekmonks.com","-e",
-				"addImage ubuntu_server_22_04.amd64.img https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img amd64 \\\"Ubuntu Server 22.04\\\" ubuntu-lts-latest true true"]
+				"addImage ubuntu-server_22_04_amd64 https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img amd64 \\\"Ubuntu Server 22.04\\\" ubuntu-lts-latest:img true true"]
         },
         {
             "type": "node",
@@ -252,7 +252,7 @@
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
             "args": ["-k","-u","rvkapoor@tekmonks.com","-e",
-				"addImage ubuntu_desktop_22_04.amd64.iso https://releases.ubuntu.com/jammy/ubuntu-22.04.3-desktop-amd64.iso amd64 \\\"Ubuntu Desktop 22.04\\\" ubuntu-lts-latest"]
+				"addImage ubuntu-desktop_22_04_amd64 https://releases.ubuntu.com/jammy/ubuntu-22.04.3-desktop-amd64.iso amd64 \\\"Ubuntu Desktop 22.04\\\" ubuntu-lts-latest:iso"]
         },
         {
             "type": "node",
@@ -263,7 +263,7 @@
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
             "args": ["-k","-u","rvkapoor@tekmonks.com","-e",
-				"addImage almalinux_9_02.amd64.qcow2 https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-9.2-20230513.x86_64.qcow2 amd64 \\\"Alma Linux 9.2 Server\\\" almalinux9 true true"]
+				"addImage almalinux_9_02_amd64 https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-9.2-20230513.x86_64.qcow2 amd64 \\\"Alma Linux 9.2 Server\\\" almalinux9:img true true"]
         },
         {
             "type": "node",
@@ -274,7 +274,7 @@
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
             "args": ["-k","-u","rvkapoor@tekmonks.com","-e",
-				"addImage rockylinux_9_02.amd64.qcow2 https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2 amd64 \\\"Rocky Linux 9.2 Server\\\" rocky9 true true"]
+				"addImage rockylinux_9_02_amd64 https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2 amd64 \\\"Rocky Linux 9.2 Server\\\" rocky9:img true true"]
         },
         {
             "type": "node",
@@ -285,7 +285,7 @@
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
             "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
-				"createVM 190.2.146.33 windows10_02 \\\"Windows 10 VDI - 02\\\" 2 8192 40 windows10.iso"]
+				"createVM windows10_02 \\\"Windows 10 VDI - 02\\\" 2 8192 40 windows10.iso"]
         },
         {
             "type": "node",
@@ -296,7 +296,7 @@
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
             "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
-				"createVM 190.2.146.33 ubuntu22server_01 \\\"Ubuntu 22 Server VM - 01\\\" 2 8192 30 ubuntu22_04-server-amd64-release.img \\\"{system_info: {default_user: {name: tekmonks, home: /home/tekmonks, sudo: 'ALL=(ALL) NOPASSWD:ALL'}}, password: DLT4TekMonks, chpasswd: {expire: false}, hostname: kdtestubuntu2204, ssh_pwauth: true, package_upgrade: true, packages: [net-tools], runcmd: null}\\\""]
+				"createVM ubuntu2204_01 \\\"Ubuntu 22 Server VM - 01\\\" 2 8192 30 ubuntu-server_22_04_amd64 \\\"{system_info: {default_user: {name: tekmonks, home: /home/tekmonks, sudo: 'ALL=(ALL) NOPASSWD:ALL'}}, password: DLT4TekMonks, chpasswd: {expire: false}, hostname: kdtestubuntu2204, ssh_pwauth: true, package_upgrade: true, packages: [net-tools], runcmd: null}\\\""]
         },
         {
             "type": "node",
@@ -307,7 +307,7 @@
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
             "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
-				"createVM 190.2.146.33 ubuntu22_01 \\\"Ubuntu 22 VM - 01\\\" 2 8192 30 ubuntu22.iso"]
+				"createVM ubuntu22_01 \\\"Ubuntu 22 VM - 01\\\" 2 8192 30 ubuntu22.iso"]
         },
         {
             "type": "node",
@@ -318,7 +318,7 @@
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
             "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
-				"createVM 185.177.126.172 ubuntu22_02 \\\"Ubuntu 22 VM - 02\\\" 2 8192 30 ubuntu22.iso"]
+				"createVM ubuntu22_02 \\\"Ubuntu 22 VM - 02\\\" 2 8192 30 ubuntu22.iso"]
         },
         {
             "type": "node",
@@ -329,7 +329,7 @@
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
             "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
-				"createVM 185.177.126.172 rocky9_01 \\\"Rocky 9 VM - 01\\\" 2 8192 30 rocky9.iso"]
+				"createVM rocky9_01 \\\"Rocky 9 VM - 01\\\" 2 8192 30 rocky9.iso"]
         },
         {
             "type": "node",

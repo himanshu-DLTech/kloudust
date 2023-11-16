@@ -152,14 +152,15 @@ exports.getHostEntry = async hostname => {
  * @param {integer} cpus The CPU
  * @param {integer} memory The memory
  * @param {integer} disk The disk
+ * @param {string} creation_cmd The VM creation command
  * @return true on success or false otherwise
  */
-exports.addVMToDB = async (name, description, hostname, os, cpus, memory, disk) => {
+exports.addVMToDB = async (name, description, hostname, os, cpus, memory, disk, creation_cmd="undefined") => {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}
 
     const project = KLOUD_CONSTANTS.env.prj, org = KLOUD_CONSTANTS.env.org, id = `${org}_${project}_${name}`
-    const query = "insert into vms(id, name, description, hostname, org, projectid, os, cpus, memory, disk) values (?,?,?,?,?,?,?,?,?,?)";
-    return await _db().runCmd(query, [id, name, description, hostname, org, _getProjectID(), os, cpus, memory, disk]);
+    const query = "insert into vms(id, name, description, hostname, org, projectid, os, cpus, memory, disk, creationcmd) values (?,?,?,?,?,?,?,?,?,?,?)";
+    return await _db().runCmd(query, [id, name, description, hostname, org, _getProjectID(), os, cpus, memory, disk, creation_cmd]);
 }
 
 /**

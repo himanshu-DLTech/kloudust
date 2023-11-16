@@ -1,7 +1,7 @@
-# Params
-# {1} The login ID
-
 #!/bin/bash
+
+# Params
+# {1} The new password for this host for the ID which is logged in to run this script
 
 function exitFailed() {
     echo Failed
