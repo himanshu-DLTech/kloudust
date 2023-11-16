@@ -6,6 +6,7 @@
  */
 const {xforge} = require(`${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/xforge`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
+const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 
 /**
  * Runs a custom command (script) on the host with given params
@@ -13,7 +14,7 @@ const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
  */
 module.exports.exec = async function(params) {
     const hostInfo = await dbAbstractor.getHostEntry(params[0]); 
-    if (!hostInfo) {params.consoleHandlers.LOGERROR("Bad hostname or host not found"); return false;}
+    if (!hostInfo) {params.consoleHandlers.LOGERROR("Bad hostname or host not found"); return CMD_CONSTANTS.FALSE_RESULT();}
 
     const xforgeArgs = {
         colors: KLOUD_CONSTANTS.COLORED_OUT, 

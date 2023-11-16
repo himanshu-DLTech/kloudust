@@ -10,6 +10,7 @@
  */
 const roleman = require(`${KLOUD_CONSTANTS.LIBDIR}/roleenforcer.js`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
+const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 
 /**
  * Adds the given user to org as an operator. Only org admins can add or remove
@@ -18,11 +19,11 @@ const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
  */
 module.exports.exec = async function(params) {
     if ((!KLOUD_CONSTANTS.env._setup_mode) && (!roleman.checkAccess(roleman.ACTIONS.edit_org))) {
-        params.consoleHandlers.LOGUNAUTH(); return false; }
+        params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT(); }
 
     const _accountExists = async email => {
         const lookupResult = await dbAbstractor.getUserForEmail(email);
-        if (lookupResult != null) return true; else return false;
+        if (lookupResult != null) return true; else return CMD_CONSTANTS.FALSE_RESULT();
     }
 
     const email = params[0], name = params[1], org = roleman.getNormalizedOrg(params[2]), role = params[3];

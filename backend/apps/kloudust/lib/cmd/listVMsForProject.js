@@ -6,6 +6,7 @@
  */
 
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
+const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 
 /**
  * Lists the host VMs - either all or running (default)
@@ -18,5 +19,5 @@ module.exports.exec = async function() {
         let out = "VM information from the database follows.";
         for (const vm of vms) out += "\n"+JSON.stringify(vm);
         return {result: true, err: "", out};
-    } else return false;
+    } else return CMD_CONSTANTS.FALSE_RESULT();
 }

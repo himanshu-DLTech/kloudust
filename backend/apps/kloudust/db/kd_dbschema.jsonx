@@ -14,7 +14,7 @@
 
     // host resources container table
     "CREATE TABLE hostresources(name varchar not null primary key, uri varchar not null, \
-        processorarchitecture varchar not null, description varchar)",
+        processorarchitecture varchar not null, description varchar, extrainfo varchar)",
         
     // VMs container table
     "CREATE TABLE vms(id varchar not null primary key, name varchar not null, \

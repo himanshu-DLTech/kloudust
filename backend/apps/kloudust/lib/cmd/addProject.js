@@ -10,13 +10,14 @@
 
 const roleman = require(`${KLOUD_CONSTANTS.LIBDIR}/roleenforcer.js`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
+const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 
 /**
  * Adds the given project to the current org
  */
 module.exports.exec = async function(params) {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_org)) { 
-        params.consoleHandlers.LOGERROR("User is unauthorized for this operation."); return false; }
+        params.consoleHandlers.LOGERROR("User is unauthorized for this operation."); return CMD_CONSTANTS.FALSE_RESULT(); }
 
     const org = roleman.getNormalizedOrg(params[1]||KLOUD_CONSTANTS.env.org);
     const result = await dbAbstractor.addProject(KLOUD_CONSTANTS.env.prj, params[0]||"", org);   // add project for user and org

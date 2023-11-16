@@ -86,18 +86,32 @@ exports.getHostsMatchingProcessorArchitecture = async(processor_architecture) =>
 }
 
 /**
- * Adds the givem host resources to the tracking DB
+ * Adds the given host resources to the tracking DB
  * @param {string} name Unique name
  * @param {string} uri Download URL usually
  * @param {string} processor_architecture The processor architecture eg amd64
  * @param {string} description Description 
+ * @param {string} extra Extra information 
  * @returns true on success or false otherwise
  */
-exports.addHostResource = async (name, uri, processor_architecture, description) => {
+exports.addHostResource = async (name, uri, processor_architecture, description, extra) => {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {_logUnauthorized(); return false; }
 
-    const query = "replace into hostresources(name, uri, processorarchitecture, description) values (?,?,?,?)";
-    return await _db().runCmd(query, [name, uri, processor_architecture, description]);
+    const query = "replace into hostresources(name, uri, processorarchitecture, description, extrainfo) values (?,?,?,?,?)";
+    return await _db().runCmd(query, [name, uri, processor_architecture, description, extra]);
+}
+
+/**
+ * Returns the given host resource for project
+ * @param {string} name The resource name
+ * @return host resource object on success or null otherwise
+ */
+exports.getHostResourceForProject = async name => {
+    if (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource_for_project)) {_logUnauthorized(); return false; }
+
+    const query = "select * from hostresources where name=?";
+    const resources = await _db().getQuery(query, [name]);
+    if ((!resources) || (!resources.length)) return null; else return resources[0];
 }
 
 /**

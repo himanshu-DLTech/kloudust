@@ -9,8 +9,8 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","kdsuperadmin@tekmonks.com","-p","Kloudust#$562A","-t","000000","-s","-e",
-                "addUser kdsuperadmin@tekmonks.com \\\"Cloud Superadmin\\\" TekMonks cloudadmin"]
+            "args": ["-k","-u","rvkapoor@tekmonks.com","-s","-e",
+                "addUser rvkapoor@tekmonks.com \\\"Cloud Superadmin\\\" TekMonks cloudadmin"]
         },
         {
             "type": "node",
@@ -20,7 +20,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","kdsuperadmin@tekmonks.com","-p","Kloudust#$562A","-t","000000","-e",
+            "args": ["-k","-u","rvkapoor@tekmonks.com","-e",
                 "addUser root@tekmonks.com \\\"TekMonks Root\\\" TekMonks orgadmin"]
         },
         {
@@ -31,7 +31,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-e",
+            "args": ["-k","-u","root@tekmonks.com","-e",
                 "addUser test@tekmonks.com \\\"TekMonks Test 1\\\" DeepLogic user"]
         },
         {
@@ -42,7 +42,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","test@tekmonks.com","-p","Kloudust#$562A","-t","000000","-e",
+            "args": ["-k","-u","test@tekmonks.com","-e",
                 "addUser test2@tekmonks.com \\\"TekMonks Test 2\\\" DeepLogic orgadmin"]
         },
         {
@@ -53,8 +53,8 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
-				"addProject \\\"Default Project\\\""]
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
+			    "addProject \\\"Default Project\\\""]
         },
         {
             "type": "node",
@@ -64,7 +64,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default2","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default2","-e",
 				"addProject \\\"Default Project 2\\\" Tekmonks"]
         },
         {
@@ -75,7 +75,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","test@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","test","-e",
+            "args": ["-k","-u","test@tekmonks.com","-j","test","-e",
 				"addProject \\\"Test Project\\\" DeepLogic"]
         },
         {
@@ -86,7 +86,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","test2","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","test2","-e",
 				"addProject \\\"Test Project 2\\\" DeepLogic"]
         },
         {
@@ -97,8 +97,8 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
-				"addUserToProject root@tekmonks.com default"]
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
+				"addUserToProject root@tekmonks.com"]
         },
         {
             "type": "node",
@@ -108,7 +108,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","test@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","test@tekmonks.com","-j","default","-e",
 				"addUserToProject test@tekmonks.com default"]
         },
         {
@@ -119,7 +119,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"addUserToProject test@tekmonks.com default"]
         },
         {
@@ -130,7 +130,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"deleteProject"]
         },
         {
@@ -141,7 +141,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","test@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","test","-e",
+            "args": ["-k","-u","test@tekmonks.com","-j","test","-e",
 				"deleteProject"]
         },
         {
@@ -152,7 +152,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","kdsuperadmin@tekmonks.com","-p","Kloudust#$562A","-t","000000","-e",
+            "args": ["-k","-u","rvkapoor@tekmonks.com","-e",
 				"addHost host1 190.2.146.33 ubuntu22 root DLT4TekMonks#$56A \"6a:26:d9:45:d2:c2:8e:86:02:72:74:a8:47:d9:13:9d\" 32 68719476736 1099511627776 1073741824 \\\"Intel:Xeon:E5-2620v4\\\" amd64 2"]
         },
         {
@@ -163,7 +163,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-e",
+            "args": ["-k","-u","root@tekmonks.com","-e",
 				"addHost host1 190.2.146.33 ubuntu22 root DLT4TekMonks#$56A \"6a:26:d9:45:d2:c2:8e:86:02:72:74:a8:47:d9:13:9d\" 32 68719476736 1099511627776 1073741824 \\\"Intel:Xeon:E5-2620v4\\\" amd64 2"]
         },
         {
@@ -174,7 +174,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","kdsuperadmin@tekmonks.com","-p","Kloudust#$562A","-t","000000","-e",
+            "args": ["-k","-u","rvkapoor@tekmonks.com","-e",
                 "addHost host1 185.177.126.172 ubuntu22 root DLT4TekMonks#$56A \"6a:26:d9:45:d2:c2:8e:86:02:72:74:a8:47:d9:13:9d\" 32 68719476736 1099511627776 1073741824 \\\"Intel:Xeon:E5-2620v4\\\" amd64 2"]
         },
         {
@@ -185,7 +185,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","kdsuperadmin@tekmonks.com","-p","Kloudust#$562A","-t","000000","-e",
+            "args": ["-k","-u","rvkapoor@tekmonks.com","-e",
 				"addHost host1 190.2.146.33 ubuntu22 root DLT4TekMonks#$56A \"6a:26:d9:45:d2:c2:8e:86:02:72:74:a8:47:d9:13:9d\" 32 68719476736 1099511627776 1073741824 \\\"Intel:Xeon:E5-2620v4\\\" amd64 2 nochange"]
         },
         {
@@ -196,7 +196,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","kdsuperadmin@tekmonks.com","-p","Kloudust#$562A","-t","000000","-e",
+            "args": ["-k","-u","rvkapoor@tekmonks.com","-e",
 				"addHost host1 185.177.126.172 ubuntu22 root DLT4TekMonks#$56A \"6a:26:d9:45:d2:c2:8e:86:02:72:74:a8:47:d9:13:9d\" 32 68719476736 1099511627776 1073741824 \\\"Intel:Xeon:E5-2620v4\\\" amd64 2 nochange"]
         },
         {
@@ -207,7 +207,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","kdsuperadmin@tekmonks.com","-p","Kloudust#$562A","-t","000000","-e",
+            "args": ["-k","-u","rvkapoor@tekmonks.com","-e",
 				"deleteHost host1"]
         },
         {
@@ -218,7 +218,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-e",
+            "args": ["-k","-u","root@tekmonks.com","-e",
 				"deleteHost host1"]
         },
         {
@@ -229,8 +229,8 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","kdsuperadmin@tekmonks.com","-p","Kloudust#$562A","-t","000000","-e",
-				"addImage windows10.amd64.iso https://www.googleapis.com/drive/v3/files/153LWfon_rBbYkPcOPiJakUH0bJZajXWm?alt=media&key=AIzaSyAA9ERw-9LZVEohRYtCWka_TQc6oXmvcVU&supportsAllDrives=True amd64 \\\"Windows 10 Pro\\\" true true"]
+            "args": ["-k","-u","rvkapoor@tekmonks.com","-e",
+				"addImage windows10.amd64.iso https://www.googleapis.com/drive/v3/files/153LWfon_rBbYkPcOPiJakUH0bJZajXWm?alt=media&key=AIzaSyAA9ERw-9LZVEohRYtCWka_TQc6oXmvcVU&supportsAllDrives=True amd64 \\\"Windows 10 Pro\\\" win32 true true"]
         },
         {
             "type": "node",
@@ -240,8 +240,8 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","kdsuperadmin@tekmonks.com","-p","Kloudust#$562A","-t","000000","-e",
-				"addImage ubuntu_server_22_04.amd64.img https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img amd64 \\\"Ubuntu Server 22.04\\\" true true"]
+            "args": ["-k","-u","rvkapoor@tekmonks.com","-e",
+				"addImage ubuntu_server_22_04.amd64.img https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img amd64 \\\"Ubuntu Server 22.04\\\" ubuntu-lts-latest true true"]
         },
         {
             "type": "node",
@@ -251,8 +251,8 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","kdsuperadmin@tekmonks.com","-p","Kloudust#$562A","-t","000000","-e",
-				"addImage ubuntu_desktop_22_04.amd64.iso https://releases.ubuntu.com/jammy/ubuntu-22.04.3-desktop-amd64.iso amd64 \\\"Ubuntu Desktop 22.04\\\""]
+            "args": ["-k","-u","rvkapoor@tekmonks.com","-e",
+				"addImage ubuntu_desktop_22_04.amd64.iso https://releases.ubuntu.com/jammy/ubuntu-22.04.3-desktop-amd64.iso amd64 \\\"Ubuntu Desktop 22.04\\\" ubuntu-lts-latest"]
         },
         {
             "type": "node",
@@ -262,8 +262,8 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","kdsuperadmin@tekmonks.com","-p","Kloudust#$562A","-t","000000","-e",
-				"addImage almalinux_9_02.amd64.qcow2 https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-9.2-20230513.x86_64.qcow2 amd64 \\\"Alma Linux 9.2 Server\\\" true true"]
+            "args": ["-k","-u","rvkapoor@tekmonks.com","-e",
+				"addImage almalinux_9_02.amd64.qcow2 https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-9.2-20230513.x86_64.qcow2 amd64 \\\"Alma Linux 9.2 Server\\\" almalinux9 true true"]
         },
         {
             "type": "node",
@@ -273,8 +273,8 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","kdsuperadmin@tekmonks.com","-p","Kloudust#$562A","-t","000000","-e",
-				"addImage rockylinux_9_02.amd64.qcow2 https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2 amd64 \\\"Rocky Linux 9.2 Server\\\" true true"]
+            "args": ["-k","-u","rvkapoor@tekmonks.com","-e",
+				"addImage rockylinux_9_02.amd64.qcow2 https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2 amd64 \\\"Rocky Linux 9.2 Server\\\" rocky9 true true"]
         },
         {
             "type": "node",
@@ -284,8 +284,8 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
-				"createVM 190.2.146.33 windows10_02 \\\"Windows 10 VDI - 02\\\" 2 8192 40 windows10.iso win10"]
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
+				"createVM 190.2.146.33 windows10_02 \\\"Windows 10 VDI - 02\\\" 2 8192 40 windows10.iso"]
         },
         {
             "type": "node",
@@ -295,8 +295,8 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
-				"createVM 190.2.146.33 ubuntu22server_01 \\\"Ubuntu 22 Server VM - 01\\\" 2 8192 30 ubuntu22_04-server-amd64-release.img ubuntu-lts-latest \\\"{system_info: {default_user: {name: tekmonks, home: /home/tekmonks, sudo: 'ALL=(ALL) NOPASSWD:ALL'}}, password: DLT4TekMonks, chpasswd: {expire: false}, hostname: kdtestubuntu2204, ssh_pwauth: true, package_upgrade: true, packages: [net-tools], runcmd: null}\\\""]
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
+				"createVM 190.2.146.33 ubuntu22server_01 \\\"Ubuntu 22 Server VM - 01\\\" 2 8192 30 ubuntu22_04-server-amd64-release.img \\\"{system_info: {default_user: {name: tekmonks, home: /home/tekmonks, sudo: 'ALL=(ALL) NOPASSWD:ALL'}}, password: DLT4TekMonks, chpasswd: {expire: false}, hostname: kdtestubuntu2204, ssh_pwauth: true, package_upgrade: true, packages: [net-tools], runcmd: null}\\\""]
         },
         {
             "type": "node",
@@ -306,8 +306,8 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
-				"createVM 190.2.146.33 ubuntu22_01 \\\"Ubuntu 22 VM - 01\\\" 2 8192 30 ubuntu22.iso ubuntu-lts-latest"]
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
+				"createVM 190.2.146.33 ubuntu22_01 \\\"Ubuntu 22 VM - 01\\\" 2 8192 30 ubuntu22.iso"]
         },
         {
             "type": "node",
@@ -317,8 +317,8 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
-				"createVM 185.177.126.172 ubuntu22_02 \\\"Ubuntu 22 VM - 02\\\" 2 8192 30 ubuntu22.iso ubuntu-lts-latest"]
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
+				"createVM 185.177.126.172 ubuntu22_02 \\\"Ubuntu 22 VM - 02\\\" 2 8192 30 ubuntu22.iso"]
         },
         {
             "type": "node",
@@ -328,19 +328,8 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
-				"createVM 185.177.126.172 rocky9_01 \\\"Rocky 9 VM - 01\\\" 2 8192 30 rocky9.iso rocky9"]
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Kloudust - Create CentOS 8 VM from ISO",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
-				"createVM 190.2.146.33 centos8_01 \\\"CentOS 8 VM - 01\\\" 2 8192 30 centos8.iso centos8"]
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
+				"createVM 185.177.126.172 rocky9_01 \\\"Rocky 9 VM - 01\\\" 2 8192 30 rocky9.iso"]
         },
         {
             "type": "node",
@@ -350,7 +339,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"createKDS 190.2.146.33 kds01 \\\"KDS - 01\\\" 4 8192"]
         },
         {
@@ -361,7 +350,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"restoreSnapshot ubuntu22_01 snapshot1"]
         },
         {
@@ -372,7 +361,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"restoreSnapshot ubuntu22_01 snapshot2 start"]
         },
         {
@@ -383,7 +372,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"getHostInfo 190.2.146.33"]
         },
         {
@@ -394,7 +383,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"getVMInfo ubuntu22_01"]
         },
         {
@@ -405,7 +394,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"renameVM ubuntu22_01 ubuntu22_01"]
         },
         {
@@ -416,7 +405,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"cloneVM windows10_02 windows10_03"]
         },
         {
@@ -427,7 +416,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"snapshot ubuntu22_01 snapshot1"]
         },
         {
@@ -438,7 +427,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"snapshot ubuntu22_01 snapshot2"]
         },
         {
@@ -449,7 +438,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"deleteVM ubuntu22_01"]
         },
         {
@@ -460,7 +449,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"deleteVM ubuntu22_02"]
         },
         {
@@ -471,7 +460,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"deleteSnapshot ubuntu22_01 ubuntu22_01_snapshot1"]
         },
         {
@@ -482,7 +471,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"powerOpVM ubuntu22_01 start"]
         },
         {
@@ -493,7 +482,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"powerOpVM ubuntu22_02 start"]
         },
         {
@@ -504,7 +493,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"powerOpVM rocky9_01 start"]
         },
         {
@@ -515,7 +504,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"powerOpVM ubuntu22_01 reboot"]
         },
         {
@@ -526,7 +515,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"powerOpVM ubuntu22_01 hardboot"]
         },
         {
@@ -537,7 +526,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"powerOpVM ubuntu22_01 autostart"]
         },
         {
@@ -548,7 +537,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"powerOpVM ubuntu22_01 noautostart"]
         },
         {
@@ -559,7 +548,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"powerOpVM ubuntu22_01 forcestop"]
         },
         {
@@ -570,7 +559,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-e",
+            "args": ["-k","-u","root@tekmonks.com","-e",
 				"rebootHost 190.2.146.33"]
         },
         {
@@ -581,7 +570,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-e",
+            "args": ["-k","-u","root@tekmonks.com","-e",
 				"rebootHost 185.177.126.172"]
         },
         {
@@ -592,7 +581,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-e",
+            "args": ["-k","-u","root@tekmonks.com","-e",
 				"listCatalog 190.2.146.33"]
         },
         {
@@ -603,7 +592,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"listVMsForHost 190.2.146.33"]
         },
         {
@@ -614,7 +603,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"listVMsForProject"]
         },
         {
@@ -625,7 +614,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"listSnapshots ubuntu22_01"]
         },
         {
@@ -636,7 +625,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"findVNC ubuntu22_01"]
         },
         {
@@ -647,7 +636,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"findVNC rocky9_01"]
         },
         {
@@ -658,7 +647,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"findIP ubuntu22_01"]
         },
         {
@@ -669,7 +658,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","thecompany@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","thecompany@tekmonks.com","-j","default","-e",
 				"findIP ubuntu22_01"]
         },
         {
@@ -680,7 +669,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"findIP rocky9_01"]
         },
         {
@@ -691,7 +680,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"findKDSLogin kds01"]
         },
         {
@@ -702,7 +691,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\backend\\apps\\kloudust\\kloudust",
-            "args": ["-k","-u","root@tekmonks.com","-p","Kloudust#$562A","-t","000000","-j","default","-e",
+            "args": ["-k","-u","root@tekmonks.com","-j","default","-e",
 				"customCmd 190.2.146.33 \"C:\\Users\\Rohit Kapoor\\source\\kloudust\\samples\\diskFreeOnHost.sh\""]
         }
     ]

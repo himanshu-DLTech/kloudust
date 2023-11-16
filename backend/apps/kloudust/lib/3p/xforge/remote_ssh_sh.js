@@ -53,18 +53,25 @@ function _processExec(cmdProcessorArray, script, paramsArray, streamer, callback
     shellProcess.stdout.on("data", data => {
         const outStr = String.fromCharCode.apply(null, data);
         stdout += `[SSH_CMD PID:${shellProcess.pid}] [OUT]\n${outStr}`;
-        if (streamer) streamer.LOGINFO(`[SSH_CMD PID:${shellProcess.pid}] [OUT]\n${outStr}`);
+        if (streamer) streamer.LOGINFO(`[SSH_CMD PID:${shellProcess.pid}] [OUT] ${outStr}`);
     });
 
     shellProcess.stderr.on("data", data => {
         const errStr = String.fromCharCode.apply(null, data);
         stderr += `[SSH_CMD PID:${shellProcess.pid}] [ERROR]\n${errStr}`;
-        if (streamer) streamer.LOGWARN(`[SSH_CMD PID:${shellProcess.pid}] [ERROR]\n${errStr}`);
+        if (streamer) streamer.LOGWARN(`[SSH_CMD PID:${shellProcess.pid}] [ERROR] ${errStr}`);
     });
 
     shellProcess.on("exit", exitCode => {
         if (stderr.trim() == "Access is denied" && process.platform == "win32") exitCode = 1; // fix plink fake success issue on Windows
+        if (streamer) streamer.LOGINFO(`[SSH_CMD PID:${shellProcess.pid}] [EXIT] Code: ${exitCode}`);
         callback(exitCode?exitCode:null, stdout, stderr)
+    });
+
+    shellProcess.on("error", error => {
+        if (stderr.trim() == "Access is denied" && process.platform == "win32") exitCode = 1; // fix plink fake success issue on Windows
+        if (streamer) streamer.LOGINFO(`[SSH_CMD PID:${shellProcess.pid}] [ERROR] Error: ${error}`);
+        callback(1, stdout, stderr+"\n"+error)
     });
 }
 
