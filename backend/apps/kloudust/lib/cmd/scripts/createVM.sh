@@ -13,6 +13,7 @@
 # {10} Cloudinit YAML data or undefined if not available
 # {11} Org which owns this VM
 # {12} Project which owns this VM
+# {13} Force overwrite, if VM with same name exists overwrite it
 
 NAME="{1}"
 DESCRIPTION="{2}"
@@ -26,6 +27,7 @@ CLOUD_IMAGE={9}
 CLOUDINIT_USERDATA="{10}"
 ORG="{11}"
 PROJECT="{12}"
+FORCE_OVERWRITE={13}
 
 function exitFailed() {
     echo Failed
@@ -36,11 +38,17 @@ SPACE_PATTERN=" |'"
 if [[ $NAME =~ $SPACE_PATTERN ]]; then 
     printf "VM name $NAME can't have spaces.\n"
     exitFailed
-fi;
+fi
 
 if virsh list --all | grep "$NAME"; then
-    printf "VM already exists. Use a different name.\n"
-    exitFailed
+    if [ "FORCE_OVERWRITE" == "true" ]; then
+        printf "WARNING!! Deleting existing VM, force overwrite was true.\n"
+        if ! virsh destroy $NAME; then exitFailed; fi
+        if ! virsh undefine $NAME --nvram; then exitFailed; fi
+    else
+        printf "VM already exists. Use a different name.\n"
+        exitFailed
+    fi
 fi
 
 if [ ! -f /kloudust/catalog/$INSTALL_DISK ]; then

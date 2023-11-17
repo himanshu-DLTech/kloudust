@@ -1,10 +1,15 @@
 /** 
  * powerOpVM.js - Performs the given power operation on the VM
  * 
+ * Params - 0 - VM Name, 1 - Operation - start, stop, reboot, 
+ *  forcestop, autostart, noautostart, pause, hardboot
+ * 
  * (C) 2020 TekMonks. All rights reserved.
  * License: See enclosed LICENSE file.
  */
 
+const roleman = require(`${KLOUD_CONSTANTS.LIBDIR}/roleenforcer.js`);
+const createVM = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/createVM.js`);
 const {xforge} = require(`${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/xforge`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
 const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
@@ -20,7 +25,11 @@ const POWER_OP_PARAMS_MAP = {
  * @param {array} params The incoming params - must be - type (centos8 only for now), ip, user id, password, ssh hostkey, VM name, [start|pause|stop|forcestop|reboot|autostart|noautostart] - default is start
  */
 module.exports.exec = async function(params) {
-    const vm = await dbAbstractor.getVM(params[0]);
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
+    
+    const vm_name_raw = params[0], vm_name = createVM.resolveVMName(vm_name_raw), power_op = (params[1]||"default").toLowerCase();
+
+    const vm = await dbAbstractor.getVM(vm_name);
     if (!vm) {params.consoleHandlers.LOGERROR("Bad VM name or VM not found"); return CMD_CONSTANTS.FALSE_RESULT();}
     
     const hostInfo = await dbAbstractor.getHostEntry(vm.hostname); 
@@ -33,7 +42,7 @@ module.exports.exec = async function(params) {
         other: [
             hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey,
             `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/powerOpVM.sh`,
-            params[0], POWER_OP_PARAMS_MAP[params[1].toLowerCase()]||POWER_OP_PARAMS_MAP["default"]
+            vm_name, POWER_OP_PARAMS_MAP[power_op]
         ] 
     }
 

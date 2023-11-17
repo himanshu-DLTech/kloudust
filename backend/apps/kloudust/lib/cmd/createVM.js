@@ -2,7 +2,8 @@
  * createVM.js - Creates VM from URI download or catalog image.
  * 
  * Params - 0 - VM name, 1 - VM description, 2 - cores, 3 - memory in MB, 4 - disk in GB, 
- *  5 - image name, 6 - cloud init data in JSON (or YAML format)
+ *  5 - image name, 6 - cloud init data in JSON (or YAML format), 7 - force overwrite, if true
+ *  in case the HOST has a VM by the same name already, it will be overwritter
  * 
  * (C) 2020 TekMonks. All rights reserved.
  * License: See enclosed LICENSE file.
@@ -21,9 +22,14 @@ const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 module.exports.exec = async function(params) {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
 
-    const [vm_name_raw, vm_description, cores_s, memory_s, disk_s, creation_image_name, cloudinit_data] = [...params];
+    const [vm_name_raw, vm_description, cores_s, memory_s, disk_s, creation_image_name, cloudinit_data, 
+        force_overwrite] = [...params];
     const vm_name = exports.resolveVMName(vm_name_raw), cores = parseInt(cores_s), memory = parseInt(memory_s), 
         disk = parseInt(disk_s);
+
+    if (dbAbstractor.getVM(vm_name_raw)?.length) {  // VM exists
+        params.consoleHandlers.LOGERROR("VM with the same name already exists"); return CMD_CONSTANTS.FALSE_RESULT();
+    }
 
     const kdResource = await dbAbstractor.getHostResourceForProject(creation_image_name);
     if (!kdResource) {
@@ -36,12 +42,13 @@ module.exports.exec = async function(params) {
     const extrainfoSplits = kdResource.extrainfo?kdResource.extrainfo.split(":"):[null,null];
     let ostype = extrainfoSplits[0], imgtype = extrainfoSplits[1];
     if (!ostype) {
-        params.consoleHandlers.LOGWARN("Missing VM type in resource definition, assuming generic Linux");
+        params.consoleHandlers.LOGWARN("Missing OS type in resource definition, assuming generic Linux");
         ostype = "linux2018";
     }
 
     const fromCloudImg = imgtype?.toLowerCase().endsWith(".iso") ? "false": "true";  // only ISOs are installable disks
-    
+    if (!fromCloudImg) params.consoleHandlers.LOGWARN("Not a cloud capable image, VM will probably not work");
+
     const xforgeArgs = {
         colors: KLOUD_CONSTANTS.COLORED_OUT, 
         file: `${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/samples/remoteCmd.xf.js`,
@@ -50,7 +57,8 @@ module.exports.exec = async function(params) {
             hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey,
             `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/createVM.sh`,
             vm_name, vm_description, cores, memory, disk, creation_image_name, kdResource.uri, ostype, 
-            fromCloudImg, cloudinit_data||"undefined", KLOUD_CONSTANTS.env.org, KLOUD_CONSTANTS.env.prj
+            fromCloudImg, cloudinit_data||"undefined", KLOUD_CONSTANTS.env.org, KLOUD_CONSTANTS.env.prj,
+            force_overwrite||"false"
         ]
     }
 
@@ -63,4 +71,4 @@ module.exports.exec = async function(params) {
 }
 
 /** @return The internal VM name for the given raw VM name */
-exports.resolveVMName = vm_name_raw => `${vm_name_raw}_${KLOUD_CONSTANTS.env.org}_${KLOUD_CONSTANTS.env.prj}`;
+exports.resolveVMName = vm_name_raw => `${vm_name_raw}_${KLOUD_CONSTANTS.env.org}_${KLOUD_CONSTANTS.env.prj}`.toLowerCase().replace(/\s/g,"_");

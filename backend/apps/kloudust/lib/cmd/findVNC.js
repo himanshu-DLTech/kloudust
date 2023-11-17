@@ -1,10 +1,14 @@
 /** 
  * findVNC.js - Finds VNC address for the given VM, if VNC is enabled for it
  * 
+ * Params - 0 - VM Name
+ * 
  * (C) 2020 TekMonks. All rights reserved.
  * License: See enclosed LICENSE file.
  */
 
+const roleman = require(`${KLOUD_CONSTANTS.LIBDIR}/roleenforcer.js`);
+const createVM = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/createVM.js`);
 const {xforge} = require(`${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/xforge`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
 const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
@@ -14,9 +18,12 @@ const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
  * @param {array} params The incoming params - must be - VM name
  */
 module.exports.exec = async function(params) {
-    const vm = await dbAbstractor.getVM(params[0]);
+    if (!roleman.checkAccess(roleman.ACTIONS.lookup_project_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
+    const vm_name_raw = params[0], vm_name = createVM.resolveVMName(vm_name_raw);
+
+    const vm = await dbAbstractor.getVM(vm_name);
     if (!vm) {params.consoleHandlers.LOGERROR("Bad VM name or VM not found"); return CMD_CONSTANTS.FALSE_RESULT();}
-    
+
     const hostInfo = await dbAbstractor.getHostEntry(vm.hostname); 
     if (!hostInfo) {params.consoleHandlers.LOGERROR("Bad hostname or host not found"); return CMD_CONSTANTS.FALSE_RESULT();}
 
@@ -27,7 +34,7 @@ module.exports.exec = async function(params) {
         other: [
             hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey,
             `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/findVNC.sh`,
-            params[0]
+            vm_name
         ]
     }
 
