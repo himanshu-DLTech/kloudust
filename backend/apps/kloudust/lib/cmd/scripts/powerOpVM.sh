@@ -12,8 +12,8 @@ function exitFailed() {
     exit 1
 }
 
-printf "Power operating {1}\n"
-if ! virsh $NAME $POWER_OP; then exitFailed; fi
+printf "Power operating $NAME to $POWER_OP\n"
+if ! virsh $POWER_OP $NAME; then exitFailed; fi
 
 printf "\n\nPower operation $POWER_OP successfull on $NAME\n"
 exit 0
