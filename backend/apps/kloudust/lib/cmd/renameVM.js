@@ -42,7 +42,7 @@ module.exports.exec = async function(params) {
 
     const results = await xforge(xforgeArgs);
     if (results.result) {
-        if (await dbAbstractor.renameVM(params[0], params[1])) return results;
+        if (await dbAbstractor.renameVM(vm_name_old, vm_name_new)) return results;
         else {params.consoleHandlers.LOGERROR("DB failed"); return {...results, result: false};}
     } else return results;
 }
