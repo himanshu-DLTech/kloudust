@@ -29,5 +29,8 @@
     // User to project mapping
     "CREATE TABLE projectusermappings(userid varchar not null, projectid varchar not null)",
 
+    // Recycle bin
+    "CREATE TABLE recyclebin(id varchar not null primary key, resourceid varchar not null, object varchar not null)",
+
     "COMMIT TRANSACTION"
 ]

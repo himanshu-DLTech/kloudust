@@ -3,10 +3,13 @@
 # Params
 # {1} Old VM Name - no spaces
 # {2} New VM Name - no spaces
+#
+# This is a powerful script that can rename or with minor modifications
+# cross migrate VMs
 
 OLD_NAME="{1}"
 NEW_NAME="{2}"
-SHUTDOWN_WAIT=${3}
+SHUTDOWN_WAIT={3}
 SHUTDOWN_WAIT="${SHUTDOWN_WAIT:-90}"    # Default it to 90 seconds if not provided
 
 function exitFailed() {
@@ -64,16 +67,22 @@ printf "WARNING!! VM $OLD_NAME will be restared at the end of this operation.\n"
 printf "Renaming $OLD_NAME to $NEW_NAME\n"
 if ! shutdownVM $OLD_NAME; then exitFailed; fi
 
+# modify hypervisor domain files and rename at the hypervisor level
+OLD_DISK=`virsh dumpxml $OLD_NAME | grep -oP "source\sfile=\s*'\K\/kloudust\/disks\/$OLD_NAME.+?(?=')"`
+if [ -z $OLD_DISK ]; then
+    echo Error!! Unable to find VM disk. 
+    exitFailed
+fi
+NEW_DISK=`echo $OLD_DISK | sed -e "s/$OLD_NAME/$NEW_NAME/"`
 if ! virsh domrename $OLD_NAME $NEW_NAME; then exitFailed; fi   # rename the domain
+if ! virt-xml $NEW_NAME --edit source.file=$OLD_DISK --disk source.file=$NEW_DISK; then exitFailed; fi
 
-# now move the files
-if ! mv /kloudust/metadata/$OLD_NAME.metadata /kloudust/metadata/$NEW_NAME.metadata; then exitFailed; fi
-if ! mv /kloudust/metadata/$OLD_NAME.xml /kloudust/metadata/$NEW_NAME.xml; then exitFailed; fi
-if ! mv /kloudust/disks/$OLD_NAME.qcow2 /kloudust/disks/$NEW_NAME.qcow2; then exitFailed; fi
-
-# now edit domain XML to point to the new drive
-if ! virt-xml $NEW_NAME --edit source.file=/kloudust/disks/$OLD_NAME.qcow2 \
-    --disk source.file=/kloudust/disks/$NEW_NAME.qcow2; then exitFailed; fi
+# now move/migrate the host files
+if ! cat /kloudust/metadata/$OLD_NAME.metadata | sed -e "s/$OLD_NAME/$NEW_NAME/g" > /kloudust/metadata/$NEW_NAME.metadata; then exitFailed; fi
+if ! rm /kloudust/metadata/$OLD_NAME.metadata; then exitFailed; fi
+if ! virsh dumpxml $NEW_NAME > /kloudust/metadata/$NEW_NAME.xml; then exitFailed; fi
+if ! rm /kloudust/metadata/$OLD_NAME.xml; then exitFailed; fi
+if ! mv $OLD_DISK $NEW_DISK; then exitFailed; fi
 
 printf "Restarting VM as new name $NEW_NAME\n"
 if ! virsh start $NEW_NAME; then exitFailed; fi

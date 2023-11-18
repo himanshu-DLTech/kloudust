@@ -65,6 +65,7 @@ if ! sudo mkdir -p /kloudust/disks/; then exitFailed; fi
 if ! sudo mkdir -p /kloudust/metadata/; then exitFailed; fi
 if ! sudo mkdir -p /kloudust/snapshots/; then exitFailed; fi
 if ! sudo mkdir -p /kloudust/temp/; then exitFailed; fi
+if ! sudo mkdir -p /kloudust/recyclebin/; then exitFailed; fi
 if ! sudo mkdir -p /kloudust/system/; then exitFailed; fi
 
 printf "\n\nDownloading additional drivers\n"

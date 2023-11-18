@@ -191,7 +191,8 @@ exports.renameVM = async (name, newname) => {
 }
 
 /**
- * Deletes the VM for the current user, org and project given its name. 
+ * Deletes the VM for the current user, org and project given its name. Moves the object to the
+ * recycle bin as well.
  * @param {string} name The VM Name
  * @return true on success or false otherwise
  */
@@ -199,7 +200,12 @@ exports.deleteVM = async name => {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}
 
     const project = KLOUD_CONSTANTS.env.prj, org = KLOUD_CONSTANTS.env.org, id = `${org}_${project}_${name}`;
-    return await _db().runCmd("delete from vms where id = ?", [id]);
+    const vm = await exports.getVM(name); if (!vm) return true; // doesn't exist in the DB anyways
+
+    const deletionResult = await _db().runCmd("delete from vms where id = ?", [id]);
+    if (deletionResult) if (!await this.addObjectToRecycleBin(id, vm)) 
+        KLOUD_CONSTANTS.LOGWARN(`Unable to add VM ${name} to the recycle bin.`);
+    return deletionResult;
 }
 
 /**
@@ -422,6 +428,13 @@ exports.loginUser = async (email, project) => {
     return users[0];
 }
 
+/**
+ * Checks that the user belongss to the given project
+ * @param {string} userid The userid, if skipped is auto picked from the environment
+ * @param {string} project The project, if skipped is auto picked from the environment
+ * @param {string} org The org, if skipped is auto picked from the environment
+ * @returns true if the user belongs to the given project, else false
+ */
 exports.checkUserBelongsToProject = async function (userid=KLOUD_CONSTANTS.env.userid, 
         project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANTS.env.org) {
 
@@ -430,6 +443,18 @@ exports.checkUserBelongsToProject = async function (userid=KLOUD_CONSTANTS.env.u
         [userid, projectid]);
     if (!check || !check.length) return false;  // user isn't part of this project
     else return true;
+}
+
+/**
+ * Adds the given object to the recycle bin table
+ * @param {string} objectid The object ID
+ * @param {string||object} object The object itself
+ * @returns true on success or false on failure
+ */
+exports.addObjectToRecycleBin = async function(objectid, object) {
+    const id = objectid.toString()+Date.now();
+    const query = "insert into recyclebin (id,resourceid,object) values (?,?,?)";
+    return await _db().runCmd(query, [id, objectid, typeof object === "string" ? object : JSON.stringify(object)]);
 }
 
 const _logUnauthorized = _ => KLOUD_CONSTANTS.LOGERROR("User is not authorized.");
