@@ -1,36 +1,53 @@
+// (C) 2022 Tekmonks. All rights reserved.
+// License: See enclosed LICENSE file.
+// Main database schema for Kloudust. All tables are auto-timestamped when entries are created.
+
 [
     "BEGIN TRANSACTION",
     
     // this is a user table - authentication is via Tekmonks' unified login
     "CREATE TABLE users(id varchar not null primary key, name varchar not null, \
-        org varchar not null, role varchar not null)",
+        org varchar not null, role varchar not null \
+        timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
 
     // this hosts the host machines
     "CREATE TABLE hosts(hostname varchar not null primary key, hostaddress varchar not null, \
         type varchar not null, rootid varchar not null, rootpw varchar not null, \
         hostkey varchar not null, cores integer not null, memory integer not null, \
         disk integer not null, networkspeed integer not null, processor varchar not null, \
-        processorarchitecture varchar not null, sockets integer not null, synctimestamp integer default 0)",
+        processorarchitecture varchar not null, sockets integer not null, synctimestamp integer default 0 \
+        timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
 
     // host resources container table
     "CREATE TABLE hostresources(name varchar not null primary key, uri varchar not null, \
-        processorarchitecture varchar not null, description varchar, extrainfo varchar)",
+        processorarchitecture varchar not null, description varchar, extrainfo varchar \
+        timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
         
     // VMs container table
     "CREATE TABLE vms(id varchar not null primary key, name varchar not null, \
         description varchar, hostname varchar not null, org varchar not null, \
         projectid varchar not null, os varchar not null, cpus integer not null, \
-        memory integer not null, disk integer not null, creationcmd varchar not null)",
+        memory integer not null, disk integer not null, creationcmd varchar not null, \
+        timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
+
+    // Snapshots of any cloud resource
+    "CREATE TABLE snapshots(id varchar not null primary key, snapshotname varchar not null, \
+        resource_id varchar not null, extrainfo varchar default '', org varchar not null, \
+        projectid varchar not null, timestamp integer not null default (cast(unixepoch('subsec')*1000 as int))),
 
     // Projects for an ORG
     "CREATE TABLE projects(id varchar not null primary key, name varchar not null, \
-        org varchar not null, description varchar default '')",
+        org varchar not null, description varchar default '' \
+        timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
 
-    // User to project mapping
-    "CREATE TABLE projectusermappings(userid varchar not null, projectid varchar not null)",
+    // User to project mapping, the project ID embeds the org in it 
+    "CREATE TABLE projectusermappings(userid varchar not null, projectid varchar not null \
+        timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
 
     // Recycle bin
-    "CREATE TABLE recyclebin(id varchar not null primary key, resourceid varchar not null, object varchar not null)",
+    "CREATE TABLE recyclebin(id varchar not null primary key, resourceid varchar not null, \
+        object varchar not null, org varchar not null, projectid varchar not null, \
+        timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
 
     "COMMIT TRANSACTION"
 ]
