@@ -179,8 +179,7 @@ exports.getVM = async (name, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANT
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_project_resource)) {_logUnauthorized(); return false;}
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
 
-    const project = KLOUD_CONSTANTS.env.prj, org = KLOUD_CONSTANTS.env.org, id = `${org}_${project}_${name}`;
-    const results = await _db().getQuery("select * from vms where id = ?", [id]);
+    const vmid = `${org}_${project}_${name}`, results = await _db().getQuery("select * from vms where id = ?", [vmid]);
     return results?results[0]:null;
 }
 
@@ -217,29 +216,30 @@ exports.deleteVM = async (name, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONST
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
 
-    const project = KLOUD_CONSTANTS.env.prj, org = KLOUD_CONSTANTS.env.org, id = `${org}_${project}_${name}`;
-    const vm = await exports.getVM(name); if (!vm) return true; // doesn't exist in the DB anyways
+    const vm = await exports.getVM(name, project, org); if (!vm) return true; // doesn't exist in the DB anyways
 
-    const deletionResult = await _db().runCmd("delete from vms where id = ?", [id]);
+    const vmid = `${org}_${project}_${name}`;
+    const deletionResult = await _db().runCmd("delete from vms where id = ?", [vmid]);
     if (deletionResult) if (!await this.addObjectToRecycleBin(id, vm, project, org)) 
         KLOUD_CONSTANTS.LOGWARN(`Unable to add VM ${name} to the recycle bin.`);
     return deletionResult;
 }
 
 /**
- * Returns VMs for the given host and / or current project. All VMs for the current project
+ * Returns VMs for the given org and / or current project. All VMs for the current project
  * are returned if hostname is skipped. This is for project admins or project users.
- * @param {string} hostname The host (optional)
- * @param {boolean} dontUseProject Return list of VMs for the host irrespective of project
+ * @param {string} project The project, if skipped is auto picked from the environment
+ * @param {string} org The org, if skipped is auto picked from the environment
  * @return The list of VMs
  */
-exports.listVMs = async hostname => {
+exports.listVMsForOrgOrProject = async (project, org=KLOUD_CONSTANTS.env.org) => {
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_project_resource)) {_logUnauthorized(); return false;}
+    if (project) project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
+    if ((!project) && (!roleman.isOrgAdminLoggedIn()) && (!roleman.isOrgAdminLoggedIn())) project=KLOUD_CONSTANTS.env.prj;
 
-    const projectid = _getProjectID(), org = KLOUD_CONSTANTS.env.org;
-    const query = hostname ? "select * from vms where hostname = ? and projectid = ? and org = ?" : 
-        "select * from vms where projectid = ? and org = ?";
-    const results = await _db().getQuery(query, hostname?[hostname,projectid,org]:[projectid,org]);
+    const projectid = _getProjectID(project, org);
+    const query = project?"select * from vms where projectid = ? and org = ?":"select * from vms where org = ?";
+    const results = await _db().getQuery(query, project?[projectid,org]:[org]);
     return results;
 }
 

@@ -7,7 +7,7 @@
     
     // this is a user table - authentication is via Tekmonks' unified login
     "CREATE TABLE users(id varchar not null primary key, name varchar not null, \
-        org varchar not null, role varchar not null \
+        org varchar not null, role varchar not null, \
         timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
 
     // this hosts the host machines
@@ -15,12 +15,12 @@
         type varchar not null, rootid varchar not null, rootpw varchar not null, \
         hostkey varchar not null, cores integer not null, memory integer not null, \
         disk integer not null, networkspeed integer not null, processor varchar not null, \
-        processorarchitecture varchar not null, sockets integer not null, synctimestamp integer default 0 \
+        processorarchitecture varchar not null, sockets integer not null, synctimestamp integer default 0, \
         timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
 
     // host resources container table
     "CREATE TABLE hostresources(name varchar not null primary key, uri varchar not null, \
-        processorarchitecture varchar not null, description varchar, extrainfo varchar \
+        processorarchitecture varchar not null, description varchar, extrainfo varchar, \
         timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
         
     // VMs container table
@@ -33,15 +33,15 @@
     // Snapshots of any cloud resource
     "CREATE TABLE snapshots(id varchar not null primary key, snapshotname varchar not null, \
         resource_id varchar not null, extrainfo varchar default '', org varchar not null, \
-        projectid varchar not null, timestamp integer not null default (cast(unixepoch('subsec')*1000 as int))),
+        projectid varchar not null, timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
 
     // Projects for an ORG
     "CREATE TABLE projects(id varchar not null primary key, name varchar not null, \
-        org varchar not null, description varchar default '' \
+        org varchar not null, description varchar default '', \
         timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
 
     // User to project ID mapping, the project ID embeds the org in it 
-    "CREATE TABLE projectusermappings(userid varchar not null, projectid varchar not null \
+    "CREATE TABLE projectusermappings(userid varchar not null, projectid varchar not null, \
         timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
 
     // Recycle bin
