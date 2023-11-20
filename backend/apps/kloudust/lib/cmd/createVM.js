@@ -27,8 +27,9 @@ module.exports.exec = async function(params) {
     const vm_name = exports.resolveVMName(vm_name_raw), cores = parseInt(cores_s), memory = parseInt(memory_s), 
         disk = parseInt(disk_s);
 
-    if (dbAbstractor.getVM(vm_name_raw)?.length) {  // VM exists
-        params.consoleHandlers.LOGERROR("VM with the same name already exists"); return CMD_CONSTANTS.FALSE_RESULT();
+    if (await dbAbstractor.getVM(vm_name)) {  // VM exists
+        const error = `VM with the name ${vm_name_raw} exists already for this project`;
+        params.consoleHandlers.LOGERROR(error); return CMD_CONSTANTS.FALSE_RESULT(error);
     }
 
     const kdResource = await dbAbstractor.getHostResourceForProject(creation_image_name);

@@ -21,7 +21,11 @@ module.exports.exec = async function(params) {
 
     const [description, org_in] = [...params];
 
-    const org = roleman.getNormalizedOrg(org_in||KLOUD_CONSTANTS.env.org);
-    const result = await dbAbstractor.addProject(KLOUD_CONSTANTS.env.prj, description||"", org);   // add project for user and org
+    const org = roleman.getNormalizedOrg(org_in||KLOUD_CONSTANTS.env.org), project = KLOUD_CONSTANTS.env.prj;
+    if (await dbAbstractor.getProject(project)) {   // check
+        params.consoleHandlers.LOGERROR(`Project ${project} already exists.`); 
+        return CMD_CONSTANTS.FALSE_RESULT(`Project ${project} already exists.`);
+    }
+    const result = await dbAbstractor.addProject(project, description||"", org);   // add project for user and org
     return {result, out: "", err: ""};
 }

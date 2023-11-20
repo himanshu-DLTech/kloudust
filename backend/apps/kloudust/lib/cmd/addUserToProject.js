@@ -25,6 +25,8 @@ module.exports.exec = async function(params) {
         return CMD_CONSTANTS.FALSE_RESULT(error);
     }
 
-    if (await dbAbstractor.checkUserBelongsToProject(email, project)) return CMD_CONSTANTS.TRUE_RESULT();
-    else return {result: await dbAbstractor.addUserToProject(email, project), err: "", out: ""};
+    if (await dbAbstractor.checkUserBelongsToProject(email, project)) {
+        const warn = `User ${email} already belongs to the project ${project}`; params.consoleHandlers.LOGWARN(warn);
+        return CMD_CONSTANTS.TRUE_RESULT(undefined, warn);
+    } else return {result: await dbAbstractor.addUserToProject(email, project), err: "", out: ""};
 }

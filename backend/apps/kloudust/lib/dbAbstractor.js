@@ -425,7 +425,7 @@ exports.getUserForEmail = async (email, org=KLOUD_CONSTANTS.env.org) => {
 
     const users = await _db().getQuery("select * from users where id = ? and org = ?", 
         [email.toLocaleLowerCase(), roleman.isCloudAdminLoggedIn()?org:KLOUD_CONSTANTS.env.org]);
-    if (users && users.length && checkOrg(users[0].org)) return users[0]; else return null;
+    if (users && users.length) return users[0]; else return null;
 }
 
 /**
