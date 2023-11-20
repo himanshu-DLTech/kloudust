@@ -263,14 +263,15 @@ exports.listVMsForCloudAdmin = async hostname => {
  * can add new projects.
  * @param {string} name The project name
  * @param {string} description The project description 
- * @param {string} org The owning org, if skipped is auto detected 
+ * @param {string} projectIn The project, if skipped is auto detected
+ * @param {string} orgIn The owning org, if skipped is auto detected 
  * @return true on success or false otherwise
  */
-exports.addProject = async(name, description="", orgIn=KLOUD_CONSTANTS.env.org) => {
+exports.addProject = async(name, description="", projectIn=KLOUD_CONSTANTS.env.prj, orgIn=KLOUD_CONSTANTS.env.org) => {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_org)) {_logUnauthorized(); return false;}
-    org = roleman.getNormalizedOrg(org);
+    project = roleman.getNormalizedProject(projectIn); org = roleman.getNormalizedOrg(orgIn);
 
-    const org = roleman.getNormalizedOrg(orgIn), id = _getProjectID(KLOUD_CONSTANTS.env.prj, org);
+    const org = roleman.getNormalizedOrg(orgIn), id = _getProjectID(project, org);
     if ((await exports.getProject(name)).length == 0) return await _db().runCmd(
         "insert into projects (id, name, org, description) values (?,?,?,?)", [id, name, org, description]);
     else return true;
@@ -281,12 +282,12 @@ exports.addProject = async(name, description="", orgIn=KLOUD_CONSTANTS.env.org) 
  * projects they are mapped to, and for admins it goes across org projects
  * @param {string} name Project name
  */
-exports.getProject = async name => {
-    const userid = KLOUD_CONSTANTS.env.user, org = KLOUD_CONSTANTS.env.org, 
-        projectid = `${(name||"undefined").toLocaleLowerCase()}_${org}`;
+exports.getProject = async (name, org=KLOUD_CONSTANTS.env.org) => {
+    const userid = KLOUD_CONSTANTS.env.user, projectid = `${(name||"undefined").toLocaleLowerCase()}_${org}`;
+    org = roleman.getNormalizedOrg(org); 
 
     let results;
-    if (KLOUD_CONSTANTS.env.role == KLOUD_CONSTANTS.ROLES.ORG_ADMIN) {
+    if (roleman.isCloudAdminLoggedIn() || roleman.isOrgAdminLoggedIn()) {
         if (name) results = await _db().getQuery("select * from projects where id=? and org=?", 
             [projectid, org]);
         else results = await _db().getQuery("select * from projects where org=?)", [org]);
@@ -326,8 +327,7 @@ exports.deleteProject = async (name, org=KLOUD_CONSTANTS.env.org) => {
  * @return true on succes, false otherwise
  */
 exports.addUserToDB = async (email, name, org=KLOUD_CONSTANTS.env.org, role) => {
-    const setup_mode = KLOUD_CONSTANTS.env._setup_mode;
-    if ((!setup_mode) && (!roleman.checkAccess(roleman.ACTIONS.edit_org))) {_logUnauthorized(); return false; }
+    if ((!roleman.isSetupMode()) && (!roleman.checkAccess(roleman.ACTIONS.edit_org))) {_logUnauthorized(); return false; }
 
     const query = "insert into users(id, name, org, role) values (?,?,?,?)", 
         orgFixed = roleman.getNormalizedOrg(org);
@@ -419,9 +419,6 @@ exports.getUserForEmail = async (email, org=KLOUD_CONSTANTS.env.org) => {
         [email.toLocaleLowerCase(), roleman.isCloudAdminLoggedIn()?org:KLOUD_CONSTANTS.env.org]);
     if (users && users.length && checkOrg(users[0].org)) return users[0]; else return null;
 }
-
-/** Returns the total number of users in the cloud database */
-exports.getUserCount = async _ => ((await _db().getQuery("select * from users"))?.length)||0;
 
 /**
  * Logs the given user in and sets up for environment variables

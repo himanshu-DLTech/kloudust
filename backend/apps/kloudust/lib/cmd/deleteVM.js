@@ -25,7 +25,7 @@ module.exports.exec = async function(params) {
     if (!vm) {params.consoleHandlers.LOGERROR("Bad VM name or VM not found"); return CMD_CONSTANTS.FALSE_RESULT();}
 
     const hostInfo = await dbAbstractor.getHostEntry(vm.hostname); 
-    if (!hostInfo) {params.consoleHandlers.LOGERROR("Bad hostname or host not found"); return CMD_CONSTANTS.FALSE_RESULT();}
+    if (!hostInfo) {params.consoleHandlers.LOGERROR("Bad hostname for the VM or host not found"); return CMD_CONSTANTS.FALSE_RESULT();}
 
     const xforgeArgs = {
         colors: KLOUD_CONSTANTS.COLORED_OUT, 

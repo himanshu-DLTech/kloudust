@@ -49,6 +49,8 @@ exports.checkAccess = function(access_for, user_role=KLOUD_CONSTANTS.env.role) {
     return false;
 }
 
+exports.isSetupMode = _ => KLOUD_CONSTANTS.env._setup_mode;
+
 exports.isCloudAdminLoggedIn = _ => KLOUD_CONSTANTS.env._setup_mode || 
     KLOUD_CONSTANTS.env.role == KLOUD_CONSTANTS.ROLES.CLOUD_ADMIN;
 
