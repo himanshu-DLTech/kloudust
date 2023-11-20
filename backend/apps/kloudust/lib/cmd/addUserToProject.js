@@ -20,6 +20,11 @@ const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 module.exports.exec = async function(params) {
     const email = params[0], project = roleman.isOrgAdminLoggedIn()?params[1]:KLOUD_CONSTANTS.env.prj;
 
+    if (!await dbAbstractor.getProject(project, KLOUD_CONSTANTS.env.org)) {
+        const error = `Project ${project} does not exist`; params.consoleHandlers.LOGERROR(error);
+        return CMD_CONSTANTS.FALSE_RESULT(error);
+    }
+
     if (await dbAbstractor.checkUserBelongsToProject(email, project)) return CMD_CONSTANTS.TRUE_RESULT();
     else return {result: await dbAbstractor.addUserToProject(email, project), err: "", out: ""};
 }

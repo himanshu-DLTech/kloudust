@@ -61,7 +61,9 @@ exports.kloudust = async function(inprocessArgs) {
 
     await exports.initAsync(); // init Kloudust this is needed to login the user below
 
-    if (args.setup && ((await dbAbstractor.getUserCount()) == 0)) KLOUD_CONSTANTS.env._setup_mode = true;   // setup mode is only allowed with 0 users
+    if (args.setup && ((await dbAbstractor.getUserCount()) == 0) && args.execute?.[0].trim().startsWith("addUser")) 
+        KLOUD_CONSTANTS.env._setup_mode = true;   // setup mode is only allowed with 0 users and addUser command
+    else KLOUD_CONSTANTS.env._setup_mode = false;
 
     const consoleHandler = _createConsoleHandler(args.consoleStreamHandler);
 
@@ -111,7 +113,8 @@ async function _execCommand(params, consoleHandler, project) {
 
     try {
         const module = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/${command}.js`);
-        return await module.exec(cmdParams);
+        const result = await module.exec(cmdParams);
+        return result;
     } catch (err) {
         consoleHandler.LOGERROR(`${err.toString()}${err.stack?"\n"+err.stack:""}`); 
         return {result: false, out: "", err: err.toString()};

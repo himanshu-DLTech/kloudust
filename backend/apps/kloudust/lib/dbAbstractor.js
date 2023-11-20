@@ -18,6 +18,16 @@ const KLOUDUST_MAIN_DBFILE = path.resolve(`${KLOUD_CONSTANTS.ROOTDIR}/db/kloudus
 /** Inits the module */
 exports.initAsync = async function() { KLOUD_CONSTANTS.env.db = await _initMonkshuGlobalAndGetDBModuleAsync(); }
 
+/** Returns the total number of users in the cloud database */
+exports.getUserCount = async _ => {
+    const user_count = (await _db().getQuery("select * from users"))?.length||0;
+    if (user_count == 0) return user_count; // this is a special case when the Kloud has no users at all
+    
+    // if we have users already then we must lookup the role permissions
+    if (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource)) {_logUnauthorized(); return 0;}
+    else return user_count;
+}
+
 /**
  * Adds the given host to the catalog, if it exists, it will delete and reinsert it. 
  * Hosts are never tied to any project, org or entity and owned by the entire cloud.
@@ -263,16 +273,14 @@ exports.listVMsForCloudAdmin = async hostname => {
  * can add new projects.
  * @param {string} name The project name
  * @param {string} description The project description 
- * @param {string} projectIn The project, if skipped is auto detected
  * @param {string} orgIn The owning org, if skipped is auto detected 
  * @return true on success or false otherwise
  */
-exports.addProject = async(name, description="", projectIn=KLOUD_CONSTANTS.env.prj, orgIn=KLOUD_CONSTANTS.env.org) => {
+exports.addProject = async(name, description="", orgIn=KLOUD_CONSTANTS.env.org) => {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_org)) {_logUnauthorized(); return false;}
-    project = roleman.getNormalizedProject(projectIn); org = roleman.getNormalizedOrg(orgIn);
-
-    const org = roleman.getNormalizedOrg(orgIn), id = _getProjectID(project, org);
-    if ((await exports.getProject(name)).length == 0) return await _db().runCmd(
+    const project = roleman.getNormalizedProject(name), org = roleman.getNormalizedOrg(orgIn), id = _getProjectID(project, org);
+        
+    if (!await exports.getProject(name)) return await _db().runCmd(
         "insert into projects (id, name, org, description) values (?,?,?,?)", [id, name, org, description]);
     else return true;
 }
@@ -299,7 +307,7 @@ exports.getProject = async (name, org=KLOUD_CONSTANTS.env.org) => {
             (select projectid from projectusermappings where userid=?)", [userid]);
     }
 
-    return _getArrayOrObjectIfLength1(results);
+    return results && results.length ? results[0] : null;
 }
 
 /**
@@ -327,7 +335,7 @@ exports.deleteProject = async (name, org=KLOUD_CONSTANTS.env.org) => {
  * @return true on succes, false otherwise
  */
 exports.addUserToDB = async (email, name, org=KLOUD_CONSTANTS.env.org, role) => {
-    if ((!roleman.isSetupMode()) && (!roleman.checkAccess(roleman.ACTIONS.edit_org))) {_logUnauthorized(); return false; }
+    if ((!await roleman.isSetupMode()) && (!roleman.checkAccess(roleman.ACTIONS.edit_org))) {_logUnauthorized(); return false; }
 
     const query = "insert into users(id, name, org, role) values (?,?,?,?)", 
         orgFixed = roleman.getNormalizedOrg(org);
@@ -427,7 +435,7 @@ exports.getUserForEmail = async (email, org=KLOUD_CONSTANTS.env.org) => {
  * @return true on success and false otherwise
  */
 exports.loginUser = async (email, project) => {
-    if (KLOUD_CONSTANTS.env._setup_mode) {
+    if (await roleman.isSetupMode()) {
         KLOUD_CONSTANTS.env.username = "Setup admin";
         KLOUD_CONSTANTS.env.userid = email;
         KLOUD_CONSTANTS.env.org = "Setup org";

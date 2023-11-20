@@ -22,11 +22,12 @@ module.exports.exec = async function(params) {
 
     const _accountExists = async email => {
         const lookupResult = await dbAbstractor.getUserForEmail(email);
-        if (lookupResult != null) return true; else return CMD_CONSTANTS.FALSE_RESULT();
+        if (lookupResult != null) return true; else return false;
     }
 
     const email = params[0], name = params[1], org = roleman.getNormalizedOrg(params[2]), role = params[3];
-    if (await _accountExists(email)) {params.consoleHandlers.LOGERROR("Account already exists or unauthorized."); return false;}  
+    if (await _accountExists(email)) {params.consoleHandlers.LOGERROR("Account already exists or unauthorized."); 
+        return CMD_CONSTANTS.FALSE_RESULT("Account already exists or unauthorized.");}  
 
     const result = await dbAbstractor.addUserToDB(email, name, org, (roleman.isCloudAdminLoggedIn() ||
         roleman.isOrgAdminLoggedIn()) ? role : KLOUD_CONSTANTS.ROLES.USER);

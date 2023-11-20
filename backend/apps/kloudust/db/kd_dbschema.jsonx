@@ -8,7 +8,7 @@
     // this is a user table - authentication is via Tekmonks' unified login
     "CREATE TABLE users(id varchar not null primary key, name varchar not null, \
         org varchar not null, role varchar not null, \
-        timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
+        timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
 
     // this hosts the host machines
     "CREATE TABLE hosts(hostname varchar not null primary key, hostaddress varchar not null, \
@@ -16,38 +16,38 @@
         hostkey varchar not null, cores integer not null, memory integer not null, \
         disk integer not null, networkspeed integer not null, processor varchar not null, \
         processorarchitecture varchar not null, sockets integer not null, synctimestamp integer default 0, \
-        timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
+        timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
 
     // host resources container table
     "CREATE TABLE hostresources(name varchar not null primary key, uri varchar not null, \
         processorarchitecture varchar not null, description varchar, extrainfo varchar, \
-        timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
+        timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
         
     // VMs container table
     "CREATE TABLE vms(id varchar not null primary key, name varchar not null, \
         description varchar, hostname varchar not null, org varchar not null, \
         projectid varchar not null, os varchar not null, cpus integer not null, \
         memory integer not null, disk integer not null, creationcmd varchar not null, \
-        timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
+        timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
 
     // Snapshots of any cloud resource
     "CREATE TABLE snapshots(id varchar not null primary key, snapshotname varchar not null, \
         resource_id varchar not null, extrainfo varchar default '', org varchar not null, \
-        projectid varchar not null, timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
+        projectid varchar not null, timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
 
     // Projects for an ORG
     "CREATE TABLE projects(id varchar not null primary key, name varchar not null, \
         org varchar not null, description varchar default '', \
-        timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
+        timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
 
     // User to project ID mapping, the project ID embeds the org in it 
     "CREATE TABLE projectusermappings(userid varchar not null, projectid varchar not null, \
-        timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
+        timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
 
     // Recycle bin
     "CREATE TABLE recyclebin(id varchar not null primary key, resourceid varchar not null, \
         object varchar not null, org varchar not null, projectid varchar not null, \
-        timestamp integer not null default (cast(unixepoch('subsec')*1000 as int)))",
+        timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
 
     "COMMIT TRANSACTION"
 ]
