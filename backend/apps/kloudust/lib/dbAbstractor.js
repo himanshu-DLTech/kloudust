@@ -230,7 +230,7 @@ exports.deleteVM = async (name, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONST
 
     const vmid = `${org}_${project}_${name}`;
     const deletionResult = await _db().runCmd("delete from vms where id = ?", [vmid]);
-    if (deletionResult) if (!await this.addObjectToRecycleBin(id, vm, project, org)) 
+    if (deletionResult) if (!await this.addObjectToRecycleBin(vmid, vm, project, org)) 
         KLOUD_CONSTANTS.LOGWARN(`Unable to add VM ${name} to the recycle bin.`);
     return deletionResult;
 }
@@ -492,9 +492,9 @@ exports.addObjectToRecycleBin = async function(objectid, object, project=KLOUD_C
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
 
-    const id = `${org}_${project}_${objectid.toString()+Date.now()+Math.random().toString().split(".")[1]}`,
+    const id = `${org}_${project}_${objectid.toString()+"_"+Date.now()+Math.random().toString().split(".")[1]}`,
         objectJSON = JSON.stringify(object);
-    const query = "insert into recyclebin (id, resourceid, object, org, project) values (?,?,?,?,?)";
+    const query = "insert into recyclebin (id, resourceid, object, org, projectid) values (?,?,?,?,?)";
     return await _db().runCmd(query, [id, objectid, objectJSON, org, project]);
 }
 

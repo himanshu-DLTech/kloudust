@@ -1,5 +1,7 @@
 /** 
- * deleteVM.js - Deletes the given VM
+ * deleteVM.js - Deletes the given VM. Will not delete the snapshots
+ * of this VM. This is on purpose so that the VM could potentially be
+ * recreated later from the snapshots.
  * 
  * Params - 0 - VM Name
  * 
