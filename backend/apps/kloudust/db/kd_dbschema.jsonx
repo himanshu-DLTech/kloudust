@@ -32,7 +32,7 @@
 
     // Snapshots of any cloud resource
     "CREATE TABLE snapshots(id varchar not null primary key, snapshotname varchar not null, \
-        resource_id varchar not null, extrainfo varchar default '', org varchar not null, \
+        resourceid varchar not null, extrainfo varchar default '', org varchar not null, \
         projectid varchar not null, timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
 
     // Projects for an ORG

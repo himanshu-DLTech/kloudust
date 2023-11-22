@@ -575,26 +575,27 @@ exports.addSnapshot = async function(resource_id, snapshot_id, extrainfo="", pro
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
 
-    const id = `${org}_${project}_${snapshot_id}`;
+    const id = `${org}_${project}_${resource_id}_${snapshot_id}`, projectid = _getProjectID(project, org)
     if (await exports.getSnapshot(snapshot_id, project, org)) { // don't allow adding same snapshot ID twice
         KLOUD_CONSTANTS.LOGERROR(`Snapshot with ID ${snapshot_id} already exists`); return false;}
 
-    const query = "insert into snapshots (id, snapshotname, resourceid, extrainfo, org, project) values (?,?,?,?,?,?)";
-    return await _db().runCmd(query, [id, snapshot_id, resource_id, extrainfo, org, project]);
+    const query = "insert into snapshots (id, snapshotname, resourceid, extrainfo, org, projectid) values (?,?,?,?,?,?)";
+    return await _db().runCmd(query, [id, snapshot_id, resource_id, extrainfo, org, projectid]);
 }
 
 /**
  * Returns the given snapshot object.
+ * @param {string} resource_id The resource ID for which this snapshot is for
  * @param {string} snapshot_id The snapshot ID
  * @param {string} project The project, if skipped is auto picked from the environment
  * @param {string} org The org, if skipped is auto picked from the environment
  * @returns The snapshot object, if found, else null.
  */
-exports.getSnapshot = async function(snapshot_id, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANTS.env.org) {
+exports.getSnapshot = async function(resource_id, snapshot_id, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANTS.env.org) {
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_project_resource)) {_logUnauthorized(); return false;}
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
 
-    const id = `${org}_${project}_${snapshot_id}`;
+    const id = `${org}_${project}_${resource_id}_${snapshot_id}`;
     const query = "select * from snapshots where id=? collate nocase";
     const snapshots = await _db().getQuery(query, [id]);
     if (snapshots && snapshots.length) return snapshots[0]; else return null;
@@ -602,16 +603,17 @@ exports.getSnapshot = async function(snapshot_id, project=KLOUD_CONSTANTS.env.pr
 
 /**
  * Deletes the given snapshot, if it exists in the DB.
+ * @param {string} resource_id The resource ID for which this snapshot is for
  * @param {string} snapshot_id The snapshot ID
  * @param {string} project The project, if skipped is auto picked from the environment
  * @param {string} org The org, if skipped is auto picked from the environment
  * @returns true on success or false on failure
  */
-exports.deleteSnapshot = async function(snapshot_id, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANTS.env.org) {
+exports.deleteSnapshot = async function(resource_id, snapshot_id, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANTS.env.org) {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
 
-    const id = `${org}_${project}_${snapshot_id}`;
+    const id = `${org}_${project}_${resource_id}_${snapshot_id}`;
     const query = "delete from snapshots where id=?";
     return await _db().runCmd(query, [id]);
 }
@@ -627,7 +629,5 @@ async function _initMonkshuGlobalAndGetDBModuleAsync() {
     const monkshuDBDriverWrapped = kdutils.wrapObjectInNewContext(dbDriverMonkshu, {CONSTANTS, LOG});
     const db = monkshuDBDriverWrapped; await db.init(); return db;
 }
-
-const _getArrayOrObjectIfLength1 = results => results.length == 1?results[0]:results;
 
 const _db = _ => KLOUD_CONSTANTS.env.db;

@@ -71,5 +71,5 @@ module.exports.exec = async function(params) {
     } else return results;
 }
 
-/** @return The internal VM name for the given raw VM name */
-exports.resolveVMName = vm_name_raw => `${vm_name_raw}_${KLOUD_CONSTANTS.env.org}_${KLOUD_CONSTANTS.env.prj}`.toLowerCase().replace(/\s/g,"_");
+/** @return The internal VM name for the given raw VM name or null on error */
+exports.resolveVMName = vm_name_raw => vm_name_raw?`${vm_name_raw}_${KLOUD_CONSTANTS.env.org}_${KLOUD_CONSTANTS.env.prj}`.toLowerCase().replace(/\s/g,"_"):null;

@@ -3,5 +3,6 @@
 	"HOST_TYPES": ["rhel9", "rhel9_compatible", "ubuntu22"],
     "OS_MAPPINGS": [],
     "INIT_MODULES": ["lib/dbAbstractor.js", "lib/jobs.js"],
-    "HOSTCHOOSER_ALGO": "LEAST_CPU"
+    "HOSTCHOOSER_ALGO": "LEAST_CPU",
+    "DEFAULT_VM_SHUTDOWN_WAIT": 90
 }

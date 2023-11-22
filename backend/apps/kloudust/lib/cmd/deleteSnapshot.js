@@ -1,10 +1,14 @@
 /** 
  * deleteSnapshot.js - Deletes a VM snapshot
  * 
+ * Params - 0 - vm name, 1 - snapshot name
+ * 
  * (C) 2020 TekMonks. All rights reserved.
  * License: See enclosed LICENSE file.
  */
 
+const roleman = require(`${KLOUD_CONSTANTS.LIBDIR}/roleenforcer.js`);
+const createVM = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/createVM.js`);
 const {xforge} = require(`${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/xforge`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
 const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
@@ -14,11 +18,18 @@ const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
  * @param {array} params The incoming params - must be - VM name, Snapshot name
  */
 module.exports.exec = async function(params) {
-    const vm = await dbAbstractor.getVM(params[0]);
-    if (!vm) {params.consoleHandlers.LOGERROR("Bad VM name or VM not found"); return CMD_CONSTANTS.FALSE_RESULT();}
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT(); }
+    const [vm_name_raw, snapshot_name] = [...params], vm_name = createVM.resolveVMName(vm_name_raw); 
+    const snapshotInfo = vm_name && snapshot_name?await dbAbstractor.getSnapshot(vm_name, snapshot_name):null;
+    if (!snapshotInfo) {
+        const error = "Snapshot not found."; params.consoleHandlers.LOGERROR(error); return CMD_CONSTANTS.FALSE_RESULT(error); }
+
+    const vm = await dbAbstractor.getVM(vm_name);
+    if (!vm) {const error = "Bad VM name or VM not found"; params.consoleHandlers.LOGERROR(error); return CMD_CONSTANTS.FALSE_RESULT(error); }
     
     const hostInfo = await dbAbstractor.getHostEntry(vm.hostname); 
-    if (!hostInfo) {params.consoleHandlers.LOGERROR("Bad hostname or host not found"); return CMD_CONSTANTS.FALSE_RESULT();}
+    if (!hostInfo) {
+        const error = "Bad hostname or host not found"; params.consoleHandlers.LOGERROR(error); return CMD_CONSTANTS.FALSE_RESULT(error); }
 
     const xforgeArgs = {
         colors: KLOUD_CONSTANTS.COLORED_OUT, 
@@ -27,9 +38,13 @@ module.exports.exec = async function(params) {
         other: [
             hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey,  
             `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/deleteSnapshot.sh`,
-            params[0], params[1]
+            vm_name, snapshot_name
         ]
     }
 
-    return await xforge(xforgeArgs);
+    const results = await xforge(xforgeArgs);
+    if (results.result) {
+        if (await dbAbstractor.deleteSnapshot(vm_name, snapshot_name)) return results;
+        else {params.consoleHandlers.LOGERROR("DB failed"); return {...results, result: false};}
+    } else return results;
 }

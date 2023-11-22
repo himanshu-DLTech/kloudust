@@ -21,7 +21,7 @@ fi
 
 TIMESTAMP=`date +%s%N | cut -b1-13`
 UTC_DATE=`date -u`
-OLDDISK=`virsh domblklist $VM_NAME | grep vda | tr -s " " | xargs | cut -d" " -f2`
+OLDDISK=`virsh dumpxml $VM_NAME | grep -oP "source\sfile=\s*'\K\/kloudust\/disks\/$VM_NAME.+?(?=')"`
 
 if [ -z "$OLDDISK" ]; then 
     echo Unable to locate VM disk

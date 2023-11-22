@@ -1,7 +1,7 @@
 /** 
  * renameVM.js - Renames a VM
  * 
- * Params - 0 - Old VM Name, 1 - New VM Name
+ * Params - 0 - Old VM Name, 1 - New VM Name, 2 - shutdown timeout, optional
  * 
  * (C) 2020 TekMonks. All rights reserved.
  * License: See enclosed LICENSE file.
@@ -21,7 +21,8 @@ module.exports.exec = async function(params) {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
 
     const vm_name_old_raw = params[0], vm_name_old = createVM.resolveVMName(vm_name_old_raw),
-    vm_name_new_raw = params[1], vm_name_new = createVM.resolveVMName(vm_name_new_raw);
+    vm_name_new_raw = params[1], vm_name_new = createVM.resolveVMName(vm_name_new_raw), 
+        shutdown_timeout = params[2]||KLOUD_CONSTANTS.CONF.DEFAULT_VM_SHUTDOWN_WAIT;
 
     const vm = await dbAbstractor.getVM(vm_name_old);
     if (!vm) {params.consoleHandlers.LOGERROR("Bad VM name or VM not found"); return CMD_CONSTANTS.FALSE_RESULT();}
@@ -36,7 +37,7 @@ module.exports.exec = async function(params) {
         other: [
             hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey,
             `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/renameVM.sh`,
-            vm_name_old, vm_name_new
+            vm_name_old, vm_name_new, shutdown_timeout
         ]
     }
 

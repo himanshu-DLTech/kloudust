@@ -20,8 +20,8 @@ const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 module.exports.exec = async function(params) {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
 
-    const [vm_name_raw, snapshot_name] = [...params];
-    const vm_name = createVM.resolveVMName(vm_name_raw);
+    const [vm_name_raw, snapshot_name_in] = [...params]; 
+    const snapshot_name = snapshot_name_in||`${vm_name}_snapshot_${Date.now()}`, vm_name = createVM.resolveVMName(vm_name_raw);
 
     const vm = await dbAbstractor.getVM(vm_name);
     if (!vm) {params.consoleHandlers.LOGERROR("Bad VM name or VM not found"); return CMD_CONSTANTS.FALSE_RESULT();}
@@ -29,7 +29,6 @@ module.exports.exec = async function(params) {
     const hostInfo = await dbAbstractor.getHostEntry(vm.hostname); 
     if (!hostInfo) {params.consoleHandlers.LOGERROR("Bad hostname or host not found"); return CMD_CONSTANTS.FALSE_RESULT();}
 
-    const DEFAULT_SNAPSHOT_NAME = `${vm_name}_snapshot_${Date.now()}`;
     const xforgeArgs = {
         colors: KLOUD_CONSTANTS.COLORED_OUT, 
         file: `${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/samples/remoteCmd.xf.js`,
@@ -37,13 +36,13 @@ module.exports.exec = async function(params) {
         other: [
             hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey,
             `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/snapshot.sh`,
-            vm_name, snapshot_name||DEFAULT_SNAPSHOT_NAME
+            vm_name, snapshot_name
         ]
     }
 
-    const results = await xforge(xforgeArgs), epochTimestamp = Date.now()/1000;
+    const results = await xforge(xforgeArgs);
     if (results.result) {
-        if (await dbAbstractor.addSnapshot(vm_name, snapshot_name||DEFAULT_SNAPSHOT_NAME, epochTimestamp)) return results;
+        if (await dbAbstractor.addSnapshot(vm_name, snapshot_name)) return results;
         else {params.consoleHandlers.LOGERROR("DB failed"); return {...results, result: false};}
     } else return results;
 }
