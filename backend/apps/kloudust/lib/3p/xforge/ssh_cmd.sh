@@ -1,1 +1,10 @@
-cat "$4" | sshpass -p "$2" ssh -T -o StrictHostKeyChecking=no -l $1 $5
+#!/bin/bash
+
+LOGIN="$1"
+PW="$2"
+HOSTKEY="$3"
+FILE="$4"
+HOST="$5"
+
+echo "Executing remote file -> cat \"$FILE\" | sshpass -p \"*********\" ssh -T -o StrictHostKeyChecking=no -l \"$LOGIN\" $HOST"
+cat "$FILE" | sshpass -p "$PW" ssh -T -o StrictHostKeyChecking=no -l "$LOGIN" $HOST

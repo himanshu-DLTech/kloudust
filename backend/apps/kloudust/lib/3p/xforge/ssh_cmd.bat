@@ -1,7 +1,13 @@
 @echo off
 setlocal
 
-echo "Executing remote file -> "%~dp0\plink.exe" -batch -C -l %1 -pw %2 -hostkey %3 -m %4 %5"
-"%~dp0\plink.exe" -batch -C -l %1 -pw %2 -hostkey %3 -m %4 %5
+set LOGIN=%1
+set PW=%2
+set HOSTKEY=%3
+set FILE=%4
+set HOST=%5
+
+echo "Executing remote file -> "%~dp0\plink.exe" -batch -C -l %LOGIN% -pw ********* -hostkey ********* -m %FILE% %HOST%"
+"%~dp0\plink.exe" -batch -C -l %LOGIN% -pw %PW% -hostkey %HOSTKEY% -m %FILE% %HOST%
 
 exit /b %errorlevel%

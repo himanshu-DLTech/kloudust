@@ -1,17 +1,21 @@
 #!/bin/bash
 
+# Params 
+# {1} - VM Name
+
+VM_NAME={1}
 
 function exitFailed() {
     echo Failed
     exit 1
 }
 
-
-printf "\n\Information on {1}\n"
-if ! cat /kloudust/metadata/{1}.metadata; then exitFailed; fi
-if ! virsh dominfo {1}; then exitFailed; fi
-if ! virsh domblklist {1}; then exitFailed; fi
-if ! virsh domiflist {1}; then exitFailed; fi
+printf "\nInformation on $VM_NAME\n"
+if ! cat /kloudust/metadata/$VM_NAME.metadata | grep -v INSTALL | grep -v CLOUDINIT_USERDATA; then exitFailed; fi
+if ! virsh dominfo $VM_NAME; then exitFailed; fi
+if ! virsh domblklist $VM_NAME; then exitFailed; fi
+if ! virsh domiflist $VM_NAME; then exitFailed; fi
+if ! virsh domifaddr $VM_NAME; then exitFailed; fi
 
 printf "\n\nVM information queried successfully\n"
 exit 0
