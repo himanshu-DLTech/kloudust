@@ -18,7 +18,7 @@ exports.doService = async (jsonReq, _servObject, headers, _url, _apiconf) => {
 		setup: jsonReq.setup?[jsonReq.setup]:undefined, consoleStreamHandler: (info, warn, error) => 
 			_streamHandler(requestID, info, warn, error)};
 	const results = await kloudust.kloudust(kdRequest);
-	return {result: results.result, stdout: results.out||"", stderr: results.err||""};
+	return {...results, result: results.result, stdout: results.out||"", stderr: results.err||""};
 }
 
 function _streamHandler(id, info, warn, err) {

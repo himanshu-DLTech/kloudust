@@ -546,18 +546,34 @@ exports.deleteObjectsFromRecyclebin = async function(objectid, idstamp="", proje
 
 /**
  * Deletes the given snapshot, if it exists in the DB.
+ * @param {string} resource_id The resource ID for which this snapshot is for
  * @param {string} snapshot_id The snapshot ID
  * @param {string} project The project, if skipped is auto picked from the environment
  * @param {string} org The org, if skipped is auto picked from the environment
  * @returns true on success or false on failure
  */
-exports.deleteSnapshot = async function(snapshot_id, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANTS.env.org) {
+exports.deleteSnapshot = async function(resource_id, snapshot_id, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANTS.env.org) {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
 
-    const id = `${org}_${project}_${snapshot_id}`;
+    const id = `${org}_${project}_${resource_id}_${snapshot_id}`;
     const query = "delete from snapshots where id=?";
     return await _db().runCmd(query, [id]);
+}
+
+/**
+ * Deletes all snapshots for a given resource, if they exists in the DB.
+ * @param {string} resource_id The resource ID for which this snapshot is for
+ * @param {string} project The project, if skipped is auto picked from the environment
+ * @param {string} org The org, if skipped is auto picked from the environment
+ * @returns true on success or false on failure
+ */
+exports.deleteAllSnapshotsForResource = async function(resource_id, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANTS.env.org) {
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}
+    project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
+
+    const query = "delete from snapshots where resource_id=?";
+    return await _db().runCmd(query, [resource_id]);
 }
 
 /**
@@ -599,6 +615,22 @@ exports.getSnapshot = async function(resource_id, snapshot_id, project=KLOUD_CON
     const query = "select * from snapshots where id=? collate nocase";
     const snapshots = await _db().getQuery(query, [id]);
     if (snapshots && snapshots.length) return snapshots[0]; else return null;
+}
+
+/**
+ * Returns the list of snapshots for the given resource ID.
+ * @param {string} resource_id The resource ID for which this snapshot is for
+ * @param {string} project The project, if skipped is auto picked from the environment
+ * @param {string} org The org, if skipped is auto picked from the environment
+ * @returns The list requested or null if none exist
+ */
+exports.listSnapshots = async function(resource_id, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANTS.env.org) {
+    if (!roleman.checkAccess(roleman.ACTIONS.lookup_project_resource)) {_logUnauthorized(); return false;}
+    project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
+
+    const query = "select * from snapshots where resourceid=? collate nocase";
+    const snapshots = await _db().getQuery(query, [resource_id]);
+    if (snapshots && snapshots.length) return snapshots; else return null;
 }
 
 /**
