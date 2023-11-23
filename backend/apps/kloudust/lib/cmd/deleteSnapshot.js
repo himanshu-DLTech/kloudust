@@ -18,7 +18,7 @@ const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
  * @param {array} params The incoming params - must be - VM name, Snapshot name
  */
 module.exports.exec = async function(params) {
-    if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT(); }
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
     const [vm_name_raw, snapshot_name] = [...params], vm_name = createVM.resolveVMName(vm_name_raw); 
     const snapshotInfo = vm_name && snapshot_name?await dbAbstractor.getSnapshot(vm_name, snapshot_name):null;
     if (!snapshotInfo) {

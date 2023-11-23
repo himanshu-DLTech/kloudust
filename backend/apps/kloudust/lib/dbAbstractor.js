@@ -688,6 +688,17 @@ exports.deleteSnapshot = async function(resource_id, snapshot_id, project=KLOUD_
     return await _db().runCmd(query, [id]);
 }
 
+/**
+ * Runs the given SQL on the DB blindly. Must be very careful. Only cloud admins can run this.
+ * @param sql The SQL to run on the DB.
+ * @return The results of the SQL.
+ */
+exports.runSQL = async function(sql) {
+    if (!roleman.isCloudAdminLoggedIn()) {_logUnauthorized(); return false;}
+    if (sql.toLocaleLowerCase().startsWith("select")) return await _db().getQuery(sql);
+    else return await _db().runCmd(sql);
+}
+
 const _logUnauthorized = _ => KLOUD_CONSTANTS.LOGERROR("User is not authorized.");
 
 const _getProjectID = (project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANTS.env.org) => 
