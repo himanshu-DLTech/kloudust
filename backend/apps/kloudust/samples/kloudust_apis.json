@@ -635,6 +635,57 @@
                 "items": []
               },
               "bodyType": "Text",
+              "textBody": "{\n  \"cmd\": \"customCmd \\\"select * from vms\\\" host1 \\\"ls -al /kloudust/disks\\\"\"\n}"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": []
+              },
+              "scheme": {
+                "secure": true,
+                "name": "https",
+                "version": "V11"
+              },
+              "host": "10.211.55.3:9090",
+              "path": "/apps/kloudust/kloudustcmd"
+            },
+            "id": "2ffa4525-c2ad-4ee2-899d-73f801048cdd",
+            "name": "Custom Command - Host1",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "enabled": true,
+                "name": "X-API-KEY",
+                "value": "fheiwu98237hjief8923ydewjidw834284hwqdnejwr79389"
+              },
+              {
+                "enabled": true,
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi50ZWttb25rcy5jb20iLCJpYXQiOjE2OTk3NzMzNzIsImlhdG1zIjoxNjk5NzczMzcxODcwLCJuYmYiOjE2OTk3NzMzNzIsImV4cCI6OTQ3NTc3MzM3MiwianRpIjoiYjE0NGQ4YTViNTYyMjc4MzgwOTVjZTdlMGQ4YzM5NTgiLCJleHBpcnlJbnRlcnZhbCI6Ijc3NzYwMDAwMDAiLCJpZCI6InJ2a2Fwb29yQHRla21vbmtzLmNvbSIsIm5hbWUiOiJSb2hpdCBLYXBvb3IiLCJvcmciOiJUZWttb25rcyIsInN1Ym9yZyI6IlRla21vbmtzIiwicm9sZSI6ImFkbWluIiwiYXBwcm92ZWQiOnRydWUsInZlcmlmaWVkIjp0cnVlLCJvbmV0aW1la2V5IjoiMTY5OTc3MzM3MTQ4MTk0MjE0NTYyNDM2NDI2NDEiLCJhcHBuYW1lIjoibG9naW5hcHAifQ==.c909697ef369c773e0a50c41f9c8d1744839f9a18527a36fc0e4ea645a61aae3"
+              }
+            ]
+          }
+        },
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text",
               "textBody": "{\n  \"project\": \"default2\",\n  \"cmd\": \"deleteProject default2\"\n}"
             },
             "uri": {
