@@ -333,9 +333,18 @@ exports.deleteProject = async (name, org=KLOUD_CONSTANTS.env.org) => {
     org = roleman.getNormalizedOrg(org); name = roleman.getNormalizedProject(name);
 
     const id = _getProjectID(name, org);
-    let result = await _db().runCmd("delete from projects where id = ?", [id]);
-    if (result) result = await _db().runCmd("delete from projectusermappings where projectid = ?", [id]);
-    return result;
+    const commandsToUpdate = [
+        {
+            cmd: "delete from projects where id = ?", 
+            params: [id]
+        },
+        {
+            cmd: "delete from projectusermappings where projectid = ?",
+            params: [id]
+        }
+    ];
+    const deleteResult = await _db().runTransaction(commandsToUpdate);
+    return deleteResult;
 }
 
 /**
