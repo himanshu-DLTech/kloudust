@@ -1,8 +1,9 @@
 /** 
  * addUser.js - Adds the given user to org as an operator. Only org admins can add or remove
- * org users.
+ * org users as admin. Normal users can add users as normal users for their org only. Cloud 
+ * admins can add any user to any org in any role.
  * 
- * Params - 0 - email, 1 - name, 2 - org, 3 - role (if current user is admin or super-admin)
+ * Params - 0 - email, 1 - name, 2 - org, 3 - role 
  * 
  * (C) 2020 TekMonks. All rights reserved.
  * License: See enclosed LICENSE file.
@@ -12,12 +13,11 @@ const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
 const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 
 /**
- * Adds the given user to org as an operator. Only org admins can add or remove
- * org users.
- * @param {array} params The incoming params - must be - email, name, password, org
+ * Adds the given user to org as an operator. 
+ * @param {array} params The incoming params, see above.
  */
 module.exports.exec = async function(params) {
-    if ((!KLOUD_CONSTANTS.env._setup_mode) && (!roleman.checkAccess(roleman.ACTIONS.edit_org))) {
+    if ((!KLOUD_CONSTANTS.env._setup_mode) && (!roleman.checkAccess(roleman.ACTIONS.add_user_to_org))) {
         params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT(); }
 
     const _accountExists = async email => {
@@ -25,11 +25,11 @@ module.exports.exec = async function(params) {
         if (lookupResult != null) return true; else return false;
     }
 
-    const email = params[0], name = params[1], org = roleman.getNormalizedOrg(params[2]), role = params[3];
+    const email = params[0], name = params[1], org = roleman.getNormalizedOrg(params[2]||KLOUD_CONSTANTS.env.org), 
+        role = roleman.getNormalizedRole(params[3]||KLOUD_CONSTANTS.ROLES.USER);
     if (await _accountExists(email)) {params.consoleHandlers.LOGERROR("Account already exists or unauthorized."); 
         return CMD_CONSTANTS.FALSE_RESULT("Account already exists or unauthorized.");}  
 
-    const result = await dbAbstractor.addUserToDB(email, name, org, (roleman.isCloudAdminLoggedIn() ||
-        roleman.isOrgAdminLoggedIn()) ? role : KLOUD_CONSTANTS.ROLES.USER);
+    const result = await dbAbstractor.addUserToDB(email, name, org, role);
     return {result, out: "", err: ""};
 }

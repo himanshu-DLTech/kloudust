@@ -16,7 +16,8 @@ exports.ACTIONS = Object.freeze({
     lookup_project_resource: Symbol("lookup_project_resource"),
 
     edit_org: Symbol("edit_org"),
-    lookup_org: Symbol("lookup_org")
+    lookup_org: Symbol("lookup_org"),
+    add_user_to_org: Symbol("add_user_to_org")
 });
 
 /**
@@ -45,6 +46,9 @@ exports.checkAccess = function(access_for, user_role=KLOUD_CONSTANTS.env.role) {
         user_role == roles.ORG_ADMIN) return true;
     if (access_for == actions.lookup_org) if (user_role == roles.CLOUD_ADMIN || 
         user_role == roles.ORG_ADMIN) return true;
+    if (access_for == actions.add_user_to_org) if (user_role == roles.CLOUD_ADMIN || 
+        user_role == roles.ORG_ADMIN || (user_role == roles.USER && 
+            dbAbstractor.checkUserBelongsToProject(KLOUD_CONSTANTS.env.prj))) return true;
 
     return false;
 }
@@ -55,7 +59,12 @@ exports.isCloudAdminLoggedIn = _ => KLOUD_CONSTANTS.env.role == KLOUD_CONSTANTS.
 
 exports.isOrgAdminLoggedIn = _ => KLOUD_CONSTANTS.env.role == KLOUD_CONSTANTS.ROLES.ORG_ADMIN;
 
+exports.isNormalUserLoggedIn = _ => KLOUD_CONSTANTS.env.role == KLOUD_CONSTANTS.ROLES.USER;
+
 exports.getNormalizedOrg = org => exports.isCloudAdminLoggedIn() ? org : KLOUD_CONSTANTS.env.org;
 
 exports.getNormalizedProject = prj => exports.isCloudAdminLoggedIn() || exports.isOrgAdminLoggedIn ?
     prj : KLOUD_CONSTANTS.env.prj;
+
+exports.getNormalizedRole = role => exports.isCloudAdminLoggedIn() || exports.isOrgAdminLoggedIn ?
+    role : KLOUD_CONSTANTS.ROLES.USER;

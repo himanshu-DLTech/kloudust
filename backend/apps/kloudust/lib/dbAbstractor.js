@@ -303,7 +303,7 @@ exports.addProject = async(name, description="", orgIn=KLOUD_CONSTANTS.env.org) 
  * @param {string} name Project name
  */
 exports.getProject = async (name, org=KLOUD_CONSTANTS.env.org) => {
-    const userid = KLOUD_CONSTANTS.env.user, projectid = `${(name||"undefined").toLocaleLowerCase()}_${org}`;
+    const userid = KLOUD_CONSTANTS.env.userid, projectid = `${(name||"undefined").toLocaleLowerCase()}_${org}`;
     org = roleman.getNormalizedOrg(org); 
 
     let results;
@@ -314,7 +314,7 @@ exports.getProject = async (name, org=KLOUD_CONSTANTS.env.org) => {
     }
     else {
         if (name) results = await _db().getQuery("select * from projects where id in \
-            (select projectid from projectusermappings where userid=?) and id=?", [userid,projectid]);
+            (select projectid from projectusermappings where userid=?) and name=?", [userid,name]);
         else results = await _db().getQuery("select * from projects where id in \
             (select projectid from projectusermappings where userid=?)", [userid]);
     }
@@ -344,14 +344,17 @@ exports.deleteProject = async (name, org=KLOUD_CONSTANTS.env.org) => {
  * @param {string} name The user's name 
  * @param {string} org The user's organization, only honored for 
  *                     cloud admins, else the current org is used.
+ * @param {string} role The user's role, only honored for 
+ *                     cloud or org admins, else the user role is used.
  * @return true on succes, false otherwise
  */
-exports.addUserToDB = async (email, name, org=KLOUD_CONSTANTS.env.org, role) => {
-    if ((!await roleman.isSetupMode()) && (!roleman.checkAccess(roleman.ACTIONS.edit_org))) {_logUnauthorized(); return false; }
+exports.addUserToDB = async (email, name, org=KLOUD_CONSTANTS.env.org, role=KLOUD_CONSTANTS.ROLES.USER) => {
+    if ((!await roleman.isSetupMode()) && (!roleman.checkAccess(roleman.ACTIONS.add_user_to_org))) {
+        _logUnauthorized(); return false; }
 
     const query = "insert into users(id, name, org, role) values (?,?,?,?)", 
-        orgFixed = roleman.getNormalizedOrg(org);
-    return await _db().runCmd(query, [email.toLocaleLowerCase(), name, orgFixed, role]);
+        orgFixed = roleman.getNormalizedOrg(org), roleFixed = roleman.getNormalizedRole(role);
+    return await _db().runCmd(query, [email.toLocaleLowerCase(), name, orgFixed, roleFixed]);
 }
 
 /**
@@ -364,12 +367,25 @@ exports.addUserToDB = async (email, name, org=KLOUD_CONSTANTS.env.org, role) => 
  * @return true on succes, false otherwise
  */
 exports.removeUserFromDB = async (email, org=KLOUD_CONSTANTS.env.org) => {
-    if (!roleman.checkAccess(roleman.ACTIONS.edit_org)) {_logUnauthorized(); return false;}
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}
 
-    const orgFixed = roleman.getNormalizedOrg(org);
+    const orgFixed = roleman.getNormalizedOrg(org), userid = email.toLocaleLowerCase();
+    const userToDelete = await exports.getUserForEmail(email);
+    if (roleman.isNormalUserLoggedIn() && (userToDelete.role != KLOUD_CONSTANTS.ROLES.USER)) {  // can't delete admins by users
+        _logUnauthorized(); return false; }  
 
-    const query = "delete from users where id=? and org=?";
-    return await _db().runCmd(query, [email.toLocaleLowerCase(), orgFixed]);
+    const commandsToUpdate = [
+        {
+            cmd: "delete from users where id=? and org=?", 
+            params: [userid, orgFixed]
+        },
+        {
+            cmd: "delete from projectusermappings where userid=?",
+            params: [userid]
+        }
+    ];
+    const deleteResult = await _db().runTransaction(commandsToUpdate);
+    return deleteResult;
 }
 
 /**
@@ -458,8 +474,9 @@ exports.loginUser = async (email, project) => {
 
     const users = await _db().getQuery("select * from users where id = ?", email.toLocaleLowerCase());
     if (!users || !users.length) return false;  // bad ID 
+    KLOUD_CONSTANTS.env.org = users[0].org; // the project check below needs this
     const project_check = (users[0].role == KLOUD_CONSTANTS.ROLES.ORG_ADMIN || 
-        users[0].role == KLOUD_CONSTANTS.ROLES.CLOUD_ADMIN) ? true : await exports.checkUserBelongsToProject(email, project, users[0].org);
+        users[0].role == KLOUD_CONSTANTS.ROLES.CLOUD_ADMIN) ? true : await exports.checkUserBelongsToProject(email, project);  
     if (!project_check) return false;  // not part of this project    
     
     KLOUD_CONSTANTS.env.username = users[0].name;
@@ -481,7 +498,7 @@ exports.loginUser = async (email, project) => {
 exports.checkUserBelongsToProject = async function (userid=KLOUD_CONSTANTS.env.userid, 
         project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANTS.env.org) {
 
-    project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
+    org = roleman.getNormalizedOrg(org);
 
     const projectid = _getProjectID(project, org);
     const check = await _db().getQuery("select projectid from projectusermappings where userid = ? and projectid = ?", 
