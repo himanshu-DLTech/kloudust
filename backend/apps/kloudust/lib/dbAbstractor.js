@@ -125,6 +125,18 @@ exports.getHostResourceForProject = async name => {
 }
 
 /**
+ * Returns all registered host resources. Only cloud admins can query.
+ * @return All registered host resources or null on errors.
+ */
+exports.getHostResources = async _ => {
+    if (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource)) {_logUnauthorized(); return false; }
+
+    const query = "select * from hostresources";
+    const resources = await _db().getQuery(query, []);
+    if ((!resources) || (!resources.length)) return null; else return resources;
+}
+
+/**
  * Deletes the given host resource. Only cloud admin can delete hosts.
  * @param {string} name The resource name
  * @return true on success or false otherwise
@@ -238,11 +250,11 @@ exports.deleteVM = async (name, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONST
 /**
  * Returns VMs for the given org and / or current project. All VMs for the current project
  * are returned if hostname is skipped. This is for project admins or project users.
- * @param {string} project The project, if skipped is auto picked from the environment
  * @param {string} org The org, if skipped is auto picked from the environment
+ * @param {string} project The project, if skipped is auto picked from the environment if needed
  * @return The list of VMs
  */
-exports.listVMsForOrgOrProject = async (project, org=KLOUD_CONSTANTS.env.org) => {
+exports.listVMsForOrgOrProject = async (org=KLOUD_CONSTANTS.env.org, project) => {
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_project_resource)) {_logUnauthorized(); return false;}
     if (project) project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
     if ((!project) && (!roleman.isOrgAdminLoggedIn()) && (!roleman.isOrgAdminLoggedIn())) project=KLOUD_CONSTANTS.env.prj;

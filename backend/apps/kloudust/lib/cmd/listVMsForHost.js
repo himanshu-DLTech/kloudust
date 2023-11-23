@@ -25,13 +25,10 @@ module.exports.exec = async function(params) {
     if (!hostInfo) { const error = "Bad hostname or host not found"; 
         params.consoleHandlers.LOGERROR(error); return CMD_CONSTANTS.FALSE_RESULT(error); }
     const vms = await dbAbstractor.listVMsForCloudAdmin(hostname, true);
-    const vms_ret = []; for (const vm of vms) vms_ret.push({...vm, creationcmd: undefined});
+    const vms_ret = []; if (vms) for (const vm of vms) vms_ret.push({...vm, creationcmd: undefined});
 
-    let out = "";
-    if (vms) {
-        out += "VM information from the database follows.";
-        for (const vm of vms_ret) out += "\n"+JSON.stringify(vm);
-    }
+    let out = "VM information from the database follows.";
+    for (const vm of vms_ret) out += "\n"+JSON.stringify(vm);
 
     if (hostInfo && verifyhost.trim().toLowerCase() == "verifyhost") {
         out += "\n"+"VM information from the specific host follows.";
@@ -46,5 +43,5 @@ module.exports.exec = async function(params) {
         }
         const xforgeResults = await xforge(xforgeArgs); 
         out += "\n"+xforgeResults.stdout; return {...xforgeResults, out, stdout: out, vms: vms_ret};
-    } else return {result: true, out, err: "", vms: vms_ret};
+    } else return {result: true, out, stdout: out, err: "", stderr: "", vms: vms_ret};
 }
