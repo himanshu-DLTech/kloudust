@@ -348,6 +348,23 @@ exports.deleteProject = async (name, org=KLOUD_CONSTANTS.env.org) => {
 }
 
 /**
+ * Changes given user's role, only admins can do this.
+ * @param {string} email The user's email, must be unique
+ * @param {string} role The user's role, only honored for 
+ *                     cloud or org admins, else the user role is used
+ * @param {string} org The user's organization, only honored for 
+ *                     cloud admins, else the current org is used
+ * @return true on succes, false otherwise
+ */
+exports.changeUserRole = async function(email, role, org) {
+    if ((!roleman.isCloudAdminLoggedIn()) && (!roleman.isOrgAdminLoggedIn())) {_logUnauthorized(); return false;}
+
+    const query = "update users set role = ? where id = ? and org = ?", 
+        orgFixed = roleman.getNormalizedOrg(org), roleFixed = roleman.getNormalizedRole(role);
+    return await _db().runCmd(query, [roleFixed, email, orgFixed]);
+}
+
+/**
  * Adds the given user to the DB
  * @param {string} email The user's email, must be unique
  * @param {string} name The user's name 

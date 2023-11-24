@@ -61,10 +61,14 @@ exports.isOrgAdminLoggedIn = _ => KLOUD_CONSTANTS.env.role == KLOUD_CONSTANTS.RO
 
 exports.isNormalUserLoggedIn = _ => KLOUD_CONSTANTS.env.role == KLOUD_CONSTANTS.ROLES.USER;
 
-exports.getNormalizedOrg = org => exports.isCloudAdminLoggedIn() ? org : KLOUD_CONSTANTS.env.org;
+exports.getNormalizedOrg = org => exports.isCloudAdminLoggedIn() && org ? org : KLOUD_CONSTANTS.env.org;
 
-exports.getNormalizedProject = prj => exports.isCloudAdminLoggedIn() || exports.isOrgAdminLoggedIn ?
+exports.getNormalizedProject = prj => prj && (exports.isCloudAdminLoggedIn() || exports.isOrgAdminLoggedIn) ?
     prj : KLOUD_CONSTANTS.env.prj;
 
-exports.getNormalizedRole = role => exports.isCloudAdminLoggedIn() || exports.isOrgAdminLoggedIn ?
-    role : KLOUD_CONSTANTS.ROLES.USER;
+exports.getNormalizedRole = roleRaw => {
+    const role = Object.values(KLOUD_CONSTANTS.ROLES).includes(roleRaw?.toLowerCase()) ? roleRaw.toLowerCase() : 
+        KLOUD_CONSTANTS.ROLES.USER;
+    return exports.isCloudAdminLoggedIn() ? role : 
+        exports.isOrgAdminLoggedIn() && (role != KLOUD_CONSTANTS.ROLES.CLOUD_ADMIN) ? role : KLOUD_CONSTANTS.ROLES.USER;
+}
