@@ -584,6 +584,159 @@
                 "items": []
               },
               "bodyType": "Text",
+              "textBody": "{\n  \"cmd\": \"changeUserRole root@tekmonks.com orgadmin\"\n}"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": []
+              },
+              "scheme": {
+                "secure": true,
+                "name": "https",
+                "version": "V11"
+              },
+              "host": "10.211.55.3:9090",
+              "path": "/apps/kloudust/kloudustcmd"
+            },
+            "id": "8d2e3dde-a7ac-4c23-b014-2923597ded85",
+            "name": "Change User Role - By Cloud Admin",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "enabled": true,
+                "name": "X-API-KEY",
+                "value": "fheiwu98237hjief8923ydewjidw834284hwqdnejwr79389"
+              },
+              {
+                "enabled": true,
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi50ZWttb25rcy5jb20iLCJpYXQiOjE2OTk3NzMzNzIsImlhdG1zIjoxNjk5NzczMzcxODcwLCJuYmYiOjE2OTk3NzMzNzIsImV4cCI6OTQ3NTc3MzM3MiwianRpIjoiYjE0NGQ4YTViNTYyMjc4MzgwOTVjZTdlMGQ4YzM5NTgiLCJleHBpcnlJbnRlcnZhbCI6Ijc3NzYwMDAwMDAiLCJpZCI6InJ2a2Fwb29yQHRla21vbmtzLmNvbSIsIm5hbWUiOiJSb2hpdCBLYXBvb3IiLCJvcmciOiJUZWttb25rcyIsInN1Ym9yZyI6IlRla21vbmtzIiwicm9sZSI6ImFkbWluIiwiYXBwcm92ZWQiOnRydWUsInZlcmlmaWVkIjp0cnVlLCJvbmV0aW1la2V5IjoiMTY5OTc3MzM3MTQ4MTk0MjE0NTYyNDM2NDI2NDEiLCJhcHBuYW1lIjoibG9naW5hcHAifQ==.c909697ef369c773e0a50c41f9c8d1744839f9a18527a36fc0e4ea645a61aae3"
+              }
+            ]
+          }
+        },
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text",
+              "textBody": "{\n  \"cmd\": \"changeUserRole user@tekmonks.com user\"\n}"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": []
+              },
+              "scheme": {
+                "secure": true,
+                "name": "https",
+                "version": "V11"
+              },
+              "host": "10.211.55.3:9090",
+              "path": "/apps/kloudust/kloudustcmd"
+            },
+            "id": "c8d67d25-edf9-4fe3-af98-3923aabeafa2",
+            "name": "Change User Role - By Org Admin",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "enabled": true,
+                "name": "X-API-KEY",
+                "value": "fheiwu98237hjief8923ydewjidw834284hwqdnejwr79389"
+              },
+              {
+                "enabled": true,
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi50ZWttb25rcy5jb20iLCJpYXQiOjE2OTk3NzMzNzIsImlhdG1zIjoxNjk5NzczMzcxODcwLCJuYmYiOjE2OTk3NzMzNzIsImV4cCI6OTQ3NTc3MzM3MiwianRpIjoiYjE0NGQ4YTViNTYyMjc4MzgwOTVjZTdlMGQ4YzM5NTgiLCJleHBpcnlJbnRlcnZhbCI6Ijc3NzYwMDAwMDAiLCJpZCI6InJvb3RAdGVrbW9ua3MuY29tIiwibmFtZSI6IlJvaGl0IEthcG9vciIsIm9yZyI6IlRla21vbmtzIiwic3Vib3JnIjoiVGVrbW9ua3MiLCJyb2xlIjoiYWRtaW4iLCJhcHByb3ZlZCI6dHJ1ZSwidmVyaWZpZWQiOnRydWUsIm9uZXRpbWVrZXkiOiIxNjk5NzczMzcxNDgxOTQyMTQ1NjI0MzY0MjY0MSIsImFwcG5hbWUiOiJsb2dpbmFwcCJ9.c909697ef369c773e0a50c41f9c8d1744839f9a18527a36fc0e4ea645a61aae3"
+              }
+            ]
+          }
+        },
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text",
+              "textBody": "{\n  \"cmd\": \"changeUserRole user@tekmonks.com user\"\n}"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": []
+              },
+              "scheme": {
+                "secure": true,
+                "name": "https",
+                "version": "V11"
+              },
+              "host": "10.211.55.3:9090",
+              "path": "/apps/kloudust/kloudustcmd"
+            },
+            "id": "718e2c64-d680-4669-93cd-f34a3ae28a83",
+            "name": "Change User Role - By Regular User",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "enabled": true,
+                "name": "X-API-KEY",
+                "value": "fheiwu98237hjief8923ydewjidw834284hwqdnejwr79389"
+              },
+              {
+                "enabled": true,
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi50ZWttb25rcy5jb20iLCJpYXQiOjE2OTk3NzMzNzIsImlhdG1zIjoxNjk5NzczMzcxODcwLCJuYmYiOjE2OTk3NzMzNzIsImV4cCI6OTQ3NTc3MzM3MiwianRpIjoiYjE0NGQ4YTViNTYyMjc4MzgwOTVjZTdlMGQ4YzM5NTgiLCJleHBpcnlJbnRlcnZhbCI6Ijc3NzYwMDAwMDAiLCJpZCI6InVzZXJAdGVrbW9ua3MuY29tIiwibmFtZSI6IlRla21vbmtzIFVzZXIiLCJvcmciOiJUZWttb25rcyIsInN1Ym9yZyI6IlRla21vbmtzIiwicm9sZSI6InVzZXIiLCJhcHByb3ZlZCI6dHJ1ZSwidmVyaWZpZWQiOnRydWUsIm9uZXRpbWVrZXkiOiIxNjk5NzczMzcxNDgxOTQyMTQ1NjI0MzY0MjY0MSIsImFwcG5hbWUiOiJsb2dpbmFwcCJ9.c909697ef369c773e0a50c41f9c8d1744839f9a18527a36fc0e4ea645a61aae3"
+              }
+            ]
+          }
+        },
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text",
               "textBody": "{\n  \"project\": \"default\",\n  \"cmd\": \"createVM ubuntu2204_01 \\\"Ubuntu 22 Server VM - 01\\\" 2 8192 30 ubuntu-server_22_04_amd64 \\\"{system_info: {default_user: {name: tekmonks, home: /home/tekmonks, sudo: 'ALL=(ALL) NOPASSWD:ALL'}}, password: DLT4TekMonks, chpasswd: {expire: false}, hostname: kdtestubuntu2204, ssh_pwauth: true, package_upgrade: true, packages: [net-tools], runcmd: null}\\\"\"\n}"
             },
             "uri": {
