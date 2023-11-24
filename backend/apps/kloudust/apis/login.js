@@ -27,7 +27,7 @@ exports.doService = async jsonReq => {
 exports.isValidLogin = headers => APIREGISTRY.getExtension("JWTTokenManager").checkToken(exports.getToken(headers));
 exports.getID = headers => APIREGISTRY.getExtension("JWTTokenManager").getClaims(headers).id;
 exports.getJWT = headers => APIREGISTRY.getExtension("JWTTokenManager").getToken(headers);
-
+exports.getToken = headers => exports.getJWT(headers);
 
 function _getOTK(_jsonReq) {
     return {...CONSTANTS.TRUE_RESULT, otk: serverutils.generateUUID(false)};

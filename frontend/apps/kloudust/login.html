@@ -101,7 +101,8 @@ div#lgbox img {height: 4em; width: 100%;}
 
 <div id="lgbox" onclick='monkshu_env.apps[APP_CONSTANTS.APP_NAME].tkmlogin.login("{{{i18n.Title}}}",
 		"{{#_org_monkshu_makeLink}}{{{APP_CONSTANTS.LOGINRESULT_HTML}}}{{/_org_monkshu_makeLink}}", 
-		"{{{APP_CONSTANTS.API_PATH}}}/login?op=getotk", "#2b2d2f", "{{{APP_CONSTANTS.TKMLOGINAPP_URL}}}",)'>
+		"{{{APP_CONSTANTS.API_PATH}}}/login?op=getotk&x-api-key={{{LOGIN_API_KEY}}}", "#2b2d2f", 
+		"{{{APP_CONSTANTS.TKMLOGINAPP_URL}}}",)'>
 	<img src="./img/tkmlogodark.svg">
 	{{#url._error}}<span class="error">{{i18n.LoginFailed}}</span>{{/url._error}}
 	<span>{{i18n.LoginMsg}}</span>

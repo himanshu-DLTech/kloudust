@@ -41,9 +41,11 @@ async function verify(verifyapi, resulturl) {
 
     const apiurl =  verifyapi + (new URL(verifyapi).search ? `&jwt=${jwt}` : `?jwt=${jwt})`);
     let verifiedResult; try {verifiedResult = await fetch(apiurl);} catch (err) {
-        console.error(`JWT verification failed for Tekmonks Unified Login, error was ${err}.`); _dofailure(); return; }
+        console.error(`JWT verification failed for Tekmonks Unified Login, error was ${err}.`); return false; }
     
-    return verifiedResult.json();
+    if (verifiedResult.ok) try {return await verifiedResult.json()} catch (err) {
+        console.error(`JWT verification failed for Tekmonks Unified Login, error was ${err}.`); return false; } 
+    else return false;
 }
 
 export const tkmlogin = {login, verify};

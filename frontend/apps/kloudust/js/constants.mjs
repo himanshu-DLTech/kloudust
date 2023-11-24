@@ -5,7 +5,7 @@
  */
 const FRONTEND = "https://{{{hostname}}}";
 const BACKEND = "https://{{{hostname}}}:9090";
-const APP_NAME = "kloudustwebadmin";
+const APP_NAME = "kloudust";
 const APP_PATH = `${FRONTEND}/apps/${APP_NAME}`;
 const API_PATH = `${BACKEND}/apps/${APP_NAME}`;
 const CONF_PATH = `${FRONTEND}/apps/${APP_NAME}/conf`;

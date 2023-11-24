@@ -4,13 +4,13 @@
     ],
     "redirects": [
         {
-            "^http(.*)://([^/]+?)/index.html$": "http{{{$1}}}://{{{$2}}}/apps/kloudustwebadmin/index.html"
+            "^http(.*)://([^/]+?)/index.html$": "http{{{$1}}}://{{{$2}}}/apps/kloudust/index.html"
         },
         {
-            "^http(.*)://([^/]+?)/$": "http{{{$1}}}://{{{$2}}}/apps/kloudustwebadmin/index.html"
+            "^http(.*)://([^/]+?)/$": "http{{{$1}}}://{{{$2}}}/apps/kloudust/index.html"
         },
         {
-            "^http(.*)://([^/]+?)$": "http{{{$1}}}://{{{$2}}}/apps/kloudustwebadmin/index.html"
+            "^http(.*)://([^/]+?)$": "http{{{$1}}}://{{{$2}}}/apps/kloudust/index.html"
         }
     ],
     "diskCache": {

@@ -4,5 +4,6 @@
     "OS_MAPPINGS": [],
     "INIT_MODULES": ["lib/dbAbstractor.js", "lib/jobs.js"],
     "HOSTCHOOSER_ALGO": "LEAST_CPU",
-    "DEFAULT_VM_SHUTDOWN_WAIT": 90
+    "DEFAULT_VM_SHUTDOWN_WAIT": 90,
+    "INSECURE_DEVELOPMENT_MODE": true
 }

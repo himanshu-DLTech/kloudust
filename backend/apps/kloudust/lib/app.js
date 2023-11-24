@@ -3,5 +3,6 @@
  */
 
 module.exports.initSync = _ => {
-    global.KLOUD_CONSTANTS = require(`${__dirname}/constants.js`);
+    global.KLOUD_CONSTANTS = require(`${__dirname}/constants.js`);  // setup the constants
+    require(`${KLOUD_CONSTANTS.LIBDIR}/kloudustAPISecurity.js`).initSync(); // init API security checker
 }
