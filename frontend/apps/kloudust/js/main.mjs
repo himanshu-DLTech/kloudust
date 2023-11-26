@@ -3,7 +3,6 @@
  * (C) 2020 TekMonks. All rights reserved.
  * License: See enclosed license.txt file.
  */
-import {session} from "/framework/js/session.mjs";
 import {apimanager as apiman} from "/framework/js/apimanager.mjs";
 
 function registerHost() {
@@ -35,8 +34,7 @@ function _runKloudustCommand(template, values, command) {
     monkshu_env.components['dialog-box'].showDialog(template, true, true, {}, "dialog", values, async result=>{
         monkshu_env.components['dialog-box'].hideDialog("dialog");
         if (!Mustache) await $$.require("/framework/3p/mustache.min.js");
-        const cmd = ["-u", session.get(APP_CONSTANTS.USERID), "-p", session.get(APP_CONSTANTS.USERPW),
-            "-e", Mustache.render(command, result)];
+        const cmd = Mustache.render(command, result);
         _outputLog(`Running command - ${cmd}`, true);
         const cmdResult = await apiman.rest(APP_CONSTANTS.API_KLOUDUSTCMD, "POST", {cmd}, true, false);
         if (cmdResult) {_outputLog(cmdResult.stdout); _outputLog(cmdResult.stderr); _outputLog(`Success! Exit code: ${cmdResult.exitCode}`);}

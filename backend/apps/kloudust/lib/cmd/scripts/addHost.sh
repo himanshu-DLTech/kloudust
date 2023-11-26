@@ -8,6 +8,35 @@ function exitFailed() {
     exit 1
 }
 
+function printConfig() {
+    CORESPERCPU=`lscpu | grep Core | tr -s " " | cut -d":" -f2 | xargs`
+    SOCKETS=`lscpu | grep Socket | tr -s " " | cut -d":" -f2 | xargs`
+    CORES=`lscpu | grep CPU | tr -s " " | cut -d":" -f2 | xargs`
+    PROCESSORMAKER=`lscpu | grep 'Vendor ID' | tr -s " " | cut -d":" -f2 | xargs`
+    PROCESSORNAME=`lscpu | grep 'Model name' | tr -s " " | cut -d":" -f2 | xargs`
+    PROCESSORMODEL=`lscpu | grep 'Model:' | tr -s " " | cut -d":" -f2 | xargs`
+    PROCESSORSPEED=`lscpu | grep 'CPU max MHz' | tr -s " " | cut -d":" -f2 | xargs`
+    PROCESSORARCH=`lscpu | grep 'Architecture:' | tr -s " " | cut -d":" -f2 | xargs`
+    if [ "$PROCESSORARCH" == "x86_64" ]; then PROCESSORARCH=amd64; fi
+    MEMORY=`free -b | grep "Mem:" | tr -s " " | cut -d" " -f2`
+    ROOTDISKTOTAL=`df -B1  / | tail -n+2 | tr -s " " | cut -d" " -f2`
+    NETSPEED=$((1073741824*$(networkctl status `networkctl | grep routable | grep ether | head -n1 | xargs | cut -d" " -f2` | grep -i speed | xargs | cut -d" " -f2 | cut -d"G" -f1)))
+    OSRELEASE=$(printf "$(cat /etc/issue)" | head -n1 | xargs)
+
+cat <<ENDJSON
+{
+    "cores": "$CORESPERCPU",
+    "memory": "$MEMORY",
+    "disk": "$ROOTDISKTOTAL",
+    "netspeed": "$NETSPEED",
+    "processor": "$PROCESSORMAKER:$PROCESSORNAME:$PROCESSORMODEL:$PROCESSORSPEED",
+    "processorarchitecture": "$PROCESSORARCH",
+    "sockets": "$SOCKETS",
+    "ostype": "$OSRELEASE"
+}
+ENDJSON
+}
+
 printf "Updating the system\n"
 if [ -f "`which yum`" ]; then 
     if ! sudo yum -y install epel-release; then exitFailed; fi
@@ -89,4 +118,5 @@ else
 fi
 
 printf "\n\nSystem initialization finished successfully\n"
+printConfig()
 exit 0

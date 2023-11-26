@@ -16,7 +16,7 @@ const LOGINRESULT_HTML = APP_PATH+"/loginresult.html";
 
 export const APP_CONSTANTS = {
     FRONTEND, BACKEND, APP_PATH, APP_NAME, CONF_PATH, API_PATH,
-    INDEX_HTML, MAIN_HTML, LOGIN_HTML, LOGINRESULT_HTML,
+    INDEX_HTML, MAIN_HTML, LOGIN_HTML, LOGINRESULT_HTML, 
 
     DIALOGS_PATH: APP_PATH+"/dialogs",
 
@@ -34,6 +34,9 @@ export const APP_CONSTANTS = {
     USERORG: "userorg",
     USER_ROLE: "user",
     GUEST_ROLE: "guest",
+
+    TKMLOGIN_LIB: `${APP_PATH}/3p/tkmlogin.mjs`,
+
     PERMISSIONS_MAP: {
         user:[window.location.origin, MAIN_HTML, LOGIN_HTML, LOGINRESULT_HTML, APP_PATH+$$.MONKSHU_CONSTANTS.ERROR_HTML], 
         guest:[window.location.origin, LOGIN_HTML, LOGINRESULT_HTML, $$.MONKSHU_CONSTANTS.ERROR_HTML]

@@ -1,0 +1,30 @@
+{
+    "command": "addHost",
+    "type": "kloudust_cmdline",
+    "kloudust_cmdline_params": ["hostname", "hostip", "ostype", "adminid", "adminpass", "hostsshkey", "cores", 
+        "memory", "disk", "netspeed", "processor", "processorarch", "sockets", "nochangepassword"],
+
+    "title": "{{i18n.RegisterHost}}",
+    
+    "required": [
+        {"id": "hostname", "type": "text", "placeholder": "{{i18n.Hostname}}", "required": true, "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
+        {"id": "hostip", "type": "text", "placeholder": "{{i18n.Hostname}}", "required": true, "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
+        {"id": "adminid", "type": "text", "placeholder": "{{i18n.Hostname}}", "required": true, "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
+        {"id": "adminpass", "type": "password", "placeholder": "{{i18n.Hostname}}", "required": true, "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
+        {"id": "hostsshkey", "type": "text", "placeholder": "{{i18n.Hostname}}", "required": true, "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
+        {"id": "ostype", "type": "select", "label": "{{i18n.HostOSType}}", "options":[
+            {"value":"rhel9_compatible", "label":"RHEL 9 or Compatible"}, {"value":"ubuntu22", "label":"Ubuntu 22 LTS"}]}
+    ],
+
+    "optional": [
+        {"id": "cores", "type": "text", "placeholder": "{{i18n.HostCores}}", "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
+        {"id": "memory", "type": "text", "placeholder": "{{i18n.HostMemory}}", "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
+        {"id": "disk", "type": "text", "placeholder": "{{i18n.HostDisk}}", "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
+        {"id": "networkspeed", "type": "password", "placeholder": "{{i18n.HostNetspeed}}", "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
+        {"id": "processor", "type": "text", "placeholder": "{{i18n.HostProcessor}}", "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
+        {"id": "processorarch", "type": "text", "placeholder": "{{i18n.HostProcessorArchitecture}}", "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
+        {"id": "sockets", "type": "text", "placeholder": "{{i18n.HostSockets}}", "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
+        {"id": "nochangepassword", "type": "select", "label": "{{i18n.HostChangeAdminPassword}}", 
+            "options":[{"value":"change", "label":"Yes"}, {"value":"nochange", "label":"No"}]}
+    ]
+}

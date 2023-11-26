@@ -1,5 +1,10 @@
 /**
  * Runs Kloudust commands. Should always require JWT token to run.
+ * 
+ * Request params
+ * 	cmd - The command to run, the user ID is auto picked always from the JWT token
+ * 	setup - Only valid during special setup mode, if set to true then setup mode will be used if secure
+ * 
  * (C) 2020 TekMonks. All rights reserved.
  */
 

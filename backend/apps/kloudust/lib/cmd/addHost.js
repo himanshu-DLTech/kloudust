@@ -47,13 +47,24 @@ module.exports.exec = async function(params) {
 
     const results = await xforge(xforgeArgs);
     if (results.exitCode==0) {
-        if (await dbAbstractor.addHostToDB(hostname, hostip, ostype.toLowerCase(), adminid, newPassword, 
-                hostsshkey, parseInt(cores), parseInt(memory), parseInt(disk), parseInt(netspeed), processor, 
-                processorarchitecture, parseInt(sockets))) return {result: true, out: results.stdout, err: results.stderr}; 
+        // try to get the real hardware config from the host itself and override as necessary
+        const scriptOutChunks = results.stdout.split(CMD_CONSTANTS.SCRIPT_JSONOUT_SPLITTER);
+        let hostConfig = {}; if (scriptOutChunks[1]) try{hostConfig = JSON.parse(scriptOutChunks[1])} catch (err) {
+            params.consoleHandlers.LOGERROR(`Unable to detect hardaware config from the host ${hostip}, JSON parsing failed for ${scriptOutChunks[1]}`);
+        } else {params.consoleHandlers.LOGWARN(`Unable to detect hardaware config from the host ${hostip}, no JSON out found`);}
+        const realCores = parseInt(hostConfig.cores||cores), realMemory = parseInt(hostConfig.memory||memory), 
+            realDisk = parseInt(hostConfig.disk||disk), realNetspeed = parseInt(netspeed||hostConfig.netspeed), 
+            realProcessor = hostConfig.processor||processor, 
+            realProcessorArchitecture = hostConfig.processorarchitecture||processorarchitecture, 
+            realSockets = parseInt(hostConfig.sockets||sockets);
+
+        if (await dbAbstractor.addHostToDB(hostname, hostip, ostype.toLowerCase(), adminid, newPassword, hostsshkey, 
+                realCores, realMemory, realDisk, realNetspeed, realProcessor, realProcessorArchitecture, realSockets)) 
+            return {result: true, stdout: scriptOutChunks[0], out: scriptOutChunks[0], err: results.stderr, stderr: results.stderr}; 
         else {_showError(newPassword, adminid, adminpass, params.consoleHandlers||KLOUD_CONSTANTS.LOG); return {
-            result: false, out: results.stdout, err: results.stderr};}
+            result: false, stdout: scriptOutChunks[0], out: scriptOutChunks[0], err: results.stderr, stderr: results.stderr};}
     } else {_showError(newPassword, params[2], params[3], params.consoleHandlers||KLOUD_CONSTANTS.LOG); return {
-        result: false, out: results.stdout, err: results.stderr};}
+        result: false, out: results.stdout, stdout: results.stdout, stderr: results.stderr, err: results.stderr};}
 }
 
 function _showError(newPassword, userid, oldPassword, consoleHandlers) {
