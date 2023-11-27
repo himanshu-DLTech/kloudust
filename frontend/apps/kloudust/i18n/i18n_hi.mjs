@@ -37,5 +37,8 @@ export const i18n = {
 
 "KloudustCommand": "क्लाउडस्ट कमांड",
 "DBName": "डीबी का नाम",
-"DBDescription": "डीबी विवरण"
+"DBDescription": "डीबी विवरण",
+
+"WelcomeHeading": "Kloudust - Welcome {{{user}}}",
+"WelcomeSubheading": "Click any page from the left bar or choose from below"
 }

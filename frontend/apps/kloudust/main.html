@@ -76,8 +76,11 @@ div#button img {width: 5em; height: 5em;}
 	<link href="./img/favicon.png" rel="icon" type="image/x-icon">
 
 	<script type="module">
-	import {main} from "./js/main.mjs"; window.main = main; 
-	import {loginmanager} from "./js/loginmanager.mjs"; window.loginmanager = loginmanager;
+	import {main} from "./js/main.mjs"; window.monkshu_env.apps[APP_CONSTANTS.APP_NAME].main = main; 
+	import {loginmanager} from "./js/loginmanager.mjs"; window.monkshu_env.apps[APP_CONSTANTS.APP_NAME].loginmanager = loginmanager;
+	main.registerHostingDivAndInitialContentTemplate(document.querySelector("div#maincontent"), 
+		document.querySelector("template#initialContent"));
+	main.showContent();
 	</script>
 		
 	<title>{{i18n.Title}}</title>
@@ -86,28 +89,38 @@ div#button img {width: 5em; height: 5em;}
 <body>
 <div id="leftbar">
 <div id="topleftbaritems">
-	<span class="leftbaritem"><img src="img/plus.svg"><span>Create</span></span>
-	<span class="leftbaritem"><img src="img/vms.svg"><span>Virtual Machines</span></span>
+	{{#mainPageData.leftbarCommands}}
+	<span class="leftbaritem" id="leftbarcmd_{{id}}" 
+			onclick="window.monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.cmdClicked(this, '{{id}}')">
+		<img src="{{{logo}}}"><span>{{label}}</span>
+	</span>
+	{{/mainPageData.leftbarCommands}}
 </div>
 
 <div id="bottomleftbaritems">
-	<span class="leftbaritem" onclick="loginmanager.logout()"><img src="img/door.svg"><span>Logout</span></span>
+	<span class="leftbaritem" onclick="window.monkshu_env.apps[APP_CONSTANTS.APP_NAME].loginmanager.logout()"><img src="img/door.svg"><span>Logout</span></span>
 </div>
 </div>
 
 <div id="maincontent">
+	<!-- Whatever is open goes here -->
+</div>
+
+<template id="initialContent">
 <div id="welcomediv">
 	<img id="mainlogo" src="img/kloudustlogo.svg">
-	<span id="welcome">Kloudust - Welcome Rohit Kapoor</span>
-	<span id="welcome_subheading">Click any page from the left bar or choose from below</span>
+	<span id="welcome">{{mainPageData.welcomeHeading}}</span>
+	<span id="welcome_subheading">{{i18n.WelcomeSubheading}}</span>
 </div>
 
 <div id="buttons">
-	<div id="button"><img src="img/createvm.svg"><span>Virtual Machine</span></div>
-	<div id="button"><img src="img/createcontainer.svg"><span>Container</span></div>
-	<div id="button"><img src="img/createdb.svg"><span>SQL Database</span></div>
+	{{#mainPageData.mainCommands}}
+	<div id="button" onclick="window.monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.cmdClicked(this, '{{id}}')">
+		<img src="{{{logo}}}"><span>{{label}}</span>
+	</div>
+	{{/mainPageData.mainCommands}}
 </div>
-</div>
+</template>
 
 </body>
 </html>

@@ -37,5 +37,8 @@ export const i18n = {
 
 "KloudustCommand": "Kloudustコマンド",
 "DBName": "データベース名",
-"DBDescription": "データベース説明"
+"DBDescription": "データベース説明",
+
+"WelcomeHeading": "Kloudust - Welcome {{{user}}}",
+"WelcomeSubheading": "Click any page from the left bar or choose from below"
 }

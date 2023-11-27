@@ -1,0 +1,5 @@
+[
+    {"id": "createvm", "label": "Virtual Machine", "logo": "img/createvm.svg"},
+    {"id": "createcontainer", "label": "Container", "logo": "img/createcontainer.svg"},
+    {"id": "createsqldb", "label": "SQL Database", "logo": "img/createdb.svg"}
+]

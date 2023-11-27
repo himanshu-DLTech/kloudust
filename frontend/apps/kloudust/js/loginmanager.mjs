@@ -1,6 +1,7 @@
-/* 
+/**
+ * Handles logins. 
  * (C) 2018 TekMonks. All rights reserved.
- * License: See enclosed license.txt file.
+ * License: See enclosed LICENSE file.
  */
 import {router} from "/framework/js/router.mjs";
 import {session} from "/framework/js/session.mjs";

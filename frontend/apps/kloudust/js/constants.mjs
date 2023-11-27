@@ -19,6 +19,7 @@ export const APP_CONSTANTS = {
     INDEX_HTML, MAIN_HTML, LOGIN_HTML, LOGINRESULT_HTML, 
 
     DIALOGS_PATH: APP_PATH+"/dialogs",
+    COMMANDS_PATH: APP_PATH+"/commands",
 
     SESSION_NOTE_ID: "com_monkshu_ts",
 

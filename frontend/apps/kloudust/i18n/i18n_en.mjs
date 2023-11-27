@@ -37,5 +37,8 @@ export const i18n = {
 
 "KloudustCommand": "Kloudust API Command",
 "DBName": "DB Name",
-"DBDescription": "DB Description"
+"DBDescription": "DB Description",
+
+"WelcomeHeading": "Kloudust - Welcome {{{user}}}",
+"WelcomeSubheading": "Click any page from the left bar or choose from below"
 }

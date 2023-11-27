@@ -3,58 +3,59 @@
  * (C) 2020 TekMonks. All rights reserved.
  * License: See enclosed license.txt file.
  */
-import {apimanager as apiman} from "/framework/js/apimanager.mjs";
 
-function registerHost() {
-    _runKloudustCommand(`${APP_CONSTANTS.DIALOGS_PATH}/registerhost.html`, 
-        ["hostname","password","hostkey"],"addHost centos8 {{{hostname}}} root {{{password}}} {{{hostkey}}}");
+import {i18n} from "/framework/js/i18n.mjs";
+import {util} from "/framework/js/util.mjs";
+import {router} from "/framework/js/router.mjs";
+import {session} from "/framework/js/session.mjs";
+import {cmdmanager as cmdman} from "./cmdmanager.mjs";
+
+const LEFTBAR_COMMANDS = `${APP_CONSTANTS.COMMANDS_PATH}/main_leftbar.json`, 
+    MAIN_COMMANDS = `${APP_CONSTANTS.COMMANDS_PATH}/main_content.json`;
+
+let _hostingDiv, _initialContentTemplate;
+
+/**
+ * Registers the hosting DIV which will host all content
+ * @param {element} div The hosting DIV
+ * @param {element} initialContentTemplate HTML5 template element hosting initial content
+ */
+function registerHostingDivAndInitialContentTemplate(div, initialContentTemplate) {
+    _hostingDiv = div; _initialContentTemplate = initialContentTemplate;
 }
 
-function newVM() {
-    _runKloudustCommand(`${APP_CONSTANTS.DIALOGS_PATH}/newvm.html`, 
-        ["hostname", "vmname", "vmdescription", "cores", "memory", "disk", "image", "imagetype"],
-        "createVM {{{hostname}}} {{{vmname}}} \\\"{{{vmdescription}}}\\\" {{{cores}}} {{{memory}}} {{{disk}}} {{{image}}} {{{imagetype}}}");
+/**
+ * Shows the given content. Must be either HTML string or
+ * a DOM subtree of nodes. If no content given then same as 
+ * hiding and going back to home content.
+ * @param {string|Object} contentNode The content to show
+ */
+function showContent(contentNode) { 
+    if (!_hostingDiv) {LOG.error(`Asked to show content but no hosting DIV is registered`); return;}
+    util.removeAllChildElements(_hostingDiv); 
+    const content = contentNode ? (typeof contentNode === "string" ? _getHTMLNodesToInsert(contentNode) : contentNode) : 
+        _initialContentTemplate.content.cloneNode(true);
+    _hostingDiv.appendChild(content);
 }
 
-function newKDS() {
-    _runKloudustCommand(`${APP_CONSTANTS.DIALOGS_PATH}/newkds.html`, 
-        ["hostname", "vmname", "vmdescription", "cores", "memory"],
-        "createKDS {{{hostname}}} {{{vmname}}} \\\"{{{vmdescription}}}\\\" {{{cores}}} {{{memory}}}");
+/** Plugs in our data interceptor which loads initial main and leftbar contents */
+const interceptPageLoadData = _ => router.addOnLoadPageData(APP_CONSTANTS.MAIN_HTML, async (data, _url) => {
+    const mustache = await router.getMustache(), mainPageData = {};
+    mainPageData.welcomeHeading = mustache.render(await i18n.get("WelcomeHeading"), {user: session.get(APP_CONSTANTS.USERNAME)});
+	mainPageData.leftbarCommands = await $$.requireJSON(LEFTBAR_COMMANDS); 
+    mainPageData.mainCommands = await $$.requireJSON(MAIN_COMMANDS);
+    data.mainPageData = mainPageData;
+
+    for (const cmd of [...mainPageData.leftbarCommands, ...mainPageData.mainCommands]) try{
+        cmdman.registerCommand(cmd); } catch (err) {LOG.error(`Error registering command ${cmd.id}.`);}
+});
+
+function _getHTMLNodesToInsert(htmlContent) {
+    const wrapper = document.createElement("div"); wrapper.innerHTML = htmlContent;
+    const docFragment = document.createDocumentFragment(); 
+    for (const childNode of wrapper.childNodes) docFragment.appendChild(childNode);
+    return docFragment;
 }
 
-function vmOp() {
-    _runKloudustCommand(`${APP_CONSTANTS.DIALOGS_PATH}/vmop.html`, 
-        ["vmname", "vmop", "deleteVM"],
-        "{{^deleteVM}}powerOpVm {{{vmname}}} {{{vmop}}}{{/deleteVM}}{{#deleteVM}}deleteVM {{{vmname}}}{{/deleteVM}}");
-}
-
-const run = _ => _runKloudustCommand(`${APP_CONSTANTS.DIALOGS_PATH}/run.html`, ["run"], "{{{run}}}");
-
-function _runKloudustCommand(template, values, command) {
-    monkshu_env.components['dialog-box'].showDialog(template, true, true, {}, "dialog", values, async result=>{
-        monkshu_env.components['dialog-box'].hideDialog("dialog");
-        if (!Mustache) await $$.require("/framework/3p/mustache.min.js");
-        const cmd = Mustache.render(command, result);
-        _outputLog(`Running command - ${cmd}`, true);
-        const cmdResult = await apiman.rest(APP_CONSTANTS.API_KLOUDUSTCMD, "POST", {cmd}, true, false);
-        if (cmdResult) {_outputLog(cmdResult.stdout); _outputLog(cmdResult.stderr); _outputLog(`Success! Exit code: ${cmdResult.exitCode}`);}
-        else _outputLog(`Failed!`);
-    });
-}
-
-function _outputLog(text, addPartition) {
-    const consoleOut = document.querySelector("div#output > div#console");
-    if (addPartition && consoleOut.innerHTML.trim() != "") consoleOut.innerHTML = consoleOut.innerHTML + "<br>\n<br>\n";
-
-    const linebreakEscapedText = text.trim().replace(/(?:\r\n|\r|\n)/g, '<br>');
-    if (text && text.trim != "") {
-        _expandOutput(); consoleOut.innerHTML = consoleOut.innerHTML.trim() != "" ?
-            consoleOut.innerHTML + "<br>\n" + linebreakEscapedText : linebreakEscapedText;
-    }
-}
-
-function _expandOutput() {
-    document.querySelector("span#uparrow").click();
-}
-
-export const main = {registerHost, newVM, newKDS, vmOp, run};
+export const main = {interceptPageLoadData, registerHostingDivAndInitialContentTemplate, showContent,
+    cmdClicked: (_element, id) => cmdman.cmdClicked(id), hideOpenContent: showContent};
