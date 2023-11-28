@@ -6,6 +6,9 @@
 
 import {session} from "/framework/js/session.mjs";
 
+/** @return The filtered role list for file holding role list object */
+const fetchFilteredRoleList = async url => filterRoleList(await $$.requireJSON(url));
+
 /**
  * Filters a role list. A role list format is 
  *  {role_1: [_objects_allowed_1], ..., role_x: _one_object_allowed_x, ..., role_n: [_objects_allowed_n]}
@@ -24,4 +27,4 @@ function filterRoleList(rolelist) {
     return retlist;
 }
 
-export const rolemanager = {filterRoleList};
+export const rolemanager = {filterRoleList, fetchFilteredRoleList};

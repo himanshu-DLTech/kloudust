@@ -26,9 +26,22 @@
     background-clip: padding-box;
 }
 
+body {height:100%; margin: 0;}
+
+div#body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 100%;
+}
+
 div#main {
     display: flex;
     flex-direction: column;
+}
+
+div#close {
+    margin-bottom: 0.5em;
+    text-align: right;
 }
 
 input, input:-internal-autofill-previewed, input:-internal-autofill-selected {
@@ -80,7 +93,8 @@ div.collapsed {
 }
 </style>
 
-<div id="close" onclick='event.stopPropagation(); monkshu_env.components["form-runner"].close(this, "main")'>X</div>
+<div id="body">
+<div id="close" onclick='event.stopPropagation(); monkshu_env.components["form-runner"].close(this)'>X</div>
 
 <div id="main">
 <div id="required">
@@ -107,7 +121,7 @@ div.collapsed {
     if (this.innerText.endsWith("▶")) this.innerText = this.innerText.split("▶")[0]+"▼";
     else this.innerText = this.innerText.split("▼")[0]+"▶";'>Advanced ▶</span>
 <div id="advanced" class="collapsed">
-{{#required}}
+{{#optional}}
 {{^multioption}}
 <input id="{{id}}" type="{{type}}" placeholder="{{placeholder}}" {{#required}}required{{/required}} pattern="{{pattern}}">
 {{/multioption}}
@@ -120,7 +134,8 @@ div.collapsed {
     {{/options}}
 </select>
 {{/multioption}}
-{{/required}}
+{{/optional}}
 </div>
 
+</div>
 </div>

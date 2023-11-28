@@ -21,6 +21,7 @@ export const APP_CONSTANTS = {
     DIALOGS_PATH: APP_PATH+"/dialogs",
     COMMANDS_PATH: APP_PATH+"/commands",
     FORMS_PATH: APP_PATH+"/commands/forms",
+    UI_LISTS_PATH: APP_PATH+"/commands/ui_lists",
 
     SESSION_NOTE_ID: "com_monkshu_ts",
 

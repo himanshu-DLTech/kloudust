@@ -15,7 +15,7 @@ const REGISTERED_COMMANDS = {};
  * @throws Error if the same object is already registered
  */
 function registerCommand(cmdObject) {
-    if (REGISTERED_COMMANDS[cmdObject.id]) throw new Error(`Command ${cmdObject.id} is already registered.`);
+    if (REGISTERED_COMMANDS[cmdObject.id]) {LOG.warn(`Command ${cmdObject.id} is already registered.`); return;}
     REGISTERED_COMMANDS[cmdObject.id] = cmdObject;
 }
 
@@ -29,7 +29,9 @@ async function cmdClicked(id) {
 
     try {
         const formJSON = await $$.requireJSON(`${APP_CONSTANTS.FORMS_PATH}/${id}.form.json`);
-        const html = `<form-runner form='${encodeURIComponent(JSON.stringify(formJSON.form))}'></form-runner>`;
+        const html = `<form-runner 
+            form='decodeURIComponent(${encodeURIComponent(JSON.stringify(formJSON.form))})'
+            onclose='monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.hideOpenContent()'></form-runner>`;
         monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.showContent(html);
     } catch (err) {LOG.error(`Error loading command files for ${id}: ${err}`); return;}
 }

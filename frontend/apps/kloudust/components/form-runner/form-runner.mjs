@@ -5,22 +5,23 @@
  * License: See enclosed LICENSE file.
  */
 import {util} from "/framework/js/util.mjs";
+import {router} from "/framework/js/router.mjs";
 import {monkshu_component} from "/framework/js/monkshu_component.mjs";
 
 const COMPONENT_PATH = util.getModulePath(import.meta);
 
-async function runForm(hostID) {
-
+async function elementConnected(host) {
+    const formData = await form_runner.getAttrValue(host, "form");
+    const expandedData = await router.expandPageData(formData);
+    const formObject = JSON.parse(expandedData);
+    form_runner.setDataByHost(host, formObject);
 }
 
-function close(elementOrHostID, mainDivID) {
-	const shadowRoot = elementOrHostID instanceof Element ? dialog_box.getShadowRootByContainedElement(elementOrHostID): 
-        dialog_box.getShadowRootByHostId(elementOrHostID);
-    const mainElement = shadowRoot.querySelector(`div#${mainDivID}`); 
-    while (mainElement && mainElement.firstChild) hostElement.removeChild(hostElement.firstChild);  // deletes everything
-    mainElement.classList.remove("visible"); 
+async function close(element) {
+    const onclose = await form_runner.getAttrValue(form_runner.getHostElement(element), "onclose");
+    if (onclose && onclose.trim() != "") new Function(onclose)();
 }
 
 const trueWebComponentMode = true;	// making this false renders the component without using Shadow DOM
-export const form_runner = {trueWebComponentMode, runForm, close};
+export const form_runner = {trueWebComponentMode, elementConnected, close};
 monkshu_component.register("form-runner", `${COMPONENT_PATH}/form-runner.html`, form_runner);

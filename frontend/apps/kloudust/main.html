@@ -13,7 +13,6 @@ body {
 	user-select: none;
 	display: flex;
 	flex-direction: row;
-	height: 100%;
 	width: 100%;
 	font-size: medium;
 }
@@ -40,7 +39,10 @@ div#topleftbaritems, div#bottomleftbaritems {
     gap: 1em;
 }
 
-div#maincontent {flex-grow: 1;}
+div#maincontent {
+	flex-grow: 1;
+    height: 100%;
+}
 div#welcomediv {
 	display: flex;
     flex-direction: column;

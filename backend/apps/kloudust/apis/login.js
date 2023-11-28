@@ -17,6 +17,7 @@ const roleman = require(`${KLOUD_CONSTANTS.LIBDIR}/roleenforcer.js`);
 
 const conf = require(`${KLOUD_CONSTANTS.CONFDIR}/kloudust.json`);
 const API_JWT_VALIDATION = `${conf.tekmonkslogin_backend}/apps/loginapp/validatejwt`;
+const LOGIN_APP_ADMIN_ROLE = "admin";
 
 exports.doService = async jsonReq => {
 	if (!validateRequest(jsonReq)) {KLOUD_CONSTANTS.LOGERROR("Validation failure."); return CONSTANTS.FALSE_RESULT;}
@@ -59,9 +60,12 @@ async function _verifyJWT(jsonReq) {
         const _decodeBase64 = string => Buffer.from(string, "base64").toString("utf8");
         const jwtClaims = JSON.parse(_decodeBase64(jsonReq.jwt.split(".")[1]));
         let kdLoginResult = await kloudust.loginUser({user: [jwtClaims.id]}, KLOUD_CONSTANTS);  // this may fail if the cloud is in setup mode
-        if ((!kdLoginResult) && (await roleman.canBeSetupMode())) kdLoginResult = true;   
+        if ((!kdLoginResult) && (await roleman.canBeSetupMode()) && jwtClaims.role == LOGIN_APP_ADMIN_ROLE) { 
+            KLOUD_CONSTANTS.LOGERRORWARN(`Allowing user ${jwtClaims.id} of org ${jwtClaims.org} with role ${jwtClaims.role} to login in, despite user not being registered, as setup mode can be possible for the cloud.`); 
+            kdLoginResult = true;   
+        }
         if (!kdLoginResult) {
-            KLOUD_CONSTANTS.LOGERROR(`Unregistered user login ${jsonReq.jwt}, not allowing as cloud is not in setup mode.`);
+            KLOUD_CONSTANTS.LOGERROR(`Unregistered user login ${jsonReq.jwt}, not allowing as cloud is not in setup mode, or account is not an org admin.`);
             return CONSTANTS.FALSE_RESULT; 
         } else {
             const finalResult = {...jwtClaims , role: KLOUD_CONSTANTS.env.role||jwtClaims.role, ...CONSTANTS.TRUE_RESULT};
