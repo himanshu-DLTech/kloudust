@@ -1,4 +1,6 @@
-[
+{
+    "*":[
     {"id": "create", "label": "Create", "logo": "img/plus.svg"},
     {"id": "vms", "label": "Virtual Machines", "logo": "img/vms.svg"}
-]
+    ]
+}

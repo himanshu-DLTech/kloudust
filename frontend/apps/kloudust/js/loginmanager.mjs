@@ -17,7 +17,8 @@ function handleLoginResult(resp) {
         session.set(APP_CONSTANTS.USERID, resp.id); 
         session.set(APP_CONSTANTS.USERNAME, resp.name);
         session.set(APP_CONSTANTS.USERORG, resp.org);
-        securityguard.setCurrentRole(APP_CONSTANTS.USER_ROLE);
+        session.set(APP_CONSTANTS.LOGGEDIN_USEROLE, resp.role);
+        securityguard.setCurrentRole(APP_CONSTANTS.USER_ROLE);  // we only have user and guest at this level 
         if (!APP_CONSTANTS.INSECURE_DEVELOPMENT_MODE) startAutoLogoutTimer();   
         router.loadPage(APP_CONSTANTS.MAIN_HTML);
     } else {LOG.error(`Login failed.`); router.loadPage(`${APP_CONSTANTS.LOGIN_HTML}?_error=true`);}

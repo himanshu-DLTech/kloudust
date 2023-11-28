@@ -68,7 +68,7 @@ exports.kloudust = async function(inprocessArgs) {
     const consoleHandler = _createConsoleHandler(args.consoleStreamHandler);
 
     if (!args.user) {_showHelpAndExit(consoleHandler); return {result: false, err: "", out: ""};}
-    else if (!await _loginUser(args, consoleHandler)) return {result: false, err: "User login failed.", out: ""};
+    else if (!await exports.loginUser(args, consoleHandler)) return {result: false, err: "User login failed.", out: ""};
 
     if (args.batch) {
         consoleHandler.LOGBARE(CMD_LINE_ARGS.__description);
@@ -93,15 +93,15 @@ exports.kloudust = async function(inprocessArgs) {
     } else {_showHelpAndExit(consoleHandler); return {...CONSTANTS.FALSE_RESULT, err: "", out: ""};} // nothing to do
 }
 
-function _showHelpAndExit(consoleHandler) {
-    consoleHandler.LOGBARE(processargs.helpInformation(CMD_LINE_ARGS), KLOUD_CONSTANTS.COLORS.red); 
-    consoleHandler.EXITFAILED();
-}
-
-async function _loginUser(args, consoleHandler) {
+exports.loginUser = async function(args, consoleHandler) {
     if (!await dbAbstractor.loginUser(args.user[0], args.project?.[0])) {
         consoleHandler.LOGERROR(`User not authorized for the project ${args.project?.[0]||"undefined"}.`); consoleHandler.EXITFAILED(); return false; }
     return true;
+}
+
+function _showHelpAndExit(consoleHandler) {
+    consoleHandler.LOGBARE(processargs.helpInformation(CMD_LINE_ARGS), KLOUD_CONSTANTS.COLORS.red); 
+    consoleHandler.EXITFAILED();
 }
 
 async function _execCommand(params, consoleHandler, project) {

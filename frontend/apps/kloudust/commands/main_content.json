@@ -1,5 +1,13 @@
-[
-    {"id": "createvm", "label": "Virtual Machine", "logo": "img/createvm.svg"},
-    {"id": "createcontainer", "label": "Container", "logo": "img/createcontainer.svg"},
-    {"id": "createsqldb", "label": "SQL Database", "logo": "img/createdb.svg"}
-]
+{
+    "cloudadmin": [
+        {"id": "addhost", "label": "Add Host", "logo": "img/addhost.svg"},
+        {"id": "createvm", "label": "Virtual Machine", "logo": "img/createvm.svg"}
+    ],
+    "!cloudadmin": [
+        {"id": "createvm", "label": "Virtual Machine", "logo": "img/createvm.svg"},
+        {"id": "createcontainer", "label": "Container", "logo": "img/createcontainer.svg"}
+    ],
+    "*": [
+        {"id": "createsqldb", "label": "SQL Database", "logo": "img/createdb.svg"}
+    ]
+}

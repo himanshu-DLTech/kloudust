@@ -1,18 +1,126 @@
 <!--
-/* 
- * (C) 2018 TekMonks. All rights reserved.
+/** 
+ * Form runner HTML
+ * (C) 2023 TekMonks. All rights reserved.
  * License: See enclosed license file.
  */
  -->
 
 <style>
-body{
-    margin: 0; padding: 0;
+::-webkit-scrollbar {
+    width: 0.5em !important;
+    height: 0.5em !important;
+    scroll-behavior: smooth !important;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3) !important;
+    margin: 5em;
+    border-radius: 1em !important;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: darkgrey !important;
+    border-radius: 1em !important;
+    background-clip: padding-box;
+}
+
+div#main {
+    display: flex;
+    flex-direction: column;
+}
+
+input, input:-internal-autofill-previewed, input:-internal-autofill-selected {
+    width: 100%;
+    border-style: none;
+    outline: none;
+    text-align: left;
+    background-color: transparent;
+    transition: background-color 5000s ease-in-out 0s;
+    border-bottom: 1px solid darkgray;
     font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    height: fit-content;
+    font-size: smaller;
+    display: block;
+    color: #444444;
+    margin-bottom: 2em;
+}
+
+select, label {
+    color: #444444;
+    border-radius: 0.4em;
+    border-color: darkgray; 
+    font-size: smaller;
+    outline: none;
+}
+select {width: 100%; padding: 0.5em; margin-bottom: 2em;}
+label {
+    padding-left: 0.2em; 
+    margin-bottom: 0.2em;
+    display: inline-block;
+}
+
+input.error {color: red;}
+
+span#expander {
+    color: #444444; 
+    font-size: smaller;
+    margin-bottom: 1em;
+    cursor: pointer;
+    width: fit-content;
+}
+div.expanded {
+    height: auto;
+    display: block
+    color: #444444
+}
+div.collapsed {
+    height: 0px;
+    display: none;
 }
 </style>
 
-<div id="main" onclick='event.stopPropagation(); monkshu_env.components["form-runner"].close(this, "main")'>Close X</div>
+<div id="close" onclick='event.stopPropagation(); monkshu_env.components["form-runner"].close(this, "main")'>X</div>
+
+<div id="main">
+<div id="required">
+{{#required}}
+{{^multioption}}
+<input id="{{id}}" type="{{type}}" placeholder="{{placeholder}}" {{#required}}required{{/required}} pattern="{{pattern}}">
+{{/multioption}}
+
+{{#multioption}}
+<label for="{{id}}">{{label}}</label>
+<select id="{{id}}" name="{{id}}">
+    {{#options}}
+    <option value="{{value}}">{{label}}</option>
+    {{/options}}
+</select>
+{{/multioption}}
+{{/required}}
+</div>
+
+<span id="expander" onclick='
+    const divToExpandOrHide = this.parentNode.querySelector("div#advanced");
+    divToExpandOrHide.classList.toggle("expanded"); 
+    divToExpandOrHide.classList.toggle("collapsed");
+    if (this.innerText.endsWith("▶")) this.innerText = this.innerText.split("▶")[0]+"▼";
+    else this.innerText = this.innerText.split("▼")[0]+"▶";'>Advanced ▶</span>
+<div id="advanced" class="collapsed">
+{{#required}}
+{{^multioption}}
+<input id="{{id}}" type="{{type}}" placeholder="{{placeholder}}" {{#required}}required{{/required}} pattern="{{pattern}}">
+{{/multioption}}
+
+{{#multioption}}
+<label for="{{id}}">{{label}}</label>
+<select id="{{id}}" name="{{id}}">
+    {{#options}}
+    <option value="{{value}}">{{label}}</option>
+    {{/options}}
+</select>
+{{/multioption}}
+{{/required}}
+</div>
+
+</div>

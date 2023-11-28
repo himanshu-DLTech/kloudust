@@ -24,12 +24,14 @@ function registerCommand(cmdObject) {
  * @param {string} id The ID of the command clicked 
  * @returns The command output
  */
-function cmdClicked(id) {
+async function cmdClicked(id) {
     const command = REGISTERED_COMMANDS[id]; if (!command) {LOG.error(`Commands ${id} not found.`); return;}
 
-    const html = `<span>${JSON.stringify(command)}</span>
-        <span onclick="window.monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.hideOpenContent()">Click to close</span>`;
-    monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.showContent(html);
+    try {
+        const formJSON = await $$.requireJSON(`${APP_CONSTANTS.FORMS_PATH}/${id}.form.json`);
+        const html = `<form-runner form='${encodeURIComponent(JSON.stringify(formJSON.form))}'></form-runner>`;
+        monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.showContent(html);
+    } catch (err) {LOG.error(`Error loading command files for ${id}: ${err}`); return;}
 }
 
 async function _runKloudustCommand(paramObject, command) {

@@ -20,6 +20,7 @@ export const APP_CONSTANTS = {
 
     DIALOGS_PATH: APP_PATH+"/dialogs",
     COMMANDS_PATH: APP_PATH+"/commands",
+    FORMS_PATH: APP_PATH+"/commands/forms",
 
     SESSION_NOTE_ID: "com_monkshu_ts",
 
@@ -33,6 +34,7 @@ export const APP_CONSTANTS = {
     TIMEOUT: 3600000,
     USERNAME: "username",
     USERORG: "userorg",
+    LOGGEDIN_USEROLE: "userrole",
     USER_ROLE: "user",
     GUEST_ROLE: "guest",
 

@@ -9,6 +9,8 @@ import {util} from "/framework/js/util.mjs";
 import {router} from "/framework/js/router.mjs";
 import {session} from "/framework/js/session.mjs";
 import {cmdmanager as cmdman} from "./cmdmanager.mjs";
+import {rolemanager as roleman} from "./rolemanager.mjs";
+
 
 const LEFTBAR_COMMANDS = `${APP_CONSTANTS.COMMANDS_PATH}/main_leftbar.json`, 
     MAIN_COMMANDS = `${APP_CONSTANTS.COMMANDS_PATH}/main_content.json`;
@@ -42,8 +44,8 @@ function showContent(contentNode) {
 const interceptPageLoadData = _ => router.addOnLoadPageData(APP_CONSTANTS.MAIN_HTML, async (data, _url) => {
     const mustache = await router.getMustache(), mainPageData = {};
     mainPageData.welcomeHeading = mustache.render(await i18n.get("WelcomeHeading"), {user: session.get(APP_CONSTANTS.USERNAME)});
-	mainPageData.leftbarCommands = await $$.requireJSON(LEFTBAR_COMMANDS); 
-    mainPageData.mainCommands = await $$.requireJSON(MAIN_COMMANDS);
+	mainPageData.leftbarCommands = roleman.filterRoleList(await $$.requireJSON(LEFTBAR_COMMANDS)); 
+    mainPageData.mainCommands = roleman.filterRoleList(await $$.requireJSON(MAIN_COMMANDS));
     data.mainPageData = mainPageData;
 
     for (const cmd of [...mainPageData.leftbarCommands, ...mainPageData.mainCommands]) try{

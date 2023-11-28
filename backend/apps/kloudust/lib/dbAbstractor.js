@@ -488,7 +488,7 @@ exports.getUserForEmail = async (email, org=KLOUD_CONSTANTS.env.org) => {
  * @param {string} project The project the user will work on
  * @return true on success and false otherwise
  */
-exports.loginUser = async (email, project) => {
+exports.loginUser = async (email, project=KLOUD_CONSTANTS.DEFAULT_PROJECT) => {
     if (await roleman.isSetupMode()) {
         KLOUD_CONSTANTS.env.username = "Setup admin";
         KLOUD_CONSTANTS.env.userid = email;
