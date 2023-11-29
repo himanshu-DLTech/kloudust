@@ -26,22 +26,41 @@
     background-clip: padding-box;
 }
 
-body {height:100%; margin: 0;}
+body {height: 100%; margin: 0;}
 
 div#body {
     overflow-x: hidden;
     overflow-y: auto;
     max-height: 100%;
+    padding: 2em;
+    box-sizing: border-box;
+    color: #ffffff;
+    background-color: #4C4C4C;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
 }
 
 div#main {
     display: flex;
     flex-direction: column;
+    width: 100%;
+}
+span#description {
+    font-size: 0.9em;
+    margin: 1em 0em;
+}
+div#required, div#advanced {
+    margin-left: 1em;
 }
 
 div#close {
-    margin-bottom: 0.5em;
-    text-align: right;
+    padding: 0.2em 0.6em;
+    background-color: #BC5205;
+    border-radius: 0.2em;
+    margin-bottom: 1em;
+    cursor: pointer;
 }
 
 input, input:-internal-autofill-previewed, input:-internal-autofill-selected {
@@ -51,18 +70,18 @@ input, input:-internal-autofill-previewed, input:-internal-autofill-selected {
     text-align: left;
     background-color: transparent;
     transition: background-color 5000s ease-in-out 0s;
-    border-bottom: 1px solid darkgray;
+    border-bottom: 1px solid #ffffff;
     font-family: inherit;
     font-size: smaller;
     display: block;
-    color: #444444;
     margin-bottom: 2em;
+    color: #ffffff;
 }
+::placeholder {color: inherit;}
 
-select, label {
-    color: #444444;
+select {
     border-radius: 0.4em;
-    border-color: darkgray; 
+    border-color: #ffffff; 
     font-size: smaller;
     outline: none;
 }
@@ -76,7 +95,7 @@ label {
 input.error {color: red;}
 
 span#expander {
-    color: #444444; 
+    color: #ffffff; 
     font-size: smaller;
     margin-bottom: 1em;
     cursor: pointer;
@@ -84,8 +103,7 @@ span#expander {
 }
 div.expanded {
     height: auto;
-    display: block
-    color: #444444
+    display: block;
 }
 div.collapsed {
     height: 0px;
@@ -97,6 +115,7 @@ div.collapsed {
 <div id="close" onclick='event.stopPropagation(); monkshu_env.components["form-runner"].close(this)'>X</div>
 
 <div id="main">
+{{#description}}<span id="description">{{.}}</span>{{/description}}
 <div id="required">
 {{#required}}
 {{^multioption}}

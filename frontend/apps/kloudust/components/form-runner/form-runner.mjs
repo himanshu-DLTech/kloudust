@@ -1,5 +1,7 @@
 /**
- * Interprets and runs form.json files.
+ * Interprets and runs form.json files. Renders the
+ * UI for the form. This component is a form UI generator
+ * basically.
  *  
  * (C) 2022 TekMonks. All rights reserved.
  * License: See enclosed LICENSE file.
@@ -16,7 +18,6 @@ async function elementConnected(host) {
     const formObject = JSON.parse(expandedData);
     form_runner.setDataByHost(host, formObject);
 }
-
 async function close(element) {
     const onclose = await form_runner.getAttrValue(form_runner.getHostElement(element), "onclose");
     if (onclose && onclose.trim() != "") new Function(onclose)();
