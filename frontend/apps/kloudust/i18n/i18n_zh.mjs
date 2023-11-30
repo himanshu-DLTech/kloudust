@@ -28,6 +28,7 @@ export const i18n = {
 "HostProcessor": "Processor in Vendor:Name:Model:Speed in Mhz format",
 "HostProcessorArchitecture": "Processor architecture",
 "HostSockets": "Number of sockets",
+"HostAddButtonLabel": "Add Host",
 
 "VMName": "虚拟机名称",
 "VMDescription": "虚拟机描述",
@@ -40,5 +41,7 @@ export const i18n = {
 "DBDescription": "数据库描述",
 
 "WelcomeHeading": "Kloudust - Welcome {{{user}}}",
-"WelcomeSubheading": "Click any page from the left bar or choose from below"
+"WelcomeSubheading": "Click any page from the left bar or choose from below",
+
+"FormSubmit": "Submit"
 }

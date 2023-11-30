@@ -29,6 +29,8 @@
     {"id": "sockets", "type": "text", "placeholder": "{{i18n.HostSockets}}", "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
     {"id": "nochangepassword", "multioption": true, "type": "select", "label": "{{i18n.HostChangeAdminPassword}}", 
         "options":[{"value":"change", "label":"Yes"}, {"value":"nochange", "label":"No"}]}
-    ]
+    ],
+
+    "submitlabel": "{{i18n.HostAddButtonLabel}}"
 }
 }
