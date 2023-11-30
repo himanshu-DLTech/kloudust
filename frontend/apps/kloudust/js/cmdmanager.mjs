@@ -7,7 +7,7 @@
 
 import {apimanager as apiman} from "/framework/js/apimanager.mjs";
 
-const REGISTERED_COMMANDS = {};
+const REGISTERED_COMMANDS = {}, KLOUDUST_CMDLINE = "kloudust_cmdline";
 
 /**
  * Registers the given command object.
@@ -17,6 +17,9 @@ const REGISTERED_COMMANDS = {};
 function registerCommand(cmdObject) {
     if (REGISTERED_COMMANDS[cmdObject.id]) {LOG.warn(`Command ${cmdObject.id} is already registered.`); return;}
     REGISTERED_COMMANDS[cmdObject.id] = cmdObject;
+
+    // plug ourselves into the enviornment if not present
+    if (!monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager) monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager = cmdmanager;
 }
 
 /**
@@ -30,30 +33,32 @@ async function cmdClicked(id) {
     try {
         const formJSON = await $$.requireJSON(`${APP_CONSTANTS.FORMS_PATH}/${id}.form.json`), 
             uriencodedFormJSON = encodeURIComponent(JSON.stringify(formJSON.form))
-        const html = `<form-runner form='decodeURIComponent(${uriencodedFormJSON})'
-            onclose='monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.hideOpenContent()'></form-runner>`;
+        const html = `<form-runner id="${id}" form='decodeURIComponent(${uriencodedFormJSON})'
+            onclose='monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.hideOpenContent()'
+            onsubmit='monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager.formSubmitted("${id}", formdata)'></form-runner>`;
         monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.showContent(html);
     } catch (err) {LOG.error(`Error loading command files for ${id}: ${err}`); return;}
 }
 
-async function _runKloudustCommand(paramObject, command) {
-    const mustache = await router.getMustache();
-    const cmd = mustache.render(command, paramObject);
-    _processCommandOutput(`Running command - ${cmd}`, true);
-    const cmdResult = await apiman.rest(APP_CONSTANTS.API_KLOUDUSTCMD, "POST", {cmd}, true, false);
+async function formSubmitted(id, values) {
+    monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.hideOpenContent();    // close the form
+
+    const form = await $$.requireJSON(`${APP_CONSTANTS.FORMS_PATH}/${id}.form.json`); 
+    if (form.type != KLOUDUST_CMDLINE) return;  // no need to call backend in this case
+
+    let command = form.command;
+    const cmdLineMap = form.kloudust_cmdline_params;
+    for (const param of cmdLineMap) command += " "+('"'+values[param]+'"'||'""');
+    _processCommandOutput(`Running command - ${command}`, false, true);
+    const cmdResult = await apiman.rest(APP_CONSTANTS.API_KLOUDUSTCMD, "POST", {command}, true, false);
     if (cmdResult) {_processCommandOutput(cmdResult.out); _processCommandOutput(cmdResult.err); _processCommandOutput(`Success! Exit code: ${cmdResult.exitCode}`);}
-    else _processCommandOutput(`Command Failed.${cmdResult.err?"Error was\n"+cmdResult.err:""}`);
+    else _processCommandOutput(`Command Failed.${cmdResult.err?"Error was\n"+cmdResult.err:""}`, true);
 }
 
-function _processCommandOutput(text, firstLineOfNewCommand) {
-    const consoleOut = document.querySelector("div#output > div#console");
-    if (firstLineOfNewCommand && consoleOut.innerHTML.trim() != "") consoleOut.innerHTML = consoleOut.innerHTML + "<br>\n<br>\n";
-
-    const linebreakEscapedText = text.trim().replace(/(?:\r\n|\r|\n)/g, '<br>');
-    if (text && text.trim != "") {
-        consoleOut.innerHTML = consoleOut.innerHTML.trim() != "" ?
-            consoleOut.innerHTML + "<br>\n" + linebreakEscapedText : linebreakEscapedText;
-    }
+function _processCommandOutput(text, isError=false, firstLineOfNewCommand=false) {
+    if (firstLineOfNewCommand) console.info("\n\n-----------------------------------------------------");
+    if (isError) console.error(text);
+    else console.info(text);
 }
 
-export const cmdmanager = {registerCommand, cmdClicked};
+export const cmdmanager = {registerCommand, cmdClicked, formSubmitted};

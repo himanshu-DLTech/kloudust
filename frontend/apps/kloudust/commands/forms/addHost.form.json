@@ -1,36 +1,38 @@
 {
+
 "command": "addHost",
 "type": "kloudust_cmdline",
 "kloudust_cmdline_params": ["hostname", "hostip", "ostype", "adminid", "adminpass", "hostsshkey", "cores", 
     "memory", "disk", "netspeed", "processor", "processorarch", "sockets", "nochangepassword"],
 
-"title": "{{i18n.RegisterHost}}",
+"title": "{{{i18n.RegisterHost}}}",
 
 "form": {
     "description": "Add a host machine to the cloud. Complete the required tab then submit or review advanced tab for full customization.",
 
     "required": [
-    {"id": "hostname", "type": "text", "placeholder": "{{i18n.Hostname}}", "required": true, "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
-    {"id": "hostip", "type": "text", "placeholder": "{{i18n.Hostname}}", "required": true, "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
-    {"id": "adminid", "type": "text", "placeholder": "{{i18n.Hostname}}", "required": true, "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
-    {"id": "adminpass", "type": "password", "placeholder": "{{i18n.Hostname}}", "required": true, "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
-    {"id": "hostsshkey", "type": "text", "placeholder": "{{i18n.Hostname}}", "required": true, "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
-    {"id": "ostype", "multioption":true, "type": "select", "label": "{{i18n.HostOSType}}", 
+    {"id": "hostname", "type": "text", "placeholder": "{{{i18n.Hostname}}}", "required": true, "pattern":"\\s*[A-Za-z0-9]+\\s*"},
+    {"id": "hostip", "type": "text", "placeholder": "{{{i18n.HostNetworkAddressOrIp}}}", "required": true, "pattern":"\\s*[0-9\\.]+\\s*"},
+    {"id": "adminid", "type": "text", "placeholder": "{{{i18n.HostRootID}}}", "required": true, "pattern":"\\s*[A-Za-z0-9]+\\s*"},
+    {"id": "adminpass", "type": "password", "placeholder": "{{{i18n.HostRootPassword}}}", "required": true},
+    {"id": "hostsshkey", "type": "text", "placeholder": "{{{i18n.Hostkey}}}", "required": true, "pattern":"\\s*[A-Fa-f0-9\\:]+\\s*"},
+    {"id": "ostype", "multioption":true, "type": "select", "label": "{{{i18n.HostOSType}}}", 
         "options":[{"value":"rhel9_compatible", "label":"RHEL 9 or Compatible"}, {"value":"ubuntu22", "label":"Ubuntu 22 LTS"}]}
     ],
 
     "optional": [
-    {"id": "cores", "type": "text", "placeholder": "{{i18n.HostCores}}", "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
-    {"id": "memory", "type": "text", "placeholder": "{{i18n.HostMemory}}", "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
-    {"id": "disk", "type": "text", "placeholder": "{{i18n.HostDisk}}", "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
-    {"id": "networkspeed", "type": "password", "placeholder": "{{i18n.HostNetspeed}}", "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
-    {"id": "processor", "type": "text", "placeholder": "{{i18n.HostProcessor}}", "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
-    {"id": "processorarch", "type": "text", "placeholder": "{{i18n.HostProcessorArchitecture}}", "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
-    {"id": "sockets", "type": "text", "placeholder": "{{i18n.HostSockets}}", "pattern":"/^\\s*[A-Za-z0-9]+\\s*$/"},
-    {"id": "nochangepassword", "multioption": true, "type": "select", "label": "{{i18n.HostChangeAdminPassword}}", 
+    {"id": "cores", "type": "number", "placeholder": "{{{i18n.HostCores}}}"},
+    {"id": "memory", "type": "number", "placeholder": "{{{i18n.HostMemory}}}"},
+    {"id": "disk", "type": "number", "placeholder": "{{{i18n.HostDisk}}}"},
+    {"id": "netspeed", "type": "number", "placeholder": "{{{i18n.HostNetspeed}}}"},
+    {"id": "processor", "type": "text", "placeholder": "{{{i18n.HostProcessor}}}", "pattern":"\\s*[A-Za-z0-9\\:]+\\s*"},
+    {"id": "processorarch", "type": "text", "placeholder": "{{{i18n.HostProcessorArchitecture}}}", "pattern":"\\s*[A-Za-z0-9]+\\s*"},
+    {"id": "sockets", "type": "number", "placeholder": "{{{i18n.HostSockets}}}", "pattern":"\\s*[A-Za-z0-9]+\\s*"},
+    {"id": "nochangepassword", "multioption": true, "type": "select", "label": "{{{i18n.HostChangeAdminPassword}}}", 
         "options":[{"value":"change", "label":"Yes"}, {"value":"nochange", "label":"No"}]}
     ],
 
-    "submitlabel": "{{i18n.HostAddButtonLabel}}"
+    "submitlabel": "{{{i18n.HostAddButtonLabel}}}"
 }
+
 }

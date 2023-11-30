@@ -80,6 +80,7 @@ input, input:-internal-autofill-previewed, input:-internal-autofill-selected {
     margin-bottom: 2em;
     color: #DCDCDC;
 }
+input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none;}
 ::placeholder {color: inherit;}
 
 select {
@@ -140,7 +141,9 @@ span#submit {
 <div id="required">
 {{#required}}
 {{^multioption}}
-<input id="{{id}}" type="{{type}}" placeholder="{{placeholder}}" {{#required}}required{{/required}} pattern="{{pattern}}">
+<input id="{{id}}" type="{{type}}" placeholder="{{placeholder}}" {{#required}}required{{/required}} 
+    {{#pattern}}pattern="{{.}}"{{/pattern}} oninvalid="this.setCustomValidity('{{i18n.FormFieldError}}')" 
+    oninput="setCustomValidity('')">
 {{/multioption}}
 
 {{#multioption}}
@@ -163,12 +166,13 @@ span#submit {
 <div id="advanced" class="collapsed">
 {{#optional}}
 {{^multioption}}
-<input id="{{id}}" type="{{type}}" placeholder="{{placeholder}}" {{#required}}required{{/required}} pattern="{{pattern}}">
+<input id="{{id}}" type="{{type}}" placeholder="{{placeholder}}" data-optional="true"
+    {{#pattern}}pattern="{{.}}"{{/pattern}} oninvalid="this.setCustomValidity('{{i18n.FormFieldError}}')" oninput="setCustomValidity('')">
 {{/multioption}}
 
 {{#multioption}}
 <label for="{{id}}">{{label}}</label>
-<select id="{{id}}" name="{{id}}">
+<select id="{{id}}" name="{{id}}" data-optional="true">
     {{#options}}
     <option value="{{value}}">{{label}}</option>
     {{/options}}
@@ -180,6 +184,8 @@ span#submit {
 
 
 <div id="bottombar">
-<span id="submit">{{#submitlabel}}{{.}}{{/submitlabel}}{{^submitlabel}}{{i18n.FormSubmit}}{{/submitlabel}}</span>
+<span id="submit" onclick='event.stopPropagation(); monkshu_env.components["form-runner"].formSubmitted(this)''>
+{{#submitlabel}}{{.}}{{/submitlabel}}{{^submitlabel}}{{i18n.FormSubmit}}{{/submitlabel}}
+</span>
 </div>
 </div>

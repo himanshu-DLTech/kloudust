@@ -24,6 +24,24 @@ async function close(element) {
     if (onclose && onclose.trim() != "") new Function(onclose)();
 }
 
+async function formSubmitted(element) {
+    const shadowRoot = form_runner.getShadowRootByContainedElement(element);
+    const inputs = shadowRoot.querySelectorAll("input"), 
+        allFormElements = [...shadowRoot.querySelectorAll("input"), ...shadowRoot.querySelectorAll("select")];
+    for (const input of inputs) if ((input.dataset.optional?.toLowerCase() != "true") && (!input.checkValidity())) {
+        LOG.error(`Submit failed due to failed validation of ${input.id} whose value is ${input.type != "password" ? input.value.trim() != "" ? input.value : "empty value" : "***********" }`);
+        input.reportValidity(); return false;
+    }
+
+    const retObject = {}; for (const formElement of allFormElements) 
+        retObject[formElement.id] = (formElement.type != "password" ? formElement.value.trim() : formElement.value);
+    const onsubmit = await form_runner.getAttrValue(form_runner.getHostElement(element), "onsubmit");
+    if (onsubmit && onsubmit.trim() != "") {
+        const functionCode = `const formdata = ${JSON.stringify(retObject)}; ${onsubmit}`;
+        new Function(functionCode)();
+    }
+}
+
 const trueWebComponentMode = true;	// making this false renders the component without using Shadow DOM
-export const form_runner = {trueWebComponentMode, elementConnected, close};
+export const form_runner = {trueWebComponentMode, elementConnected, close, formSubmitted};
 monkshu_component.register("form-runner", `${COMPONENT_PATH}/form-runner.html`, form_runner);

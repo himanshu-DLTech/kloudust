@@ -47,7 +47,7 @@ const interceptPageLoadData = _ => router.addOnLoadPageData(APP_CONSTANTS.MAIN_H
 	mainPageData.leftbarCommands = await roleman.fetchFilteredRoleList(LEFTBAR_COMMANDS); 
     mainPageData.mainCommands = await roleman.fetchFilteredRoleList(MAIN_COMMANDS);
     data.mainPageData = mainPageData;
-
+    
     for (const cmd of [...mainPageData.leftbarCommands, ...mainPageData.mainCommands]) try{
         cmdman.registerCommand(cmd); } catch (err) {LOG.error(`Error registering command ${cmd.id}.`);}
 });

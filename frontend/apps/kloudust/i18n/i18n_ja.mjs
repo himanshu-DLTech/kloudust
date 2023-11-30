@@ -43,5 +43,6 @@ export const i18n = {
 "WelcomeHeading": "Kloudust - Welcome {{{user}}}",
 "WelcomeSubheading": "Click any page from the left bar or choose from below",
 
-"FormSubmit": "Submit"
+"FormSubmit": "Submit",
+"FormFieldError": "Validation error"
 }
