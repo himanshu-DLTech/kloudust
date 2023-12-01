@@ -32,7 +32,8 @@ async function login(appname, redirect, otkapi, bgcolor, unifiedloginbaseurl=UNI
  * Verifies a successful login via the Tekmonks Unified Login app.
  * @param {string} verifyapi The backend API which can verify the JWT token from Tekmonks Unified Login app
  * @param {string} resulturl The URL with the result - optional, if not provided then window.location is used
- * @returns The verification API's result or throws an error if JWT is not present
+ * @returns The verification API's result as {url, response, headers} where response is the API response object and
+ *          headers is the response's HTTP response headers and URL is the URL from which we got the response.
  * @throws {Error} On JWT missing error.
  */
 async function verify(verifyapi, resulturl) {
@@ -43,8 +44,10 @@ async function verify(verifyapi, resulturl) {
     let verifiedResult; try {verifiedResult = await fetch(apiurl);} catch (err) {
         console.error(`JWT verification failed for Tekmonks Unified Login, error was ${err}.`); return false; }
     
-    if (verifiedResult.ok) try {return await verifiedResult.json()} catch (err) {
-        console.error(`JWT verification failed for Tekmonks Unified Login, error was ${err}.`); return false; } 
+    const _getHeaders = httpHeaders => {const headers = {}; for (const [key, value] of httpHeaders.entries()) 
+        headers[key] = value; return headers;}
+    if (verifiedResult.ok) try {return {url: verifyapi, response: await verifiedResult.json(), headers: _getHeaders(verifiedResult.headers)}} 
+        catch (err) {console.error(`JWT verification failed for Tekmonks Unified Login, error was ${err}.`); return false; } 
     else return false;
 }
 

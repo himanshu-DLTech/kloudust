@@ -12,9 +12,9 @@
 	import {router} from "/framework/js/router.mjs";
 	import {loginmanager} from "./js/loginmanager.mjs"; 
  
-    const result = await tkmlogin.verify("{{{APP_CONSTANTS.API_PATH}}}/login?op=verify&x-api-key={{{LOGIN_API_KEY}}}", 
+    const verifyResponse = await tkmlogin.verify("{{{APP_CONSTANTS.API_PATH}}}/login?op=verify&x-api-key={{{LOGIN_API_KEY}}}", 
 		router.decodeURL(window.location.href));
-	loginmanager.handleLoginResult(result);
+	loginmanager.handleLoginResult(verifyResponse);
 	</script>
 </head>
 </html>

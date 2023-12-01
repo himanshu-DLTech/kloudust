@@ -2,6 +2,10 @@
 
 # Params
 # {1} The new password for this host for the ID which is logged in to run this script
+# {2} The JSON out splitter
+
+NEW_PASSWORD="{1}"
+JSONOUT_SPLITTER="{2}"
 
 function exitFailed() {
     echo Failed
@@ -24,6 +28,7 @@ function printConfig() {
     OSRELEASE=$(printf "$(cat /etc/issue)" | head -n1 | xargs)
 
 cat <<ENDJSON
+$1
 {
     "cores": "$CORESPERCPU",
     "memory": "$MEMORY",
@@ -118,5 +123,5 @@ else
 fi
 
 printf "\n\nSystem initialization finished successfully\n"
-printConfig()
+printConfig $JSONOUT_SPLITTER
 exit 0

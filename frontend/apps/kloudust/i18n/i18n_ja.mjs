@@ -14,22 +14,6 @@ export const i18n = {
 "Cancel": "キャンセル",
 "InternalError": "内部エラー",
 
-"Hostname": "Cloud name for this host",
-"HostNetworkAddressOrIp": "ホスト名または IP",
-"HostOSType": "Choose host OS",
-"HostRootID": "Host administrator's login ID",
-"HostRootPassword": "ルートパスワード",
-"Hostkey": "SSH ED25519 MD5 ホストキー",
-"HostChangeAdminPassword": "Change administrator password and take over?",
-"HostCores": "Number of cores",
-"HostMemory": "Memory in bytes",
-"HostDisk": "Local disk in bytes",
-"HostNetspeed": "Network speed in bytes per second",
-"HostProcessor": "Processor in Vendor:Name:Model:Speed in Mhz format",
-"HostProcessorArchitecture": "Processor architecture",
-"HostSockets": "Number of sockets",
-"HostAddButtonLabel": "Add Host",
-
 "VMName": "VM名",
 "VMDescription": "VMの説明",
 "Cores": "コア",
@@ -41,8 +25,5 @@ export const i18n = {
 "DBDescription": "データベース説明",
 
 "WelcomeHeading": "Kloudust - Welcome {{{user}}}",
-"WelcomeSubheading": "Click any page from the left bar or choose from below",
-
-"FormSubmit": "Submit",
-"FormFieldError": "Validation error"
+"WelcomeSubheading": "Click any page from the left bar or choose from below"
 }

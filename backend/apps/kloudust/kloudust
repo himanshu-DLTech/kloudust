@@ -94,6 +94,7 @@ exports.kloudust = async function(inprocessArgs) {
 }
 
 exports.loginUser = async function(args, consoleHandler) {
+    if (!args.user) { consoleHandler.LOGERROR(`User not authorized as user ID is missing."`); consoleHandler.EXITFAILED(); return false; }
     if (!await dbAbstractor.loginUser(args.user[0], args.project?.[0])) {
         consoleHandler.LOGERROR(`User not authorized for the project ${args.project?.[0]||"undefined"}.`); consoleHandler.EXITFAILED(); return false; }
     return true;

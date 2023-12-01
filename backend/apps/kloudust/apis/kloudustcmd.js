@@ -17,13 +17,14 @@ exports.doService = async (jsonReq, _servObject, headers, _url, _apiconf) => {
 	if (!validateRequest(jsonReq)) {_streamHandler(requestID, undefined, undefined, 
 		`Validation failure for the request -> ${jsonReq?JSON.stringify(jsonReq):"undefined"}`); return CONSTANTS.FALSE_RESULT;}
 	
-    const user = login.getID(headers);
+    const user = login.getID(headers); if (!user) {_streamHandler(requestID, undefined, undefined,
+		`Validation failure for the request, missing user ID from headers -> ${JSON.stringify(jsonReq)}`); return CONSTANTS.FALSE_RESULT;}
 	_streamHandler(requestID, `Running Kloudust command: ${jsonReq.cmd}`);
     const kdRequest = {user: [user], project: jsonReq.project?[jsonReq.project]:undefined, execute: [jsonReq.cmd],
 		setup: jsonReq.setup?[jsonReq.setup]:undefined, consoleStreamHandler: (info, warn, error) => 
 			_streamHandler(requestID, info, warn, error)};
 	const results = await kloudust.kloudust(kdRequest);
-	return {...results, result: results.result, stdout: results.out||"", stderr: results.err||""};
+	return {...results, result: results.result, stdout: results.out||"", stderr: results.err||"", exitcode: results.result?0:1};
 }
 
 function _streamHandler(id, info, warn, err) {

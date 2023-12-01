@@ -14,22 +14,6 @@ export const i18n = {
 "Cancel": "रद्द करो",
 "InternalError": "आंतरिक त्रुटि",
 
-"Hostname": "Cloud name for this host",
-"HostNetworkAddressOrIp": "होस्टनाम या आईपी",
-"HostOSType": "Choose host OS",
-"HostRootID": "Host administrator's login ID",
-"HostRootPassword": "रूट पासवर्ड",
-"Hostkey": "एसएसएच ईडी25519 एमडी5 होस्टकी",
-"HostChangeAdminPassword": "Change administrator password and take over?",
-"HostCores": "Number of cores",
-"HostMemory": "Memory in bytes",
-"HostDisk": "Local disk in bytes",
-"HostNetspeed": "Network speed in bytes per second",
-"HostProcessor": "Processor in Vendor:Name:Model:Speed in Mhz format",
-"HostProcessorArchitecture": "Processor architecture",
-"HostSockets": "Number of sockets",
-"HostAddButtonLabel": "Add Host",
-
 "वीएमनाम": "वीएम नाम",
 "VMDescription": "VM विवरण",
 "Cores": "कोर",
@@ -41,8 +25,5 @@ export const i18n = {
 "DBDescription": "डीबी विवरण",
 
 "WelcomeHeading": "Kloudust - Welcome {{{user}}}",
-"WelcomeSubheading": "Click any page from the left bar or choose from below",
-
-"FormSubmit": "Submit",
-"FormFieldError": "Validation error"
+"WelcomeSubheading": "Click any page from the left bar or choose from below"
 }

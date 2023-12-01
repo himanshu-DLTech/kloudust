@@ -94,6 +94,7 @@ label {
     padding-left: 0.2em; 
     margin-bottom: 0.2em;
     display: inline-block;
+    font-size: smaller;
 }
 
 input.error {color: red;}
@@ -142,7 +143,7 @@ span#submit {
 {{#required}}
 {{^multioption}}
 <input id="{{id}}" type="{{type}}" placeholder="{{placeholder}}" {{#required}}required{{/required}} 
-    {{#pattern}}pattern="{{.}}"{{/pattern}} oninvalid="this.setCustomValidity('{{i18n.FormFieldError}}')" 
+    {{#pattern}}pattern="{{.}}"{{/pattern}} oninvalid="this.setCustomValidity('{{validation_error}}')" 
     oninput="setCustomValidity('')">
 {{/multioption}}
 
@@ -162,12 +163,13 @@ span#submit {
     divToExpandOrHide.classList.toggle("expanded"); 
     divToExpandOrHide.classList.toggle("collapsed");
     if (this.innerText.endsWith("▶")) this.innerText = this.innerText.split("▶")[0]+"▼";
-    else this.innerText = this.innerText.split("▼")[0]+"▶";'>Advanced ▶</span>
+    else this.innerText = this.innerText.split("▼")[0]+"▶";'>{{optional_label}} ▶</span>
 <div id="advanced" class="collapsed">
 {{#optional}}
 {{^multioption}}
 <input id="{{id}}" type="{{type}}" placeholder="{{placeholder}}" data-optional="true"
-    {{#pattern}}pattern="{{.}}"{{/pattern}} oninvalid="this.setCustomValidity('{{i18n.FormFieldError}}')" oninput="setCustomValidity('')">
+    {{#pattern}}pattern="{{.}}"{{/pattern}} oninvalid="this.setCustomValidity('{{validation_error}}')" 
+        oninput="setCustomValidity('')">
 {{/multioption}}
 
 {{#multioption}}
@@ -185,7 +187,7 @@ span#submit {
 
 <div id="bottombar">
 <span id="submit" onclick='event.stopPropagation(); monkshu_env.components["form-runner"].formSubmitted(this)''>
-{{#submitlabel}}{{.}}{{/submitlabel}}{{^submitlabel}}{{i18n.FormSubmit}}{{/submitlabel}}
+{{#submitlabel}}{{.}}{{/submitlabel}}{{^submitlabel}}Submit{{/submitlabel}}
 </span>
 </div>
 </div>

@@ -5,6 +5,7 @@
  * License: See enclosed LICENSE file.
  */
 
+import {i18n} from "/framework/js/i18n.mjs";
 import {apimanager as apiman} from "/framework/js/apimanager.mjs";
 
 const REGISTERED_COMMANDS = {}, KLOUDUST_CMDLINE = "kloudust_cmdline";
@@ -32,7 +33,8 @@ async function cmdClicked(id) {
 
     try {
         const formJSON = await $$.requireJSON(`${APP_CONSTANTS.FORMS_PATH}/${id}.form.json`), 
-            uriencodedFormJSON = encodeURIComponent(JSON.stringify(formJSON.form))
+            uriencodedFormJSON = encodeURIComponent(JSON.stringify(formJSON.form));
+        if (formJSON.i18n) for (const [lang, i18nObject] of Object.entries(formJSON.i18n)) await i18n.setI18NObject(lang, i18nObject);
         const html = `<form-runner id="${id}" form='decodeURIComponent(${uriencodedFormJSON})'
             onclose='monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.hideOpenContent()'
             onsubmit='monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager.formSubmitted("${id}", formdata)'></form-runner>`;
@@ -50,9 +52,9 @@ async function formSubmitted(id, values) {
     const cmdLineMap = form.kloudust_cmdline_params;
     for (const param of cmdLineMap) command += " "+('"'+values[param]+'"'||'""');
     _processCommandOutput(`Running command - ${command}`, false, true);
-    const cmdResult = await apiman.rest(APP_CONSTANTS.API_KLOUDUSTCMD, "POST", {command}, true, false);
-    if (cmdResult) {_processCommandOutput(cmdResult.out); _processCommandOutput(cmdResult.err); _processCommandOutput(`Success! Exit code: ${cmdResult.exitCode}`);}
-    else _processCommandOutput(`Command Failed.${cmdResult.err?"Error was\n"+cmdResult.err:""}`, true);
+    const cmdResult = await apiman.rest(APP_CONSTANTS.API_KLOUDUSTCMD, "POST", {cmd: command}, true);
+    if (cmdResult?.result) {_processCommandOutput(cmdResult.out); _processCommandOutput(cmdResult.err); _processCommandOutput(`Success! Exit code: ${cmdResult.exitcode}`);}
+    else _processCommandOutput(`Command Failed. ${command}. ${cmdResult?.err?"Error was\n"+cmdResult.err:""}`, true);
 }
 
 function _processCommandOutput(text, isError=false, firstLineOfNewCommand=false) {

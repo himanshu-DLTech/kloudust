@@ -10,14 +10,16 @@ import {apimanager as apiman} from "/framework/js/apimanager.mjs";
 
 let currTimeout; let logoutListeners = [];
 
-function handleLoginResult(resp) {
+function handleLoginResult(fetchResponse) {
     logoutListeners = [];   // reset listeners on sign in
 
-    if (resp && resp.result) {
-        session.set(APP_CONSTANTS.USERID, resp.id); 
-        session.set(APP_CONSTANTS.USERNAME, resp.name);
-        session.set(APP_CONSTANTS.USERORG, resp.org);
-        session.set(APP_CONSTANTS.LOGGEDIN_USEROLE, resp.role);
+    const apiURL = fetchResponse.url, headers = fetchResponse.headers, jsonResponseObject = fetchResponse.response;
+    if (jsonResponseObject && jsonResponseObject.result) {
+        apiman.addJWTToken(apiURL, headers, jsonResponseObject);
+        session.set(APP_CONSTANTS.USERID, jsonResponseObject.id); 
+        session.set(APP_CONSTANTS.USERNAME, jsonResponseObject.name);
+        session.set(APP_CONSTANTS.USERORG, jsonResponseObject.org);
+        session.set(APP_CONSTANTS.LOGGEDIN_USEROLE, jsonResponseObject.role);
         securityguard.setCurrentRole(APP_CONSTANTS.USER_ROLE);  // we only have user and guest at this level 
         if (!APP_CONSTANTS.INSECURE_DEVELOPMENT_MODE) startAutoLogoutTimer();   
         router.loadPage(APP_CONSTANTS.MAIN_HTML);

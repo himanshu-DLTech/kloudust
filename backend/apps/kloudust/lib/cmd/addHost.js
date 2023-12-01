@@ -41,7 +41,7 @@ module.exports.exec = async function(params) {
         other: [
             hostip, adminid, adminpass, hostsshkey, 
             `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/addHost.sh`,
-            newPassword
+            newPassword, CMD_CONSTANTS.SCRIPT_JSONOUT_SPLITTER
         ]
     }
 
@@ -49,7 +49,7 @@ module.exports.exec = async function(params) {
     if (results.exitCode==0) {
         // try to get the real hardware config from the host itself and override as necessary
         const scriptOutChunks = results.stdout.split(CMD_CONSTANTS.SCRIPT_JSONOUT_SPLITTER);
-        let hostConfig = {}; if (scriptOutChunks[1]) try{hostConfig = JSON.parse(scriptOutChunks[1])} catch (err) {
+        let hostConfig = {}; if (scriptOutChunks[1]) try{hostConfig = JSON.parse(scriptOutChunks[1].trim())} catch (err) {
             params.consoleHandlers.LOGERROR(`Unable to detect hardaware config from the host ${hostip}, JSON parsing failed for ${scriptOutChunks[1]}`);
         } else {params.consoleHandlers.LOGWARN(`Unable to detect hardaware config from the host ${hostip}, no JSON out found`);}
         const realCores = parseInt(hostConfig.cores||cores), realMemory = parseInt(hostConfig.memory||memory), 

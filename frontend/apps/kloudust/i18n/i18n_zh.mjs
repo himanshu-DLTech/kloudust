@@ -14,22 +14,6 @@ export const i18n = {
 "Cancel": "取消",
 "InternalError": "内部错误",
 
-"Hostname": "Cloud name for this host",
-"HostNetworkAddressOrIp": "主机名或IP",
-"HostOSType": "Choose host OS",
-"HostRootID": "Host administrator's login ID",
-"HostRootPassword": "根密码",
-"Hostkey": "SSH ED25519 MD5 主机密钥",
-"HostChangeAdminPassword": "Change administrator password and take over?",
-"HostCores": "Number of cores",
-"HostMemory": "Memory in bytes",
-"HostDisk": "Local disk in bytes",
-"HostNetspeed": "Network speed in bytes per second",
-"HostProcessor": "Processor in Vendor:Name:Model:Speed in Mhz format",
-"HostProcessorArchitecture": "Processor architecture",
-"HostSockets": "Number of sockets",
-"HostAddButtonLabel": "Add Host",
-
 "VMName": "虚拟机名称",
 "VMDescription": "虚拟机描述",
 "Cores":"核心",
@@ -41,8 +25,5 @@ export const i18n = {
 "DBDescription": "数据库描述",
 
 "WelcomeHeading": "Kloudust - Welcome {{{user}}}",
-"WelcomeSubheading": "Click any page from the left bar or choose from below",
-
-"FormSubmit": "Submit",
-"FormFieldError": "Validation error"
+"WelcomeSubheading": "Click any page from the left bar or choose from below"
 }

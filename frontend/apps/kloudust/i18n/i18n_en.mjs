@@ -14,22 +14,6 @@ export const i18n = {
 "Cancel": "Cancel",
 "InternalError": "Internal error",
 
-"Hostname": "Cloud name for this host",
-"HostNetworkAddressOrIp": "Host IP or DNS",
-"HostOSType": "Choose host OS",
-"HostRootID": "Host administrator's login ID",
-"HostRootPassword": "Host administrator's password",
-"Hostkey": "SSH ED25519 MD5 Hostkey",
-"HostChangeAdminPassword": "Change administrator password?",
-"HostCores": "Number of cores",
-"HostMemory": "Memory in bytes",
-"HostDisk": "Local disk in bytes",
-"HostNetspeed": "Network speed in bytes per second",
-"HostProcessor": "Processor in Vendor:Name:Model:Speed in Mhz format",
-"HostProcessorArchitecture": "Processor architecture",
-"HostSockets": "Number of sockets",
-"HostAddButtonLabel": "Add Host",
-
 "VMName": "VM Name",
 "VMDescription": "VM Description",
 "Cores": "Cores",
@@ -42,7 +26,4 @@ export const i18n = {
 
 "WelcomeHeading": "Kloudust - Welcome {{{user}}}",
 "WelcomeSubheading": "Click any page from the left bar or choose from below",
-
-"FormSubmit": "Submit",
-"FormFieldError": "Validation error"
 }
