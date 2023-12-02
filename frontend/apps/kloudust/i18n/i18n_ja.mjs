@@ -14,12 +14,6 @@ export const i18n = {
 "Cancel": "キャンセル",
 "InternalError": "内部エラー",
 
-"VMName": "VM名",
-"VMDescription": "VMの説明",
-"Cores": "コア",
-"Memory":"記憶",
-"Disk": "ディスク",
-
 "KloudustCommand": "Kloudustコマンド",
 "DBName": "データベース名",
 "DBDescription": "データベース説明",

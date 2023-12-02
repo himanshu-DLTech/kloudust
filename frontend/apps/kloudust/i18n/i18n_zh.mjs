@@ -14,12 +14,6 @@ export const i18n = {
 "Cancel": "取消",
 "InternalError": "内部错误",
 
-"VMName": "虚拟机名称",
-"VMDescription": "虚拟机描述",
-"Cores":"核心",
-"Memory":"内存",
-"Disk":"磁盘",
-
 "KloudustCommand": "Kloudust API 命令",
 "DBName": "数据库名称",
 "DBDescription": "数据库描述",

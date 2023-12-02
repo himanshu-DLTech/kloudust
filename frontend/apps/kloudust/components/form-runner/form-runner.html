@@ -83,6 +83,22 @@ input, input:-internal-autofill-previewed, input:-internal-autofill-selected {
 input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none;}
 ::placeholder {color: inherit;}
 
+textarea {
+    width: 100%;
+    height: 6em;
+    border: none;
+    font-family: inherit;
+    font-size: smaller;
+    display: block;
+    margin-bottom: 2em;
+    color: #DCDCDC;
+    outline: none;
+    box-shadow: none;
+    background-color: #646262;
+    resize: none;
+    border-radius: 0.5em;
+}
+
 select {
     border-radius: 0.4em;
     border-color: #DCDCDC; 
@@ -142,9 +158,9 @@ span#submit {
 <div id="required">
 {{#required}}
 {{^multioption}}
-<input id="{{id}}" type="{{type}}" placeholder="{{placeholder}}" {{#required}}required{{/required}} 
+<{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}} id="{{id}}" type="{{type}}" placeholder="{{placeholder}}" {{#required}}required{{/required}} 
     {{#pattern}}pattern="{{.}}"{{/pattern}} oninvalid="this.setCustomValidity('{{validation_error}}')" 
-    oninput="setCustomValidity('')">
+    oninput="setCustomValidity('')"></{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}}>
 {{/multioption}}
 
 {{#multioption}}
@@ -167,9 +183,9 @@ span#submit {
 <div id="advanced" class="collapsed">
 {{#optional}}
 {{^multioption}}
-<input id="{{id}}" type="{{type}}" placeholder="{{placeholder}}" data-optional="true"
+<{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}} id="{{id}}" type="{{type}}" placeholder="{{placeholder}}" data-optional="true"
     {{#pattern}}pattern="{{.}}"{{/pattern}} oninvalid="this.setCustomValidity('{{validation_error}}')" 
-        oninput="setCustomValidity('')">
+        oninput="setCustomValidity('')"></{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}}>
 {{/multioption}}
 
 {{#multioption}}
@@ -186,7 +202,7 @@ span#submit {
 
 
 <div id="bottombar">
-<span id="submit" onclick='event.stopPropagation(); monkshu_env.components["form-runner"].formSubmitted(this)''>
+<span id="submit" onclick='event.stopPropagation(); monkshu_env.components["form-runner"].formSubmitted(this)'>
 {{#submitlabel}}{{.}}{{/submitlabel}}{{^submitlabel}}Submit{{/submitlabel}}
 </span>
 </div>

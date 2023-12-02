@@ -6,6 +6,7 @@
  */
 
 import {i18n} from "/framework/js/i18n.mjs";
+import {util} from "/framework/js/util.mjs";
 import {session} from "/framework/js/session.mjs";
 import {apimanager as apiman} from "/framework/js/apimanager.mjs";
 
@@ -84,10 +85,10 @@ async function _getFormHTML(formJSON) {
     let html = "";
 
     if (formJSON.type == KLOUDUST_CMDLINE) {
-        const uriencodedFormJSON = encodeURIComponent(JSON.stringify(formJSON.form)), id = formJSON.id;
+        const base64FormJSON = util.stringToBase64(JSON.stringify(formJSON.form)), id = formJSON.id;
         if (formJSON.i18n) for (const [lang, i18nObject] of Object.entries(formJSON.i18n)) await i18n.setI18NObject(lang, i18nObject);
 
-        html = `<form-runner id="${id}" form='decodeURIComponent(${uriencodedFormJSON})'
+        html = `<form-runner id="${id}" data-form='${base64FormJSON}'
             onclose='monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.hideOpenContent()'
             onsubmit='monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager.formSubmitted("${id}", formdata)'></form-runner>`;
     }

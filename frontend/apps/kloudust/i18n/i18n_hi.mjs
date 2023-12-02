@@ -14,12 +14,6 @@ export const i18n = {
 "Cancel": "रद्द करो",
 "InternalError": "आंतरिक त्रुटि",
 
-"वीएमनाम": "वीएम नाम",
-"VMDescription": "VM विवरण",
-"Cores": "कोर",
-"Memory": "स्मृति",
-"Disk": "डिस्क",
-
 "KloudustCommand": "क्लाउडस्ट कमांड",
 "DBName": "डीबी का नाम",
 "DBDescription": "डीबी विवरण",

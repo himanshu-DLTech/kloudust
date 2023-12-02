@@ -25,7 +25,8 @@
         "HostSockets": "Number of sockets",
         "HostAddButtonLabel": "Add Host",
         "Advanced": "Optional",
-        "Required": "Required"
+        "Required": "Required",
+        "FieldValidationErrorGeneric": "Validation error"
     },
     "hi": {
         "Hostname": "Cloud name for this host",
@@ -44,7 +45,8 @@
         "HostSockets": "Number of sockets",
         "HostAddButtonLabel": "Add Host",
         "Advanced": "Optional",
-        "Required": "Required"
+        "Required": "Required",
+        "FieldValidationErrorGeneric": "Validation error"
     },
     "ja": {
         "Hostname": "Cloud name for this host",
@@ -63,7 +65,8 @@
         "HostSockets": "Number of sockets",
         "HostAddButtonLabel": "Add Host",
         "Advanced": "Optional",
-        "Required": "Required"
+        "Required": "Required",
+        "FieldValidationErrorGeneric": "Validation error"
     },
     "zh": {
         "Hostname": "Cloud name for this host",
@@ -82,7 +85,8 @@
         "HostSockets": "Number of sockets",
         "HostAddButtonLabel": "Add Host",
         "Advanced": "Optional",
-        "Required": "Required"
+        "Required": "Required",
+        "FieldValidationErrorGeneric": "Validation error"
     }
 },
 

@@ -14,12 +14,6 @@ export const i18n = {
 "Cancel": "Cancel",
 "InternalError": "Internal error",
 
-"VMName": "VM Name",
-"VMDescription": "VM Description",
-"Cores": "Cores",
-"Memory": "Memory",
-"Disk": "Disk",
-
 "KloudustCommand": "Kloudust API Command",
 "DBName": "DB Name",
 "DBDescription": "DB Description",
