@@ -1,0 +1,5 @@
+{
+"id": "alerts",
+"command": "alerts",
+"type": "frontend_module"
+}

@@ -18,9 +18,11 @@ export const APP_CONSTANTS = {
     FRONTEND, BACKEND, APP_PATH, APP_NAME, CONF_PATH, API_PATH,
     INDEX_HTML, MAIN_HTML, LOGIN_HTML, LOGINRESULT_HTML, 
 
+    LIB_PATH: APP_PATH+"/js",
     DIALOGS_PATH: APP_PATH+"/dialogs",
     COMMANDS_PATH: APP_PATH+"/commands",
     FORMS_PATH: APP_PATH+"/commands/forms",
+    FORM_MODULES_PATH: APP_PATH+"/commands/modules",
     UI_LISTS_PATH: APP_PATH+"/commands/ui_lists",
 
     SESSION_NOTE_ID: "com_monkshu_ts",

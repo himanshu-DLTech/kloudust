@@ -1,5 +1,5 @@
 {
-
+"id": "addhost",
 "command": "addHost",
 "type": "kloudust_cmdline",
 "kloudust_cmdline_params": ["hostname", "hostip", "ostype", "adminid", "adminpass", "hostsshkey", "cores", 

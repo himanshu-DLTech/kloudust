@@ -1,13 +1,45 @@
 {
-    "cloudadmin": [
-        {"id": "addhost", "label": "Add Host", "logo": "img/addhost.svg"},
-        {"id": "createvm", "label": "Virtual Machine", "logo": "img/createvm.svg"}
-    ],
-    "!cloudadmin": [
-        {"id": "createvm", "label": "Virtual Machine", "logo": "img/createvm.svg"},
-        {"id": "createcontainer", "label": "Container", "logo": "img/createcontainer.svg"}
-    ],
-    "*": [
-        {"id": "createsqldb", "label": "SQL Database", "logo": "img/createdb.svg"}
-    ]
+"rolelist": {
+"cloudadmin": [
+    {"id": "addhost", "label": "{{{i18n.AddHost}}}", "logo": "img/addhost.svg"},
+    {"id": "createvm", "label": "{{{i18n.CreateVirtualMachine}}}", "logo": "img/createvm.svg"}
+],
+"!cloudadmin": [
+    {"id": "createvm", "label": "{{{i18n.CreateVirtualMachine}}}", "logo": "img/createvm.svg"},
+    {"id": "createcontainer", "label": "{{{i18n.CreateContainer}}}", "logo": "img/createcontainer.svg"}
+],
+"*": [
+    {"id": "alerts", "label": "{{{i18n.Alerts}}}", "logo": "img/bell.svg"}
+]
+},
+
+"i18n": {
+"en": {
+    "AddHost": "Add host",
+    "CreateVirtualMachine": "Virtual machine",
+    "CreateContainer": "New container",
+    "Alerts": "See alerts"
+},
+
+"hi": {
+    "AddHost": "Add host",
+    "CreateVirtualMachine": "Virtual machine",
+    "CreateContainer": "New container",
+    "Alerts": "See alerts"
+},
+
+"ja": {
+    "AddHost": "Add host",
+    "CreateVirtualMachine": "Virtual machine",
+    "CreateContainer": "New container",
+    "Alerts": "See alerts"
+},
+
+"zh": {
+    "AddHost": "Add host",
+    "CreateVirtualMachine": "Virtual machine",
+    "CreateContainer": "New container",
+    "Alerts": "See alerts"
+}
+}
 }

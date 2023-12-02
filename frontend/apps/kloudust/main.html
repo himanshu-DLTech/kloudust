@@ -15,6 +15,8 @@ body {
 	flex-direction: row;
 	width: 100%;
 	font-size: medium;
+	height: 100%;
+	justify-content: space-between;
 }
 
 div#leftbar {
@@ -42,6 +44,12 @@ div#topleftbaritems, div#bottomleftbaritems {
 div#maincontent {
 	flex-grow: 1;
     height: 100%;
+	transition: all 500ms;
+	width: 100%;
+}
+div#maincontent.close {
+	height: 0;
+	width: 100%;
 }
 div#welcomediv {
 	display: flex;
@@ -81,7 +89,7 @@ div#button img {width: 5em; height: 5em;}
 	import {main} from "./js/main.mjs"; window.monkshu_env.apps[APP_CONSTANTS.APP_NAME].main = main; 
 	import {loginmanager} from "./js/loginmanager.mjs"; window.monkshu_env.apps[APP_CONSTANTS.APP_NAME].loginmanager = loginmanager;
 	main.registerHostingDivAndInitialContentTemplate(document.querySelector("div#maincontent"), 
-		document.querySelector("template#initialContent"));
+		document.querySelector("template#initialContent"), "close", 500);
 	main.showContent();
 	</script>
 		

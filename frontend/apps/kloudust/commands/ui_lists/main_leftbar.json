@@ -1,6 +1,30 @@
 {
-    "*":[
-    {"id": "create", "label": "Create", "logo": "img/plus.svg"},
-    {"id": "vms", "label": "Virtual Machines", "logo": "img/vms.svg"}
-    ]
+"rolelist": {
+"*":[
+    {"id": "create", "label": "{{{i18n.Create}}}", "logo": "img/plus.svg"},
+    {"id": "vms", "label": "{{{i18n.VirtualMachines}}}", "logo": "img/vms.svg"}
+]
+},
+
+"i18n": {
+"en": {
+    "Create": "Create",
+    "VirtualMachines": "Virtual machines"
+},
+
+"hi": {
+    "Create": "Create",
+    "VirtualMachines": "Virtual machines"
+},
+
+"ja": {
+    "Create": "Create",
+    "VirtualMachines": "Virtual machines"
+},
+
+"zh": {
+    "Create": "Create",
+    "VirtualMachines": "Virtual machines"
+}
+}
 }
