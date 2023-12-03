@@ -10,12 +10,13 @@ import {util} from "/framework/js/util.mjs";
 import {router} from "/framework/js/router.mjs";
 import {monkshu_component} from "/framework/js/monkshu_component.mjs";
 
-const COMPONENT_PATH = util.getModulePath(import.meta);
+const COMPONENT_PATH = util.getModulePath(import.meta), INPUT_ELEMENTS = ["input", "select", "textarea"];
 
 async function elementConnected(host) {
     const formData = util.base64ToString(host.dataset.form);
     const expandedData = await router.expandPageData(formData);
     const formObject = JSON.parse(expandedData);
+    if (formObject.optional) formObject.showOptional = true;
     form_runner.setDataByHost(host, formObject);
 }
 
@@ -26,9 +27,8 @@ async function close(element) {
 
 async function formSubmitted(element) {
     const shadowRoot = form_runner.getShadowRootByContainedElement(element);
-    const inputs = shadowRoot.querySelectorAll("input"), 
-        allFormElements = [...shadowRoot.querySelectorAll("input"), ...shadowRoot.querySelectorAll("select")];
-    for (const input of inputs) if ((input.dataset.optional?.toLowerCase() != "true") && (!input.checkValidity())) {
+    const allFormElements = []; for (const inputElement of INPUT_ELEMENTS) allFormElements.push(...shadowRoot.querySelectorAll(inputElement));
+    for (const input of allFormElements) if ((input.dataset.optional?.toLowerCase() != "true") && (!input.checkValidity())) {
         LOG.error(`Submit failed due to failed validation of ${input.id} whose value is ${input.type != "password" ? input.value.trim() != "" ? input.value : "empty value" : "***********" }`);
         input.reportValidity(); return false;
     }

@@ -8,22 +8,30 @@
  * (C) 2020 TekMonks. All rights reserved.
  */
 
+const serverutils = require(`${CONSTANTS.LIBDIR}/utils.js`);
 const login = require(`${KLOUD_CONSTANTS.APIDIR}/login.js`);
 const kloudust = require(`${KLOUD_CONSTANTS.ROOTDIR}/kloudust`);
 
-exports.doService = async (jsonReq, _servObject, headers, _url, _apiconf) => {
-	const requestID = Date.now()+":"+Math.random().toString().split(".")[1];
+const REQUEST_HASH_KEY = "__org_kloudust_request_hash_", 
+	MEMORY_PROVIDER = global[KLOUD_CONSTANTS.CONF.KLOUDUST_MEMORY_FOR_API_REQUEST_TRACKING];
 
-	if (!validateRequest(jsonReq)) {_streamHandler(requestID, undefined, undefined, 
-		`Validation failure for the request -> ${jsonReq?JSON.stringify(jsonReq):"undefined"}`); return CONSTANTS.FALSE_RESULT;}
+exports.doService = async (jsonReq={}, _servObject, headers, _url, _apiconf) => {
+	const requestHash = serverutils.hashObject(jsonReq), 
+		requestID = Date.now()+":"+Math.random().toString().split(".")[1], memory = MEMORY_PROVIDER.get(REQUEST_HASH_KEY, {});
+	if (memory[requestHash]) return _logErrorAndConstructErrorResult(requestID, 
+			`Ignoring duplicate request -> ${JSON.stringify(jsonReq)} with hash ${requestHash}`); 
+
+	if (!validateRequest(jsonReq)) return _logErrorAndConstructErrorResult(requestID, 
+		`Validation failure for the request -> ${JSON.stringify(jsonReq)}`);
 	
-    const user = login.getID(headers); if (!user) {_streamHandler(requestID, undefined, undefined,
-		`Validation failure for the request, missing user ID from headers -> ${JSON.stringify(jsonReq)}`); return CONSTANTS.FALSE_RESULT;}
-	_streamHandler(requestID, `Running Kloudust command: ${jsonReq.cmd}`);
+    const user = login.getID(headers); if (!user) return _logErrorAndConstructErrorResult(requestID, 
+		`Validation failure for the request, missing user ID from headers -> ${JSON.stringify(jsonReq)}`);
+	
+	_streamHandler(requestID, `Running Kloudust command: ${jsonReq.cmd}`); _setRequestActive(requestHash, true);
     const kdRequest = {user: [user], project: jsonReq.project?[jsonReq.project]:undefined, execute: [jsonReq.cmd],
 		setup: jsonReq.setup?[jsonReq.setup]:undefined, consoleStreamHandler: (info, warn, error) => 
 			_streamHandler(requestID, info, warn, error)};
-	const results = await kloudust.kloudust(kdRequest);
+	const results = await _runKloudustRequestWithTimeout(requestID, kdRequest); _setRequestActive(requestHash, false);
 	return {...results, result: results.result, stdout: results.out||"", stderr: results.err||"", exitcode: results.result?0:1};
 }
 
@@ -32,5 +40,26 @@ function _streamHandler(id, info, warn, err) {
 	if (warn && warn.toString().trim() != "") KLOUD_CONSTANTS.LOGWARN(`[${id}] ${warn}`);
 	if (err && err.toString().trim() != "") KLOUD_CONSTANTS.LOGERROR(`[${id}] ${err}`);
 }
+
+function _setRequestActive(requestHash, active=true) {
+	const memory = MEMORY_PROVIDER.get(REQUEST_HASH_KEY, {});
+	if (active) memory[requestHash] = true; else delete memory[requestHash];
+	MEMORY_PROVIDER.set(REQUEST_HASH_KEY, memory);
+}
+
+function _runKloudustRequestWithTimeout(requestID, kdRequest) {
+	return new Promise(async resolve => {
+		let isResolved = false; 
+		const _timeoutFunction = _ => { isResolved = true; resolve(_logErrorAndConstructErrorResult(
+			requestID, "Kloudust command timed out.")); }
+		setTimeout(_timeoutFunction, KLOUD_CONSTANTS.CONF.KLOUDUST_CMD_TIMEOUT_FOR_APIS);
+		const results = await kloudust.kloudust(kdRequest); if (!isResolved) resolve(results);
+	})
+}
+
+const _logErrorAndConstructErrorResult = (requestID, errorMessage) => { 
+	_streamHandler(requestID, undefined, undefined, errorMessage);
+	return {stdout: "", out: "", stderr: errorMessage, err: errorMessage, exitcode: 1, ...CONSTANTS.FALSE_RESULT } 
+};
 
 const validateRequest = jsonReq => jsonReq && jsonReq.cmd;

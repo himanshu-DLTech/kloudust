@@ -97,6 +97,7 @@ textarea {
     background-color: #646262;
     resize: none;
     border-radius: 0.5em;
+    padding: 0.5em;
 }
 
 select {
@@ -159,13 +160,13 @@ span#submit {
 {{#required}}
 {{^multioption}}
 <{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}} id="{{id}}" type="{{type}}" placeholder="{{placeholder}}" {{#required}}required{{/required}} 
-    {{#pattern}}pattern="{{.}}"{{/pattern}} oninvalid="this.setCustomValidity('{{validation_error}}')" 
+    {{#pattern}}pattern="{{.}}"{{/pattern}} oninvalid="this.setCustomValidity('{{validation_error}}')" {{#style}}style="{{{.}}}"{{/style}} 
     oninput="setCustomValidity('')"></{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}}>
 {{/multioption}}
 
 {{#multioption}}
 <label for="{{id}}">{{label}}</label>
-<select id="{{id}}" name="{{id}}">
+<select id="{{id}}" name="{{id}}" {{#style}}style="{{{.}}}"{{/style}}>
     {{#options}}
     <option value="{{value}}">{{label}}</option>
     {{/options}}
@@ -174,6 +175,7 @@ span#submit {
 {{/required}}
 </div>
 
+{{#showOptional}}
 <span id="expander" onclick='
     const divToExpandOrHide = this.parentNode.querySelector("div#advanced");
     divToExpandOrHide.classList.toggle("expanded"); 
@@ -183,14 +185,14 @@ span#submit {
 <div id="advanced" class="collapsed">
 {{#optional}}
 {{^multioption}}
-<{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}} id="{{id}}" type="{{type}}" placeholder="{{placeholder}}" data-optional="true"
-    {{#pattern}}pattern="{{.}}"{{/pattern}} oninvalid="this.setCustomValidity('{{validation_error}}')" 
-        oninput="setCustomValidity('')"></{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}}>
+<{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}} id="{{id}}" type="{{type}}" placeholder="{{placeholder}}" 
+    {{#style}}style="{{{.}}}"{{/style}} data-optional="true" {{#pattern}}pattern="{{.}}"{{/pattern}} 
+        oninvalid="this.setCustomValidity('{{validation_error}}')" oninput="setCustomValidity('')"></{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}}>
 {{/multioption}}
 
 {{#multioption}}
 <label for="{{id}}">{{label}}</label>
-<select id="{{id}}" name="{{id}}" data-optional="true">
+<select id="{{id}}" name="{{id}}" data-optional="true" {{#style}}style="{{{.}}}"{{/style}}>
     {{#options}}
     <option value="{{value}}">{{label}}</option>
     {{/options}}
@@ -198,6 +200,8 @@ span#submit {
 {{/multioption}}
 {{/optional}}
 </div>
+{{/showOptional}}
+
 </div>
 
 

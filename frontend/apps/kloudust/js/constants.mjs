@@ -40,6 +40,8 @@ export const APP_CONSTANTS = {
     LOGGEDIN_USEROLE: "userrole",
     USER_ROLE: "user",
     GUEST_ROLE: "guest",
+    ACTIVE_PROJECT: "project",
+    DEFAULT_PROJECT: "default",
 
     TKMLOGIN_LIB: `${APP_PATH}/3p/tkmlogin.mjs`,
 

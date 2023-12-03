@@ -2,29 +2,39 @@
 "rolelist": {
 "*":[
     {"id": "create", "label": "{{{i18n.Create}}}", "logo": "img/plus.svg"},
-    {"id": "vms", "label": "{{{i18n.VirtualMachines}}}", "logo": "img/vms.svg"}
+    {"id": "vms", "label": "{{{i18n.VirtualMachines}}}", "logo": "img/vms.svg"},
+    {"id": "cloudcommand", "label": "{{{i18n.CloudCommand}}}", "logo": "img/cloudcommand.svg"},
+    {"id": "alerts", "label": "{{{i18n.Alerts}}}", "logo": "img/alerts.svg"}
 ]
 },
 
 "i18n": {
 "en": {
     "Create": "Create",
-    "VirtualMachines": "Virtual machines"
+    "VirtualMachines": "Virtual machines",
+    "CloudCommand": "Run cloud command",
+    "Alerts": "Alerts"
 },
 
 "hi": {
     "Create": "Create",
-    "VirtualMachines": "Virtual machines"
+    "VirtualMachines": "Virtual machines",
+    "CloudCommand": "Run cloud command",
+    "Alerts": "Alerts"
 },
 
 "ja": {
     "Create": "Create",
-    "VirtualMachines": "Virtual machines"
+    "VirtualMachines": "Virtual machines",
+    "CloudCommand": "Run cloud command",
+    "Alerts": "Alerts"
 },
 
 "zh": {
     "Create": "Create",
-    "VirtualMachines": "Virtual machines"
+    "VirtualMachines": "Virtual machines",
+    "CloudCommand": "Run cloud command",
+    "Alerts": "Alerts"
 }
 }
 }

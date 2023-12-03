@@ -5,10 +5,12 @@
 "kloudust_cmdline_params": ["vm_name", "vm_description", "cores", "memory", "disk", "creation_image_name", 
     "cloudinit_data", "force_overwrite"],
 
-"title": "{{{i18n.RegisterHost}}}",
+"title": "{{{i18n.VMCreateTitle}}}",
 
 "i18n": {
     "en": {
+        "VMCreateTitle": "Create Virtual Machine",
+        "VMCreateDescription": "Add a virtual machine to the cloud. Complete the required tab then submit or review advanced tab for full customization.",
         "VMName": "Virtual machine name",
         "VMDescription": "Description",
         "VMCores": "Cores",
@@ -26,6 +28,8 @@
         "VMOverwriteForce": "Overwrite if a virtual machine by the same name exists?"
     },
     "hi": {
+        "VMCreateTitle": "Create Virtual Machine",
+        "VMCreateDescription": "Add a virtual machine to the cloud. Complete the required tab then submit or review advanced tab for full customization.",
         "VMName": "वीएम नाम",
         "VMDescription": "वीएम विवरण",
         "VMCores": "कोर",
@@ -43,6 +47,8 @@
         "VMOverwriteForce": "Overwrite if a virtual machine by the same name exists?"
     },
     "ja": {
+        "VMCreateTitle": "Create Virtual Machine",
+        "VMCreateDescription": "Add a virtual machine to the cloud. Complete the required tab then submit or review advanced tab for full customization.",
         "VMName": "VM名",
         "VMDescription": "VMの説明",
         "VMCores": "コア",
@@ -60,6 +66,8 @@
         "VMOverwriteForce": "Overwrite if a virtual machine by the same name exists?"
     },
     "zh": {
+        "VMCreateTitle": "Create Virtual Machine",
+        "VMCreateDescription": "Add a virtual machine to the cloud. Complete the required tab then submit or review advanced tab for full customization.",
         "VMName": "虚拟机名称",
         "VMDescription": "虚拟机描述",
         "VMCores": "核心",
@@ -79,12 +87,12 @@
 },
 
 "form": {
-    "description": "Add a virtual machine to the cloud. Complete the required tab then submit or review advanced tab for full customization.",
+    "description": "{{{i18n.VMCreateDescription}}}",
 
     "required_label": "{{{i18n.Required}}}",
     "required": [
     {"id": "vm_name", "type": "text", "placeholder": "{{{i18n.VMName}}}", "required": true, 
-        "pattern":"\\s*[A-Za-z0-9]+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+        "pattern":"\\s*\\w+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
     {"id": "vm_description", "type": "text", "placeholder": "{{{i18n.VMDescription}}}", "required": true},
     {"id": "cores", "type": "number", "placeholder": "{{{i18n.VMCores}}}", "required": true, 
         "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},

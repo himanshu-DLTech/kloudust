@@ -20,6 +20,7 @@ function handleLoginResult(fetchResponse) {
         session.set(APP_CONSTANTS.USERNAME, jsonResponseObject.name);
         session.set(APP_CONSTANTS.USERORG, jsonResponseObject.org);
         session.set(APP_CONSTANTS.LOGGEDIN_USEROLE, jsonResponseObject.role);
+        session.set(APP_CONSTANTS.ACTIVE_PROJECT, APP_CONSTANTS.DEFAULT_PROJECT);
         securityguard.setCurrentRole(APP_CONSTANTS.USER_ROLE);  // we only have user and guest at this level 
         if (!APP_CONSTANTS.INSECURE_DEVELOPMENT_MODE) startAutoLogoutTimer();   
         router.loadPage(APP_CONSTANTS.MAIN_HTML);

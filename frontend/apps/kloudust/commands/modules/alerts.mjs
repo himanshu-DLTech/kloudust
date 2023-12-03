@@ -5,7 +5,10 @@
  * License: See enclosed license.txt file.
  */
 
+import {util} from "/framework/js/util.mjs";
 import {router} from "/framework/js/router.mjs";
+
+const RESOURCES_PATH = util.getModulePath(import.meta)+"/resources";
 
 const HTML_TEMPLATE = `
 <style>
@@ -59,32 +62,54 @@ div#main {
 }
 
 div#alertdiv {
-    padding: 1em;
+    padding: 0.5em;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 div#main div#alertdiv:nth-child(odd) {background-color: #858585;}
 div#main div#alertdiv:first-child{border-top: 1px solid #ffffff;}
 div#main div#alertdiv:last-child{border-bottom: 1px solid #ffffff;}
-span#alert {
+span#alertmessage {
     width: 100%;
     font-family: monospace;
+    user-select: text;
 }
+span#alerticon {
+    margin-right: 1em;
+    height: 1.5em;
+    width: 1.5em;
+}
+span#alerticon img {height: 100%;}
 </style>
 
 <div id="body">
 <div id="close" onclick='event.stopPropagation(); monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager.closeForm(this)'>X</div>
 
 <div id="main">
-{{^alerts}}<div id="alertdiv"><span id="alert">No alerts.</span></div>{{/alerts}}
-{{#alerts}}<div id="alertdiv"><span id="alert">{{.}}</span></div>{{/alerts}}
+{{^alerts}}
+<div id="alertdiv"><span id="alerticon"><img src="{{{info_icon}}}"></span><span id="alertmessage">No alerts.</span></div>
+{{/alerts}}
+{{#alerts}}
+    <div id="alertdiv"><span id="alerticon"><img src="{{{alerticon}}}"></span><span id="alertmessage">{{{message}}}</span></div>
+{{/alerts}}
 </div>
 
 </div>
 `;
 
 async function getHTML(_formJSON, cmdmanager) {
-    const html = router.expandPageData(HTML_TEMPLATE, undefined, {alerts: cmdmanager.getAlerts()});
+    const alerts = _safeDeepCloneArray(cmdmanager.getAlerts()); for (const alert of alerts) {
+        if (alert.type == cmdmanager.ALERT_ERROR) alert.error = true;
+        alert.alerticon = alert.error?`${RESOURCES_PATH}/alerts_error.svg`:`${RESOURCES_PATH}/alerts_info.svg`;
+        alert.message = util.encodeHTMLEntities(alert.message).replaceAll(/\r?\n/g, "<br/>");
+    }
+    const html = router.expandPageData(HTML_TEMPLATE, undefined, {alerts, 
+        info_icon: `${RESOURCES_PATH}/alerts_info.svg`, error_icon: `${RESOURCES_PATH}/alerts_error.svg`});
     return html;
-} 
+}
+
+const _safeDeepCloneArray = array => JSON.parse(JSON.stringify(array||[]));
 
 export const alerts = {getHTML};

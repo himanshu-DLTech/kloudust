@@ -32,6 +32,7 @@ exports.runRemoteSSHScript = (conf, remote_script, extra_params, streamer, callb
     _expandExtraParams(extra_params, remote_script, (err, expanded_remote_script) => {
         if (err) {callback({"result":false, "err":err, "msg": err.toString()}); return;}
 
+        LOG.debug(`Executing remote script ${agentConf["shellexecprefix_"+process.platform].join(" ")} ${script} ${conf.user} [hostpassword] [hostkey] ${expanded_remote_script} ${conf.host}`);
         _processExec( agentConf["shellexecprefix_"+process.platform], script, 
             [conf.user, conf.password, conf.hostkey, expanded_remote_script, conf.host], 
             streamer, callback );

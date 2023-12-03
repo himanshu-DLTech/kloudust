@@ -11,7 +11,8 @@ import {session} from "/framework/js/session.mjs";
 import {apimanager as apiman} from "/framework/js/apimanager.mjs";
 
 const REGISTERED_COMMANDS = {}, KLOUDUST_CMDLINE = "kloudust_cmdline", FRONTEND_MODULE = "frontend_module",
-    ALERT_OBJECT_KEY = "__com_tekmonks_kloudust_frontend_alerts";
+    ALERT_OBJECT_KEY = "__com_tekmonks_kloudust_frontend_alerts", ALERT_ERROR = "error", ALERT_INFO = "info",
+    RAW_COMMANDLINE_COMMAND = "RAW_COMMANDLINE";
 
 /**
  * Registers the given command object.
@@ -51,20 +52,24 @@ async function formSubmitted(id, values) {
     const form = await $$.requireJSON(`${APP_CONSTANTS.FORMS_PATH}/${id}.form.json`); 
     if (form.type != KLOUDUST_CMDLINE) return;  // no need to call backend in this case
 
-    let command = form.command;
+    let command = form.command == RAW_COMMANDLINE_COMMAND?"":form.command;
     const cmdLineMap = form.kloudust_cmdline_params;
-    for (const param of cmdLineMap) command += " "+('"'+values[param]+'"'||'""');
-    _processCommandOutput(`Running command - ${command}`, false, true);
-    const cmdResult = await apiman.rest(APP_CONSTANTS.API_KLOUDUSTCMD, "POST", {cmd: command}, true);
+    for (const param of cmdLineMap) command += form.command == RAW_COMMANDLINE_COMMAND?values[param]+" ":" "+('"'+values[param]+'"'||'""');
+    command = command.trim();
+    
+    const project = session.get(APP_CONSTANTS.ACTIVE_PROJECT, APP_CONSTANTS.DEFAULT_PROJECT);
+    _processCommandOutput(`Running command for project ${project} - ${command}`, false, true);
+    const cmdResult = await apiman.rest(APP_CONSTANTS.API_KLOUDUSTCMD, "POST", {cmd: command, project}, true);
     if (cmdResult?.result) {
         _processCommandOutput(`Success. Command output follows.`);
-        _processCommandOutput(cmdResult.out); _processCommandOutput(cmdResult.err); 
+        if ((cmdResult.out||"").trim() != "") _processCommandOutput(cmdResult.out); 
+        if ((cmdResult.err||"").trim() != "") _processCommandOutput(cmdResult.err); 
         _processCommandOutput(`Exit code: ${cmdResult.exitcode}`);
-    } else _processCommandOutput(`Command Failed. ${command}. ${cmdResult?.err?"Error was\n"+cmdResult.err:""}`, true);
+    } else _processCommandOutput(`Command Failed for project ${project} - ${command}${cmdResult?.err?". Error was\n"+cmdResult.err:""}`, true);
 }
 
 function addAlert(text, isError) {
-    const formattedAlert = `[${isError?"ERROR":"INFO"}] ${text}`;
+    const formattedAlert = {type: isError?ALERT_ERROR:ALERT_INFO, message: text};
     const alertObject = session.get(ALERT_OBJECT_KEY, []);
     alertObject.push(formattedAlert);
     session.set(ALERT_OBJECT_KEY, alertObject);
@@ -76,7 +81,6 @@ function getAlerts() {
 }
 
 function _processCommandOutput(text, isError=false, firstLineOfNewCommand=false) {
-    if (firstLineOfNewCommand) addAlert("\n\n-----------------------------------------------------");
     if (isError) addAlert(text, true);
     else addAlert(text);
 }
@@ -101,4 +105,5 @@ async function _getFormHTML(formJSON) {
     return html;
 }
 
-export const cmdmanager = {registerCommand, cmdClicked, formSubmitted, closeForm, addAlert, getAlerts};
+export const cmdmanager = {registerCommand, cmdClicked, formSubmitted, closeForm, addAlert, getAlerts, 
+    ALERT_ERROR, ALERT_INFO};
