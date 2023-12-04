@@ -11,8 +11,8 @@ import {router} from "/framework/js/router.mjs";
 import {session} from "/framework/js/session.mjs";
 import {cmdmanager as cmdman} from "./cmdmanager.mjs";
 
-const LEFTBAR_COMMANDS = `${APP_CONSTANTS.UI_LISTS_PATH}/main_leftbar.json`, 
-    MAIN_COMMANDS = `${APP_CONSTANTS.UI_LISTS_PATH}/main_content.json`;
+const LEFTBAR_COMMANDS = `${APP_CONSTANTS.FORMS_PATH}/main_leftbar.json`, 
+    MAIN_COMMANDS = `${APP_CONSTANTS.FORMS_PATH}/main_content.json`;
 
 let _hostingDiv, _initialContentTemplate, _closingClass, _animationWait;
 

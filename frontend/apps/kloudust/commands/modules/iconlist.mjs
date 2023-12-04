@@ -33,24 +33,51 @@ div#body {
     overflow: hidden;
     max-height: 100%;
     box-sizing: border-box;
-    color: #DCDCDC;
-    background-color: #4C4C4C;
+    color: #4C4C4C;
+    background-color: #EBECEE;
     height: 100%;
     display: flex;
-    flex-direction: row;
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: flex-end;
 }
 
-div#button {
+div#close {
     padding: 0.2em 0.6em;
     background-color: #BC5205;
     border-radius: 0.2em;
     margin: 1em;
     cursor: pointer;
+    color: #EBECEE;
 }
+
+div#buttons {
+	display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    justify-content: left;
+    margin-top: 2em;
+    flex-wrap: wrap;
+}
+div#button {
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 10em;
+    cursor: pointer;
+    justify-content: center;
+    height: 7em;
+    max-height: 7em;
+    overflow: hidden;
+    font-size: 0.9em;
+    margin: 1.5em;
+}
+div#button img {width: 5em; height: 5em;}
+div#button span {text-align: center;}
 </style>
 
 <div id="body">
+<div id="close" onclick='event.stopPropagation(); monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager.closeForm(this)'>X</div>
 
 <div id="buttons">
 {{#icons}}
@@ -64,11 +91,13 @@ div#button {
 `;
 
 async function getHTML(formObject) {
+    const cmdlist = (await import(`${APP_CONSTANTS.LIB_PATH}/cmdlist.mjs`)).cmdlist;
+
     // plug ourselves into the enviornment if not present
     if (!monkshu_env.apps[APP_CONSTANTS.APP_NAME].iconlist) monkshu_env.apps[APP_CONSTANTS.APP_NAME].iconlist = iconlist;
-    const icons = await cmdlist.getCommands(formObject); 
+    const icons = await cmdlist.getCommands(undefined, formObject); 
 
-    const html = router.expandPageData(HTML_TEMPLATE, undefined, {icons});
+    const html = await router.expandPageData(HTML_TEMPLATE, undefined, {icons});
     return html;
 }
 

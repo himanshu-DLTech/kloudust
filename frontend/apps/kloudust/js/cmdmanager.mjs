@@ -99,7 +99,7 @@ async function _getFormHTML(formJSON) {
     
     if (formJSON.type == FRONTEND_MODULE) {
         const formModule = await import(`${APP_CONSTANTS.FORM_MODULES_PATH}/${formJSON.command}.mjs`);
-        html = await formModule[formJSON.id].getHTML(formJSON, cmdmanager);
+        html = await formModule[formJSON.command].getHTML(formJSON, cmdmanager);
     }
 
     return html;

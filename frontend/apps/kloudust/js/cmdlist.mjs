@@ -16,7 +16,7 @@ async function fetchCommands(listFileLocation) {
 }
 
 async function getCommands(listJSON, listObject) {
-    const listJSON = listJSON||JSON.stringify(listObject);
+    if (!listJSON) listJSON = JSON.stringify(listObject);
     const mustache = await router.getMustache(), i18nObject = {i18n: listObject.i18n?.[i18n.getSessionLang()]||{}};
     const expandedListJSON = mustache.render(listJSON, i18nObject), expandedListObject = JSON.parse(expandedListJSON);
     const cmdList = await roleman.filterRoleList(expandedListObject.rolelist);
