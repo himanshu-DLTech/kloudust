@@ -57,8 +57,8 @@ function hideOpenContent(disableAnimation) {showContent(undefined, disableAnimat
 const interceptPageLoadData = _ => router.addOnLoadPageData(APP_CONSTANTS.MAIN_HTML, async (data, _url) => {
     const mustache = await router.getMustache(), mainPageData = {};
     mainPageData.welcomeHeading = mustache.render(await i18n.get("WelcomeHeading"), {user: session.get(APP_CONSTANTS.USERNAME)});
-	mainPageData.leftbarCommands = await cmdlist.getCommands(LEFTBAR_COMMANDS); 
-    mainPageData.mainCommands = await cmdlist.getCommands(MAIN_COMMANDS);
+	mainPageData.leftbarCommands = await cmdlist.fetchCommands(LEFTBAR_COMMANDS); 
+    mainPageData.mainCommands = await cmdlist.fetchCommands(MAIN_COMMANDS);
     data.mainPageData = mainPageData;
     
     for (const cmd of [...mainPageData.leftbarCommands, ...mainPageData.mainCommands]) try{

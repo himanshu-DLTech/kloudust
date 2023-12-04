@@ -1,0 +1,50 @@
+{
+"id": "create",
+"command": "iconlist",
+"type": "frontend_module",
+
+"rolelist": {
+"cloudadmin": [
+    {"id": "addhost", "label": "{{{i18n.AddHost}}}", "logo": "img/addhost.svg"}
+],
+"*": [
+    {"id": "createvm", "label": "{{{i18n.CreateVirtualMachine}}}", "logo": "img/createvm.svg"},
+    {"id": "creteoracledbm", "label": "{{{i18n.CreateOracleManagedDB}}}", "logo": "img/createoracledb.svg"},
+    {"id": "cretefunction", "label": "{{{i18n.CreateFunction}}}", "logo": "img/createfunction.svg"}
+]
+},
+
+"i18n": {
+"en": {
+    "AddHost": "Add host",
+    "CreateVirtualMachine": "Virtual machine",
+    "CreateContainer": "New container",
+    "CreateOracleManagedDB": "Create serverless Oracle",
+    "CreateFunction": "Create cloud function"
+},
+
+"hi": {
+    "AddHost": "Add host",
+    "CreateVirtualMachine": "Virtual machine",
+    "CreateContainer": "New container",
+    "CreateOracleManagedDB": "Create serverless Oracle",
+    "CreateFunction": "Create cloud function"
+},
+
+"ja": {
+    "AddHost": "Add host",
+    "CreateVirtualMachine": "Virtual machine",
+    "CreateContainer": "New container",
+    "CreateOracleManagedDB": "Create serverless Oracle",
+    "CreateFunction": "Create cloud function"
+},
+
+"zh": {
+    "AddHost": "Add host",
+    "CreateVirtualMachine": "Virtual machine",
+    "CreateContainer": "New container",
+    "CreateOracleManagedDB": "Create serverless Oracle",
+    "CreateFunction": "Create cloud function"
+}
+}
+}
