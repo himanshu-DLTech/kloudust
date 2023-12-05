@@ -1,5 +1,5 @@
 {
-"id": "createvm",
+"id": "createoracledbm",
 "command": "createVM",
 "type": "kloudust_cmdline",
 "kloudust_cmdline_params": ["vm_name", "vm_description", "cores", "memory", "disk", "creation_image_name", 
@@ -9,80 +9,68 @@
 
 "i18n": {
     "en": {
-        "VMCreateTitle": "Create Virtual Machine",
-        "VMCreateDescription": "Add a virtual machine to the cloud. Complete the required tab then submit or review advanced tab for full customization.",
-        "VMName": "Virtual machine name",
+        "VMCreateTitle": "Create Oracle Database",
+        "VMCreateDescription": "Add a new Oracle database instance to the cloud. Complete the required tab then submit or review advanced tab for full customization.",
+        "VMName": "Oracle instance name",
         "VMDescription": "Description",
         "VMCores": "Cores",
         "VMMemory": "Memory in megabytes",
         "VMDisk": "Disk in gigabytes",
-        "VMImage": "Image to use",
-        "VMAdministrator": "Administrator login",
-        "VMAdministratorPassword": "Administrator password",
-        "VMCloudInitData": "Cloudinit data",
         "FieldValidationErrorGeneric": "Validation error",
+        "FieldValidationErrorMin40": "Minimum disk size is 40 GB",
         "CreateVMSubmitLabel": "Create",
         "VMYes": "Yes",
         "VMNo": "No",
         "VMAdvanced": "Advanced",
-        "VMOverwriteForce": "Overwrite if a virtual machine by the same name exists?"
+        "VMOverwriteForce": "Overwrite if a database instance by the same name exists?"
     },
     "hi": {
-        "VMCreateTitle": "Create Virtual Machine",
-        "VMCreateDescription": "Add a virtual machine to the cloud. Complete the required tab then submit or review advanced tab for full customization.",
-        "VMName": "वीएम नाम",
-        "VMDescription": "वीएम विवरण",
-        "VMCores": "कोर",
+        "VMCreateTitle": "Create Oracle Database",
+        "VMCreateDescription": "Add a new Oracle database instance to the cloud. Complete the required tab then submit or review advanced tab for full customization.",
+        "VMName": "Oracle instance name",
+        "VMDescription": "Description",
+        "VMCores": "Cores",
         "VMMemory": "Memory in megabytes",
         "VMDisk": "Disk in gigabytes",
-        "VMImage": "Image to use",
-        "VMAdministrator": "Administrator login",
-        "VMAdministratorPassword": "Administrator password",
-        "VMCloudInitData": "Cloudinit data",
         "FieldValidationErrorGeneric": "Validation error",
+        "FieldValidationErrorMin40": "Minimum disk size is 40 GB",
         "CreateVMSubmitLabel": "Create",
         "VMYes": "Yes",
         "VMNo": "No",
         "VMAdvanced": "Advanced",
-        "VMOverwriteForce": "Overwrite if a virtual machine by the same name exists?"
+        "VMOverwriteForce": "Overwrite if a database instance by the same name exists?"
     },
     "ja": {
-        "VMCreateTitle": "Create Virtual Machine",
-        "VMCreateDescription": "Add a virtual machine to the cloud. Complete the required tab then submit or review advanced tab for full customization.",
-        "VMName": "VM名",
-        "VMDescription": "VMの説明",
-        "VMCores": "コア",
+        "VMCreateTitle": "Create Oracle Database",
+        "VMCreateDescription": "Add a new Oracle database instance to the cloud. Complete the required tab then submit or review advanced tab for full customization.",
+        "VMName": "Oracle instance name",
+        "VMDescription": "Description",
+        "VMCores": "Cores",
         "VMMemory": "Memory in megabytes",
         "VMDisk": "Disk in gigabytes",
-        "VMImage": "Image to use",
-        "VMAdministrator": "Administrator login",
-        "VMAdministratorPassword": "Administrator password",
-        "VMCloudInitData": "Cloudinit data",
         "FieldValidationErrorGeneric": "Validation error",
+        "FieldValidationErrorMin40": "Minimum disk size is 40 GB",
         "CreateVMSubmitLabel": "Create",
         "VMYes": "Yes",
         "VMNo": "No",
         "VMAdvanced": "Advanced",
-        "VMOverwriteForce": "Overwrite if a virtual machine by the same name exists?"
+        "VMOverwriteForce": "Overwrite if a database instance by the same name exists?"
     },
     "zh": {
-        "VMCreateTitle": "Create Virtual Machine",
-        "VMCreateDescription": "Add a virtual machine to the cloud. Complete the required tab then submit or review advanced tab for full customization.",
-        "VMName": "虚拟机名称",
-        "VMDescription": "虚拟机描述",
-        "VMCores": "核心",
+        "VMCreateTitle": "Create Oracle Database",
+        "VMCreateDescription": "Add a new Oracle database instance to the cloud. Complete the required tab then submit or review advanced tab for full customization.",
+        "VMName": "Oracle instance name",
+        "VMDescription": "Description",
+        "VMCores": "Cores",
         "VMMemory": "Memory in megabytes",
         "VMDisk": "Disk in gigabytes",
-        "VMImage": "Image to use",
-        "VMAdministrator": "Administrator login",
-        "VMAdministratorPassword": "Administrator password",
-        "VMCloudInitData": "Cloudinit data",
         "FieldValidationErrorGeneric": "Validation error",
+        "FieldValidationErrorMin40": "Minimum disk size is 40 GB",
         "CreateVMSubmitLabel": "Create",
         "VMYes": "Yes",
         "VMNo": "No",
         "VMAdvanced": "Advanced",
-        "VMOverwriteForce": "Overwrite if a virtual machine by the same name exists?"
+        "VMOverwriteForce": "Overwrite if a database instance by the same name exists?"
     }
 },
 
@@ -98,25 +86,16 @@
         "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
     {"id": "memory", "type": "number", "placeholder": "{{{i18n.VMMemory}}}", "required": true, 
         "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
-    {"id": "disk", "type": "number", "placeholder": "{{{i18n.VMDisk}}}", "required": true, 
-        "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
-    {"id": "adminid", "type": "text", "placeholder": "{{{i18n.VMAdministrator}}}", "required": true, 
-        "pattern":"\\s*[A-Za-z0-9]+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
-    {"id": "adminpass", "type": "password", "placeholder": "{{{i18n.VMAdministratorPassword}}}", "required": true, 
-       "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
-    {"id": "creation_image_name", "multioption": true, "type": "select", "label": "{{{i18n.VMImage}}}", 
-        "options":[
-            {"value":"ubuntu-server_22_04_amd64", "label":"Ubuntu Server 22 LTS x86_64"},
-            {"value":"oracle-linux_9_03_amd64", "label":"Oracle Linux 9.03 x86_64"},
-            {"value":"oracle-linux_8_9_amd64", "label":"Oracle Linux 8.9 x86_64"},
-            {"value":"oraclelinux-db_8_90_amd64", "label":"Oracle Database 23"}
-        ]
-    }
+    {"id": "disk", "type": "number", "placeholder": "{{{i18n.VMDisk}}}", "required": true, "min": 40,
+        "validation_error": "{{{i18n.FieldValidationErrorMin40}}}"},
+
+    {"id": "adminid", "type": "hidden", "value": "oracleadm"},
+    {"id": "adminpass", "type": "hidden", "value": "oracleadm"},
+    {"id": "creation_image_name", "type": "hidden", "value": "oraclelinux-db_8_90_amd64"}
     ],
 
     "optional_label": "{{{i18n.VMAdvanced}}}",
     "optional_fields": [
-    {"id": "cloudinit_data", "inputtype": "textarea", "type": "text", "placeholder": "{{{i18n.VMCloudInitData}}}"},
     {"id": "force_overwrite", "multioption": true, "type": "select", "label": "{{{i18n.VMOverwriteForce}}}", 
         "options":[{"value":"false", "label":"{{{i18n.VMNo}}}"}, {"value":"true", "label":"{{{i18n.VMYes}}}"}]}
     ],

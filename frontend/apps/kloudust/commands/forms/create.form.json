@@ -9,12 +9,12 @@
 ],
 "*": [
     {"id": "createvm", "label": "{{{i18n.CreateVirtualMachine}}}", "logo": "img/createvm.svg"},
-    {"id": "creteoracledbm", "label": "{{{i18n.CreateOracleManagedDB}}}", "logo": "img/createoracledb.svg"},
-    {"id": "cretefunction", "label": "{{{i18n.CreateFunction}}}", "logo": "img/createfunction.svg"},
-    {"id": "cretefunction", "label": "{{{i18n.CreateObjectStorage}}}", "logo": "img/createobjectstorage.svg"},
-    {"id": "cretefunction", "label": "{{{i18n.CreateContainer}}}", "logo": "img/createcontainer.svg"},
-    {"id": "creteoracledbm", "label": "{{{i18n.CreateMariaManagedDB}}}", "logo": "img/createmariadb.svg"},
-    {"id": "creteoracledbm", "label": "{{{i18n.CreateWindowsVDI}}}", "logo": "img/createwindowsvdi.svg"}
+    {"id": "createoracledbm", "label": "{{{i18n.CreateOracleManagedDB}}}", "logo": "img/createoracledb.svg"},
+    {"id": "createfunction", "label": "{{{i18n.CreateFunction}}}", "logo": "img/createfunction.svg"},
+    {"id": "createfunction", "label": "{{{i18n.CreateObjectStorage}}}", "logo": "img/createobjectstorage.svg"},
+    {"id": "createfunction", "label": "{{{i18n.CreateContainer}}}", "logo": "img/createcontainer.svg"},
+    {"id": "createoracledbm", "label": "{{{i18n.CreateMariaManagedDB}}}", "logo": "img/createmariadb.svg"},
+    {"id": "createoracledbm", "label": "{{{i18n.CreateWindowsVDI}}}", "logo": "img/createwindowsvdi.svg"}
 
 ]
 },

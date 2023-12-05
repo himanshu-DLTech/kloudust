@@ -3,7 +3,7 @@
  * 
  * Params - 0 - VM name, 1 - VM description, 2 - cores, 3 - memory in MB, 4 - disk in GB, 
  *  5 - image name, 6 - cloud init data in JSON (or YAML format), 7 - force overwrite, if true
- *  in case the HOST has a VM by the same name already, it will be overwritter
+ *  in case the HOST has a VM by the same name already, it will be overwrittern
  * 
  * (C) 2020 TekMonks. All rights reserved.
  * License: See enclosed LICENSE file.

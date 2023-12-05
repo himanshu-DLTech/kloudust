@@ -157,10 +157,12 @@ span#submit {
 <div id="main">
 {{#description}}<span id="description">{{.}}</span>{{/description}}
 <div id="required">
-{{#required}}
+{{#required_fields}}
 {{^multioption}}
-<{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}} id="{{id}}" type="{{type}}" placeholder="{{placeholder}}" {{#required}}required{{/required}} 
-    {{#pattern}}pattern="{{.}}"{{/pattern}} oninvalid="this.setCustomValidity('{{validation_error}}')" {{#style}}style="{{{.}}}"{{/style}} 
+<{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}} id="{{id}}" type="{{type}}" 
+    placeholder="{{placeholder}}" {{#required}}required{{/required}} {{#value}}value="{{.}}"{{/value}}
+    {{#pattern}}pattern="{{.}}"{{/pattern}} {{#min}}min="{{.}}"{{/min}}
+    oninvalid="this.setCustomValidity('{{validation_error}}')" {{#style}}style="{{{.}}}"{{/style}} 
     oninput="setCustomValidity('')"></{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}}>
 {{/multioption}}
 
@@ -172,7 +174,7 @@ span#submit {
     {{/options}}
 </select>
 {{/multioption}}
-{{/required}}
+{{/required_fields}}
 </div>
 
 {{#showOptional}}
@@ -183,7 +185,7 @@ span#submit {
     if (this.innerText.endsWith("▶")) this.innerText = this.innerText.split("▶")[0]+"▼";
     else this.innerText = this.innerText.split("▼")[0]+"▶";'>{{optional_label}} ▶</span>
 <div id="advanced" class="collapsed">
-{{#optional}}
+{{#optional_fields}}
 {{^multioption}}
 <{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}} id="{{id}}" type="{{type}}" placeholder="{{placeholder}}" 
     {{#style}}style="{{{.}}}"{{/style}} data-optional="true" {{#pattern}}pattern="{{.}}"{{/pattern}} 
@@ -198,7 +200,7 @@ span#submit {
     {{/options}}
 </select>
 {{/multioption}}
-{{/optional}}
+{{/optional_fields}}
 </div>
 {{/showOptional}}
 

@@ -45,7 +45,7 @@
     "description": "{{{i18n.CloudCommandDescription}}}",
 
     "required_label": "{{{i18n.Required}}}",
-    "required": [
+    "required_fields": [
     {"id": "command", "inputtype": "textarea", "type": "text", "placeholder": "{{{i18n.CloudCommandType}}}", 
     "required": true, "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}", 
     "style":"height: 50vh; font-family: monospace; font-size: larger; background-color: #212121;"}

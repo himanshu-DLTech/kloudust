@@ -90,14 +90,15 @@ div#button span {text-align: center;}
 </div>
 `;
 
-async function getHTML(formObject) {
+async function getHTML(formObject, cmdmanager) {
     const cmdlist = (await import(`${APP_CONSTANTS.LIB_PATH}/cmdlist.mjs`)).cmdlist;
 
     // plug ourselves into the enviornment if not present
     if (!monkshu_env.apps[APP_CONSTANTS.APP_NAME].iconlist) monkshu_env.apps[APP_CONSTANTS.APP_NAME].iconlist = iconlist;
-    const icons = await cmdlist.getCommands(undefined, formObject); 
+    const commands = await cmdlist.getCommands(undefined, formObject); 
+    for (const command of commands) cmdmanager.registerCommand(command);
 
-    const html = await router.expandPageData(HTML_TEMPLATE, undefined, {icons});
+    const html = await router.expandPageData(HTML_TEMPLATE, undefined, {icons: commands});
     return html;
 }
 

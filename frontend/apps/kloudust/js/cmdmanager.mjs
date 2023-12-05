@@ -20,7 +20,6 @@ const REGISTERED_COMMANDS = {}, KLOUDUST_CMDLINE = "kloudust_cmdline", FRONTEND_
  * @throws Error if the same object is already registered
  */
 function registerCommand(cmdObject) {
-    if (REGISTERED_COMMANDS[cmdObject.id]) {LOG.warn(`Command ${cmdObject.id} is already registered.`); return;}
     REGISTERED_COMMANDS[cmdObject.id] = cmdObject;
 
     // plug ourselves into the enviornment if not present

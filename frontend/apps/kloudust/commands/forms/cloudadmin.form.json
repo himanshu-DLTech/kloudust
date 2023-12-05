@@ -1,0 +1,34 @@
+{
+"id": "managecloud",
+"command": "iconlist",
+"type": "frontend_module",
+
+"rolelist": {
+"cloudadmin": [
+    {"id": "addhost", "label": "{{{i18n.AddHost}}}", "logo": "img/addhost.svg"},
+    {"id": "livemigrate", "label": "{{{i18n.LiveMigrate}}}", "logo": "img/migratevm.svg"}
+]
+},
+
+"i18n": {
+"en": {
+    "AddHost": "Add host",
+    "LiveMigrate": "Live migrate"
+},
+
+"hi": {
+    "AddHost": "Add host",
+    "LiveMigrate": "Live migrate"
+},
+
+"ja": {
+    "AddHost": "Add host",
+    "LiveMigrate": "Live migrate"
+},
+
+"zh": {
+    "AddHost": "Add host",
+    "LiveMigrate": "Live migrate"
+}
+}
+}

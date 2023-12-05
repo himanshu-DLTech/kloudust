@@ -248,6 +248,19 @@ exports.deleteVM = async (name, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONST
 }
 
 /**
+ * Changes hostname hosting the given VM. Only cloud admins can run this.
+ * @param {string} name VM ID (getVM returns this)
+ * @param {string} newHostname New hostname
+ * @returns true on success or false otherwise
+ */
+exports.updateVMHost = async (vmid, newHostname) => {
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {_logUnauthorized(); return false;}
+
+    const updateResult = await _db().runCmd("update vms set hostname = ? where id = ?", [newHostname, vmid]);
+    return updateResult;
+}
+
+/**
  * Returns VMs for the given org and / or current project. All VMs for the current project
  * are returned if hostname is skipped. This is for project admins or project users.
  * @param {string} org The org, if skipped is auto picked from the environment

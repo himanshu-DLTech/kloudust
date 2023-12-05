@@ -54,9 +54,11 @@ fi
 printf "Installing required software\n"
 if [ -f "`which yum`" ]; then 
     if ! sudo yum -y install fail2ban; then exitFailed; fi
+    if ! sudo yum -y install sshpass; then exitFailed; fi
     if ! sudo yum -y install qemu-kvm libvirt virt-top bridge-utils libguestfs-tools virt-install; then exitFailed; fi
 else
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install fail2ban; then exitFailed; fi
+    if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install sshpass; then exitFailed; fi
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install net-tools; then exitFailed; fi
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install qemu-system-x86 libvirt-daemon-system libvirt-clients bridge-utils virtinst libosinfo-bin guestfs-tools; then exitFailed; fi
 fi

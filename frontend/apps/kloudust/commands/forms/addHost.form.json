@@ -94,7 +94,7 @@
     "description": "Add a host machine to the cloud. Complete the required tab then submit or review advanced tab for full customization.",
 
     "required_label": "{{{i18n.Required}}}",
-    "required": [
+    "required_fields": [
     {"id": "hostname", "type": "text", "placeholder": "{{{i18n.Hostname}}}", "required": true, 
         "pattern":"\\s*[A-Za-z0-9]+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
     {"id": "hostip", "type": "text", "placeholder": "{{{i18n.HostNetworkAddressOrIp}}}", "required": true, 
@@ -110,7 +110,7 @@
     ],
 
     "optional_label": "{{{i18n.Advanced}}}",
-    "optional": [
+    "optional_fields": [
     {"id": "cores", "type": "number", "placeholder": "{{{i18n.HostCores}}}"},
     {"id": "memory", "type": "number", "placeholder": "{{{i18n.HostMemory}}}"},
     {"id": "disk", "type": "number", "placeholder": "{{{i18n.HostDisk}}}"},

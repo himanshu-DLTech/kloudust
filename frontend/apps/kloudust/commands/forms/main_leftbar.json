@@ -1,5 +1,8 @@
 {
 "rolelist": {
+"cloudadmin": [
+    {"id": "cloudadmin", "label": "{{{i18n.CloudAdmin}}}", "logo": "img/cloudadmin.svg"}
+],
 "*":[
     {"id": "create", "label": "{{{i18n.Create}}}", "logo": "img/plus.svg"},
     {"id": "vms", "label": "{{{i18n.VirtualMachines}}}", "logo": "img/vms.svg"},
@@ -11,6 +14,7 @@
 "i18n": {
 "en": {
     "Create": "Create",
+    "CloudAdmin": "Manage cloud",
     "VirtualMachines": "Virtual machines",
     "CloudCommand": "Run cloud command",
     "Alerts": "Alerts"
@@ -18,6 +22,7 @@
 
 "hi": {
     "Create": "Create",
+    "CloudAdmin": "Manage cloud",
     "VirtualMachines": "Virtual machines",
     "CloudCommand": "Run cloud command",
     "Alerts": "Alerts"
@@ -25,6 +30,7 @@
 
 "ja": {
     "Create": "Create",
+    "CloudAdmin": "Manage cloud",
     "VirtualMachines": "Virtual machines",
     "CloudCommand": "Run cloud command",
     "Alerts": "Alerts"
@@ -32,6 +38,7 @@
 
 "zh": {
     "Create": "Create",
+    "CloudAdmin": "Manage cloud",
     "VirtualMachines": "Virtual machines",
     "CloudCommand": "Run cloud command",
     "Alerts": "Alerts"
