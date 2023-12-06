@@ -6,6 +6,7 @@
 "rolelist": {
 "cloudadmin": [
     {"id": "addhost", "label": "{{{i18n.AddHost}}}", "logo": "img/addhost.svg"},
+    {"id": "addimage", "label": "{{{i18n.AddImage}}}", "logo": "img/addimage.svg"},
     {"id": "livemigrate", "label": "{{{i18n.LiveMigrate}}}", "logo": "img/migratevm.svg"}
 ]
 },
@@ -13,21 +14,25 @@
 "i18n": {
 "en": {
     "AddHost": "Add host",
+    "AddImage": "Add image",
     "LiveMigrate": "Live migrate"
 },
 
 "hi": {
     "AddHost": "Add host",
+    "AddImage": "Add image",
     "LiveMigrate": "Live migrate"
 },
 
 "ja": {
     "AddHost": "Add host",
+    "AddImage": "Add image",
     "LiveMigrate": "Live migrate"
 },
 
 "zh": {
     "AddHost": "Add host",
+    "AddImage": "Add image",
     "LiveMigrate": "Live migrate"
 }
 }
