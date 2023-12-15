@@ -22,7 +22,8 @@
     // host resources container table
     "CREATE TABLE hostresources(name varchar not null primary key, uri varchar not null, \
         processorarchitecture varchar not null, description varchar, extrainfo varchar, \
-        timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
+        timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)), \
+        vmimage varchar default 'vmimage')",
         
     // VMs container table
     "CREATE TABLE vms(id varchar not null primary key, name varchar not null, \

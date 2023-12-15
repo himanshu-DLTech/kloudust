@@ -30,6 +30,8 @@ const {xforge} = require(`${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/xforge`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
 const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 
+const VMIMAGE = "vmimage";
+
 /**
  * Adds the given image to the catalog
  * @param {array} params The incoming params, see above for params
@@ -46,7 +48,7 @@ module.exports.exec = async function(params) {
     }
 
     if (!await dbAbstractor.addHostResource(imgname, imguri, processorarchitecture.toLowerCase(), description||"", 
-        extrainfo||"")) return CMD_CONSTANTS.FALSE_RESULT();
+        extrainfo||"", VMIMAGE)) return CMD_CONSTANTS.FALSE_RESULT();
 
     const returnResult = {result: true, out: "", err: ""}, updateTimestamp = Date.now();
     for (const hostinfo of hostinfos) {        
@@ -77,3 +79,6 @@ module.exports.exec = async function(params) {
 
     return returnResult;
 }
+
+/** VM Image DB type */
+module.exports.VMIMAGE = VMIMAGE;

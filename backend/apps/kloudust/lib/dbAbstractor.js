@@ -102,13 +102,14 @@ exports.getHostsMatchingProcessorArchitecture = async(processor_architecture) =>
  * @param {string} processor_architecture The processor architecture eg amd64
  * @param {string} description Description 
  * @param {string} extra Extra information 
+ * @param {string} type The resource type
  * @returns true on success or false otherwise
  */
-exports.addHostResource = async (name, uri, processor_architecture, description, extra) => {
+exports.addHostResource = async (name, uri, processor_architecture, description, extra, type) => {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {_logUnauthorized(); return false; }
 
-    const query = "replace into hostresources(name, uri, processorarchitecture, description, extrainfo) values (?,?,?,?,?)";
-    return await _db().runCmd(query, [name, uri, processor_architecture, description, extra]);
+    const query = "replace into hostresources(name, uri, processorarchitecture, description, extrainfo) values (?,?,?,?,?,?)";
+    return await _db().runCmd(query, [name, uri, processor_architecture, description, extra, type]);
 }
 
 /**
@@ -125,14 +126,15 @@ exports.getHostResourceForProject = async name => {
 }
 
 /**
- * Returns all registered host resources. Only cloud admins can query.
+ * Returns all registered host resources. 
+ * @param type The type of resource
  * @return All registered host resources or null on errors.
  */
-exports.getHostResources = async _ => {
-    if (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource)) {_logUnauthorized(); return false; }
+exports.getHostResources = async type => {
+    if (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource_for_project)) {_logUnauthorized(); return false; }
 
-    const query = "select * from hostresources";
-    const resources = await _db().getQuery(query, []);
+    const query = "select * from hostresources where type = ?";
+    const resources = await _db().getQuery(query, [type]);
     if ((!resources) || (!resources.length)) return null; else return resources;
 }
 

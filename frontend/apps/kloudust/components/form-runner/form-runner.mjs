@@ -15,15 +15,10 @@ const COMPONENT_PATH = util.getModulePath(import.meta), INPUT_ELEMENTS = ["input
 async function elementConnected(host) {
     const formData = util.base64ToString(host.dataset.form);
     const expandedData = await router.expandPageData(formData);
-    const formObject = JSON.parse(expandedData);
+    let formObject = JSON.parse(expandedData);
     if (formObject.optional_fields) formObject.showOptional = true;
+    formObject = await _runOnLoadJavascript(formObject);
     form_runner.setDataByHost(host, formObject);
-}
-
-async function elementRendered(host, _initialRender) {
-    const formData = util.base64ToString(host.dataset.form);
-    const formObject = JSON.parse(formData);
-    _runOnOpenJavascript(formObject);
 }
 
 async function close(element) {
@@ -62,17 +57,17 @@ async function _runOnSubmitJavascript(retObject, form) {
     }
 }
 
-async function _runOnOpenJavascript(form) {
-    if (!form.load_javascript) return;
+async function _runOnLoadJavascript(form) {
+    if (!form.load_javascript) return form;
 
     const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
     const load_js_result = await (new AsyncFunction(form.load_javascript))(form);
     if (!load_js_result) {
         LOG.error(`Form load JS failed`);
-        return false;
-    }
+        return form;
+    } else return load_js_result;
 }
 
 const trueWebComponentMode = true;	// making this false renders the component without using Shadow DOM
-export const form_runner = {trueWebComponentMode, elementConnected, close, formSubmitted, elementRendered};
+export const form_runner = {trueWebComponentMode, elementConnected, close, formSubmitted};
 monkshu_component.register("form-runner", `${COMPONENT_PATH}/form-runner.html`, form_runner);

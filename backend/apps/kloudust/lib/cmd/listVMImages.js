@@ -8,6 +8,7 @@
  */
 
 const roleman = require(`${KLOUD_CONSTANTS.LIBDIR}/roleenforcer.js`);
+const addImage = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/addImage.js`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
 const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 
@@ -16,9 +17,9 @@ const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
  * @param {array} params The incoming params - must be - type (centos8 only for now), ip, user id, password, ssh hostkey
  */
 module.exports.exec = async function(params) {
-    if (!roleman.checkAccess(roleman.ACTIONS.lookup_project_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
+    if (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource_for_project)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
 
-    const hostResources = await dbAbstractor.getHostResources(); 
+    const hostResources = await dbAbstractor.getHostResources(addImage.VMIMAGE); 
     if (!hostResources) {const err = "No registered host resources found"; params.consoleHandlers.LOGERROR(err); 
         return CMD_CONSTANTS.FALSE_RESULT(err); }
 
