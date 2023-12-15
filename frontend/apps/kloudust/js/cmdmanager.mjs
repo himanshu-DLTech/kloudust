@@ -17,7 +17,6 @@ const REGISTERED_COMMANDS = {}, KLOUDUST_CMDLINE = "kloudust_cmdline", FRONTEND_
 /**
  * Registers the given command object.
  * @param {Object} cmdObject Command object
- * @throws Error if the same object is already registered
  */
 function registerCommand(cmdObject) {
     REGISTERED_COMMANDS[cmdObject.id] = cmdObject;
@@ -35,7 +34,7 @@ async function cmdClicked(id) {
     const command = REGISTERED_COMMANDS[id]; if (!command) {LOG.error(`Commands ${id} not found.`); return;}
 
     try {
-        const formJSON = await $$.requireJSON(`${APP_CONSTANTS.FORMS_PATH}/${id}.form.json`);
+        const formJSON = await $$.requireJSON(`${APP_CONSTANTS.FORMS_PATH}/${id}.form.json`, APP_CONSTANTS.INSECURE_DEVELOPMENT_MODE?true:undefined);
         const html = await _getFormHTML(formJSON);
         monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.showContent(html, true);
     } catch (err) {LOG.error(`Error loading command files for ${id}: ${err}`); return;}

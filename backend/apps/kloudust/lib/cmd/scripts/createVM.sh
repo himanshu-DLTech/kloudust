@@ -4,7 +4,7 @@
 # {1} VM Name - no spaces
 # {2} VM Description - can have spaces
 # {3} VCPUS
-# {4} RAM in MB
+# {4} Memory in MB
 # {5} Disk Size in GB
 # {6} Install disk name
 # {7} Install disk download URI, CURL will be used
@@ -14,11 +14,15 @@
 # {11} Org which owns this VM
 # {12} Project which owns this VM
 # {13} Force overwrite, if VM with same name exists overwrite it
+# {14} Max cores
+# {15} Max memory
+# {16} Additional virt-install params
+# {17} No guest agent - By default QEMU Guest Agent is enabled, if this is true it is disabled
 
 NAME="{1}"
 DESCRIPTION="{2}"
 VCPUS={3}
-RAM={4}
+MEMORY={4}
 DISK_SIZE={5}
 INSTALL_DISK="{6}"
 INSTALL_URI="{7}"
@@ -28,6 +32,10 @@ CLOUDINIT_USERDATA="{10}"
 ORG="{11}"
 PROJECT="{12}"
 FORCE_OVERWRITE={13}
+MAX_VCPUS={14}
+MAX_MEMORY={15}
+VIRT_INSTALL_PARAMS="{16}"
+NO_GUEST_AGENT={17}
 
 function exitFailed() {
     echo Failed
@@ -58,7 +66,7 @@ fi
 
 printf "Creating VM $NAME\n"
 
-DISK="path=/kloudust/disks/$NAME.qcow2"
+DISK="path=/kloudust/disks/$NAME.qcow2,discard=unmap,format=qcow2"
 BOOTCMD="--boot hd"
 CLOUD_INIT="--cloud-init user-data=/kloudust/temp/ci_$NAME.yaml"
 if [ "$CLOUD_IMAGE" == "true" ]; then # this is a cloud image file in QCow2 format, convert and load, else it is a CD-ROM ISO file
@@ -72,32 +80,61 @@ if [ "$CLOUD_IMAGE" == "true" ]; then # this is a cloud image file in QCow2 form
     fi
 else
     echo !WARNING! $NAME is being initialized using a non-cloud ready image. Manual install will be required.
-    DISK="path=/kloudust/disks/$NAME.qcow2,size=$DISK_SIZE,format=qcow2"
+    DISK="$DISK",size=$DISK_SIZE
     BOOTCMD="--cdrom /kloudust/catalog/$INSTALL_DISK"
     CLOUD_INIT=""
 fi
 
 
 if [[ "$OS_VARIANT" = win* ]]; then 
-    WIN_DISK_ARGS="--disk /kloudust/drivers/virtio-win.iso,device=cdrom"
+    if [ "$CLOUD_IMAGE" != "true" ]; then
+        WIN_DISK_ARGS="--disk /kloudust/drivers/virtio-win.iso,device=cdrom"
+    fi
+    WIN_KVM_ARGS="--features smm.state=on,kvm_hidden=on,hyperv_relaxed=on,hyperv_vapic=on,hyperv_spinlocks=on,hyperv_spinlocks_retries=8191 --clock hypervclock_present=yes"
+    
+    if [ "$CLOUD_IMAGE" == "true" ] && [ "$CLOUDINIT_USERDATA" != "undefined" ] && [ -n "$CLOUDINIT_USERDATA" ]; then
+        RANDOMSTR=`echo $RANDOM | md5sum | cut -d" " -f1`
+        DISKIMAGEPATH=/kloudust/temp/"$ORG"_"$PROJECT"_"$RANDOMSTR"_cidata
+        DISKPATH="$DISKIMAGEPATH"/cidata.iso
+
+        mkdir -p $DISKIMAGEPATH
+        if ! printf "#cloud-config\n\n$CLOUDINIT_USERDATA" > "$DISKIMAGEPATH"/user-data; then exitFailed; fi
+        if ! printf "instance-id: windows-$ORG-$PROJECT-$RANDOMSTR\n" > "$DISKIMAGEPATH"/meta-data; then exitFailed; fi
+        genisoimage -output $DISKPATH -V cidata -r -J "$DISKIMAGEPATH"/user-data "$DISKIMAGEPATH"/meta-data
+        CLOUD_INIT="--disk path=$DISKPATH,device=cdrom"
+    else
+        echo !WARNING! $NAME is being initialized using a non-cloud ready image. Manual install will be required.
+        CLOUD_INIT=""
+    fi
 else
     WIN_DISK_ARGS=""
+    WIN_KVM_ARGS=""
 fi;
+
+QEMU_GUEST_AGENT="--channel unix,target_type=virtio,name=org.qemu.guest_agent.0"
+if [[ "$NO_GUEST_AGENT" = true ]]; then QEMU_GUEST_AGENT=""; fi
 
 BASE64_METADATA=`echo "iscloud=$CLOUD_IMAGE>>>installuri=$INSTALL_URI>>>installdisk=/kloudust/catalog/$INSTALL_DISK>>>cloudinit=\"$CLOUDINIT_USERDATA\"" | base64 -w0`
 if [ -z "$BASE64_METADATA" ]; then
 	echo BASE64 metadata generation failed. >&2
 	exitFailed
 fi
+
 if ! virt-install --name $NAME --metadata name=$NAME --metadata title="$DESCRIPTION" \
     --metadata description=$BASE64_METADATA \
-    --vcpus $VCPUS --ram $RAM \
-    --disk $DISK $WIN_DISK_ARGS \
+    --vcpus $VCPUS,maxvcpus=$MAX_VCPUS \
+    --memory currentMemory=$MEMORY,maxmemory=$MAX_MEMORY \
+    --disk $DISK \
     --os-variant $OS_VARIANT \
     --network network=default \
     --controller type=scsi,model=virtio-scsi \
     --graphics vnc,listen=0.0.0.0 --noautoconsole \
     --virt-type kvm \
+    --video model=qxl,heads=1 \
+    $VIRT_INSTALL_PARAMS \
+    $QEMU_GUEST_AGENT \
+    $WIN_KVM_ARGS \
+    $WIN_DISK_ARGS \
     $BOOTCMD $CLOUD_INIT; then exitFailed; fi
 
 printf "\n\nEnabling autostart\n"
@@ -107,18 +144,26 @@ printf "\n\nGenerating metadata\n"
 cat <<EOF > /kloudust/metadata/$NAME.metadata
 INSTALL="virt-install --name $NAME --metadata name=$NAME --metadata title=\"$DESCRIPTION\" \
     --metadata description=$BASE64_METADATA \
-    --vcpus $VCPUS --ram $RAM \
-    --disk $DISK $WIN_DISK_ARGS \
+    --vcpus $VCPUS,maxvcpus=$MAX_VCPUS \
+    --memory currentMemory=$MEMORY,maxmemory=$MAX_MEMORY \
+    --disk $DISK \
     --os-variant $OS_VARIANT \
     --network network=default \
     --controller type=scsi,model=virtio-scsi \
     --graphics vnc,listen=0.0.0.0 --noautoconsole \
     --virt-type kvm \
+    --video model=qxl,heads=1 \
+    $VIRT_INSTALL_PARAMS \
+    $QEMU_GUEST_AGENT \
+    $WIN_KVM_ARGS \
+    $WIN_DISK_ARGS \
     $BOOTCMD $CLOUD_INIT"
 NAME="$NAME"
 DESCRIPTION="$DESCRIPTION"
 VCPUS=$VCPUS
-RAM=$RAM
+MAX_VCPUS=$MAX_VCPUS
+MEMORY=$MEMORY
+MAX_MEMORY=$MAX_MEMORY
 DISK_SIZE=$DISK_SIZE
 INSTALL_DISK="$INSTALL_DISK"
 INSTALL_URI="$INSTALL_URI"

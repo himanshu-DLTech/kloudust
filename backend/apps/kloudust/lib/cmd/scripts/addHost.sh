@@ -55,12 +55,12 @@ printf "Installing required software\n"
 if [ -f "`which yum`" ]; then 
     if ! sudo yum -y install fail2ban; then exitFailed; fi
     if ! sudo yum -y install sshpass; then exitFailed; fi
-    if ! sudo yum -y install qemu-kvm libvirt virt-top bridge-utils libguestfs-tools virt-install; then exitFailed; fi
+    if ! sudo yum -y install qemu-kvm libvirt virt-top bridge-utils libguestfs-tools virt-install tuned genisoimage; then exitFailed; fi
 else
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install fail2ban; then exitFailed; fi
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install sshpass; then exitFailed; fi
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install net-tools; then exitFailed; fi
-    if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install qemu-system-x86 libvirt-daemon-system libvirt-clients bridge-utils virtinst libosinfo-bin guestfs-tools; then exitFailed; fi
+    if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install qemu-system-x86 libvirt-daemon-system libvirt-clients bridge-utils virtinst libosinfo-bin guestfs-tools tuned genisoimage; then exitFailed; fi
 fi
 
 printf "\n\nSecuring the system against SSH attacks\n"
@@ -83,6 +83,8 @@ if ! sudo systemctl enable --now fail2ban; then exitFailed; fi
 printf "\n\nEnabling hypervisor\n"
 if ! sudo systemctl enable --now libvirtd; then exitFailed; fi
 if ! sudo lsmod | grep -i kvm; then exitFailed; fi
+if ! sudo systemctl enable --now tuned; then exitFailed; fi
+if ! tuned-adm profile virtual-host; then exitFailed; fi
 
 
 printf "\n\nEnabling virtual networking\n"

@@ -161,7 +161,7 @@ span#submit {
 {{^multioption}}
 <{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}} id="{{id}}" type="{{type}}" 
     placeholder="{{placeholder}}" {{#required}}required{{/required}} {{#value}}value="{{.}}"{{/value}}
-    {{#pattern}}pattern="{{.}}"{{/pattern}} {{#min}}min="{{.}}"{{/min}}
+    {{#pattern}}pattern="{{.}}"{{/pattern}} {{#min}}min="{{.}}"{{/min}} {{#title}}title="{{.}}"{{/title}}
     oninvalid="this.setCustomValidity('{{validation_error}}')" {{#style}}style="{{{.}}}"{{/style}} 
     oninput="setCustomValidity('')"></{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}}>
 {{/multioption}}
@@ -188,7 +188,7 @@ span#submit {
 {{#optional_fields}}
 {{^multioption}}
 <{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}} id="{{id}}" type="{{type}}" placeholder="{{placeholder}}" 
-    {{#style}}style="{{{.}}}"{{/style}} data-optional="true" {{#pattern}}pattern="{{.}}"{{/pattern}} 
+    {{#style}}style="{{{.}}}"{{/style}} data-optional="true" {{#pattern}}pattern="{{.}}"{{/pattern}} {{#title}}title="{{.}}"{{/title}}
         oninvalid="this.setCustomValidity('{{validation_error}}')" oninput="setCustomValidity('')"></{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}}>
 {{/multioption}}
 

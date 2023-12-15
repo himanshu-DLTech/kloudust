@@ -5,7 +5,8 @@
 
 "rolelist": {
 "cloudadmin": [
-    {"id": "addhost", "label": "{{{i18n.AddHost}}}", "logo": "img/addhost.svg"}
+    {"id": "addhost", "label": "{{{i18n.AddHost}}}", "logo": "img/addhost.svg"},
+    {"id": "addimage", "label": "{{{i18n.AddImage}}}", "logo": "img/addimage.svg"}
 ],
 "*": [
     {"id": "createvm", "label": "{{{i18n.CreateVirtualMachine}}}", "logo": "img/createvm.svg"},
@@ -22,6 +23,7 @@
 "i18n": {
 "en": {
     "AddHost": "Add host",
+    "AddImage": "Add image",
     "CreateVirtualMachine": "Virtual machine",
     "CreateContainer": "New container",
     "CreateOracleManagedDB": "Create serverless Oracle",
@@ -33,6 +35,7 @@
 
 "hi": {
     "AddHost": "Add host",
+    "AddImage": "Add image",
     "CreateVirtualMachine": "Virtual machine",
     "CreateContainer": "New container",
     "CreateOracleManagedDB": "Create serverless Oracle",
@@ -43,6 +46,7 @@
 
 "ja": {
     "AddHost": "Add host",
+    "AddImage": "Add image",
     "CreateVirtualMachine": "Virtual machine",
     "CreateContainer": "New container",
     "CreateOracleManagedDB": "Create serverless Oracle",
@@ -54,6 +58,7 @@
 
 "zh": {
     "AddHost": "Add host",
+    "AddImage": "Add image",
     "CreateVirtualMachine": "Virtual machine",
     "CreateContainer": "New container",
     "CreateOracleManagedDB": "Create serverless Oracle",

@@ -1,0 +1,47 @@
+{
+"id": "vms",
+"command": "iconlist",
+"type": "frontend_module",
+
+"rolelist": {
+"*": [
+    {"id": "createvm", "label": "{{{i18n.CreateVirtualMachine}}}", "logo": "img/createvm.svg"},
+    {"id": "resizevm", "label": "{{{i18n.ResizeVirtualMachine}}}", "logo": "img/resizevm.svg"},
+    {"id": "poweropvm", "label": "{{{i18n.PowerOpVM}}}", "logo": "img/poweropvm.svg"},
+    {"id": "deletevm", "label": "{{{i18n.DeleteVM}}}", "logo": "img/deletevm.svg"}
+
+]
+},
+
+"i18n": {
+"en": {
+    "CreateVirtualMachine": "New virtual machine",
+    "ResizeVirtualMachine": "Resize virtual machine",
+    "PowerOpVM": "Power on/off",
+    "DeleteVM": "Delete virtual machine"
+},
+
+"hi": {
+    "CreateVirtualMachine": "Virtual machine",
+    "ResizeVirtualMachine": "Resize virtual machine",
+    "PowerOpVM": "Power operate virtual machine",
+    "DeleteVM": "Delete virtual machine"
+},
+
+"ja": {
+    "CreateVirtualMachine": "Virtual machine",
+    "ResizeVirtualMachine": "Resize virtual machine",
+    "PowerOpVM": "Power operate virtual machine",
+    "DeleteVM": "Delete virtual machine"
+},
+
+"zh": {
+    "CreateVirtualMachine": "Virtual machine",
+    "ResizeVirtualMachine": "Resize virtual machine",
+    "PowerOpVM": "Power operate virtual machine",
+    "DeleteVM": "Delete virtual machine"
+}
+},
+
+"style": "div#button img {width: 4em; height: 4em; margin-bottom: 0.2em;}"
+}

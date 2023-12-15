@@ -1,0 +1,96 @@
+{
+"id": "resizevm",
+"command": "resizeVM",
+"type": "kloudust_cmdline",
+"kloudust_cmdline_params": ["vm_name", "cores", "memory", "disk", "disk_name", "resize_disk_inplace", "restart"],
+
+"title": "{{{i18n.VMResizeTitle}}}",
+
+"i18n": {
+    "en": {
+        "VMResizeTitle": "Resize Virtual Machine",
+        "VMResizeDescription": "Resize an existing virtual machine in the cloud. Complete the required tab then submit or review the advanced tab for full customization.",
+        "VMName": "Virtual machine name",
+        "VMCores": "Cores",
+        "VMMemory": "Memory in megabytes",
+        "VMNewDisk": "New disk size in gigabytes",
+        "VMNewDiskName": "New disk image name (needed if a new disk is specified)",
+        "VMResizeRestart": "Restart the machine?",
+        "FieldValidationErrorGeneric": "Validation error",
+        "ResizeVMSubmitLabel": "Resize",
+        "VMYes": "Yes",
+        "VMNo": "No",
+        "VMAdvanced": "Advanced",
+        "VMResizeInplaceDisk": "Resize exisiting disk in place? Will shutdown the virtual machine if yes."
+    },
+    "hi": {
+        "VMResizeTitle": "Resize Virtual Machine",
+        "VMResizeDescription": "Resize an existing virtual machine in the cloud. Complete the required tab then submit or review the advanced tab for full customization.",
+        "VMName": "Virtual machine name",
+        "VMCores": "Cores",
+        "VMMemory": "Memory in megabytes",
+        "VMNewDisk": "New disk size in gigabytes",
+        "VMNewDiskName": "New disk image name (needed if a new disk is specified)",
+        "VMResizeRestart": "Restart the machine?",
+        "FieldValidationErrorGeneric": "Validation error",
+        "ResizeVMSubmitLabel": "Resize",
+        "VMYes": "Yes",
+        "VMNo": "No",
+        "VMAdvanced": "Advanced",
+        "VMResizeInplaceDisk": "Resize exisiting disk in place? Will shutdown the virtual machine if yes."
+    },
+    "ja": {
+        "VMResizeTitle": "Resize Virtual Machine",
+        "VMResizeDescription": "Resize an existing virtual machine in the cloud. Complete the required tab then submit or review the advanced tab for full customization.",
+        "VMName": "Virtual machine name",
+        "VMCores": "Cores",
+        "VMMemory": "Memory in megabytes",
+        "VMNewDisk": "New disk size in gigabytes",
+        "VMNewDiskName": "New disk image name (needed if a new disk is specified)",
+        "VMResizeRestart": "Restart the machine?",
+        "FieldValidationErrorGeneric": "Validation error",
+        "ResizeVMSubmitLabel": "Resize",
+        "VMYes": "Yes",
+        "VMNo": "No",
+        "VMAdvanced": "Advanced",
+        "VMResizeInplaceDisk": "Resize exisiting disk in place? Will shutdown the virtual machine if yes."
+    },
+    "zh": {
+        "VMResizeTitle": "Resize Virtual Machine",
+        "VMResizeDescription": "Resize an existing virtual machine in the cloud. Complete the required tab then submit or review the advanced tab for full customization.",
+        "VMName": "Virtual machine name",
+        "VMCores": "Cores",
+        "VMMemory": "Memory in megabytes",
+        "VMNewDisk": "New disk size in gigabytes",
+        "VMNewDiskName": "New disk image name (needed if a new disk is specified)",
+        "VMResizeRestart": "Restart the machine?",
+        "FieldValidationErrorGeneric": "Validation error",
+        "ResizeVMSubmitLabel": "Resize",
+        "VMYes": "Yes",
+        "VMNo": "No",
+        "VMAdvanced": "Advanced",
+        "VMResizeInplaceDisk": "Resize exisiting disk in place? Will shutdown the virtual machine if yes."
+    }
+},
+
+"form": {
+    "description": "{{{i18n.VMResizeDescription}}}",
+
+    "required_label": "{{{i18n.Required}}}",
+    "required_fields": [
+    {"id": "vm_name", "type": "text", "placeholder": "{{{i18n.VMName}}}", "required": true, 
+        "pattern":"\\s*\\w+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+    {"id": "cores", "type": "number", "placeholder": "{{{i18n.VMCores}}}", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+    {"id": "memory", "type": "number", "placeholder": "{{{i18n.VMMemory}}}", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+    {"id": "disk", "type": "number", "placeholder": "{{{i18n.VMNewDisk}}}", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+    {"id": "resize_disk_inplace", "multioption": true, "type": "select", "label": "{{{i18n.VMResizeInplaceDisk}}}", 
+        "options":[{"value":"false", "label":"{{{i18n.VMNo}}}"}, {"value":"true", "label":"{{{i18n.VMYes}}}"}]},
+    {"id": "disk_name", "type": "text", "placeholder": "{{{i18n.VMNewDiskName}}}", "pattern":"\\s*\\w+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+    {"id": "restart", "multioption": true, "type": "select", "label": "{{{i18n.VMResizeRestart}}}", 
+        "options":[{"value":"false", "label":"{{{i18n.VMNo}}}"}, {"value":"true", "label":"{{{i18n.VMYes}}}"}]}
+    ],
+
+    "submitlabel": "{{{i18n.ResizeVMSubmitLabel}}}"
+}
+
+}

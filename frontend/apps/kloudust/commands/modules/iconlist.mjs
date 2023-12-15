@@ -75,6 +75,7 @@ div#button {
 div#button img {width: 5em; height: 5em;}
 div#button span {text-align: center;}
 </style>
+{{#style}}<style>{{{.}}}</style>{{/style}}
 
 <div id="body">
 <div id="close" onclick='event.stopPropagation(); monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager.closeForm(this)'>X</div>
@@ -98,7 +99,7 @@ async function getHTML(formObject, cmdmanager) {
     const commands = await cmdlist.getCommands(undefined, formObject); 
     for (const command of commands) cmdmanager.registerCommand(command);
 
-    const html = await router.expandPageData(HTML_TEMPLATE, undefined, {icons: commands});
+    const html = await router.expandPageData(HTML_TEMPLATE, undefined, {icons: commands, style: formObject.style});
     return html;
 }
 
