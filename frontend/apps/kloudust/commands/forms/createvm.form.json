@@ -121,8 +121,7 @@
     {"id": "adminpass", "type": "password", "placeholder": "{{{i18n.VMAdministratorPassword}}}", "required": true, 
        "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
     {"id": "creation_image_name", "multioption": true, "type": "select", "label": "{{{i18n.VMImage}}}", 
-        "options":[]
-    }
+        "options":[]}
     ],
 
     "optional_label": "{{{i18n.VMAdvanced}}}",

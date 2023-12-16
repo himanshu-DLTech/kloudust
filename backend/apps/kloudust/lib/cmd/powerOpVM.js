@@ -2,7 +2,7 @@
  * powerOpVM.js - Performs the given power operation on the VM
  * 
  * Params - 0 - VM Name, 1 - Operation - start, stop, reboot, 
- *  forcestop, autostart, noautostart, pause, hardboot
+ *  forcestop, autostart, noautostart, pause, resume, hardboot
  * 
  * (C) 2020 TekMonks. All rights reserved.
  * License: See enclosed LICENSE file.
@@ -17,7 +17,7 @@ const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 const POWER_OP_PARAMS_MAP = {
     "start": "start", "stop": "shutdown", "reboot": "reboot", "forcestop": "destroy", 
     "autostart": "autostart", "noautostart": "autostart --disable", "pause": "managedsave",
-    "hardboot": "reset", "default": "start"
+    "resume": "resume", "hardboot": "reset", "default": "start"
 }
 
 /**

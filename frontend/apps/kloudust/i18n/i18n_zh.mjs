@@ -14,10 +14,8 @@ export const i18n = {
 "Cancel": "取消",
 "InternalError": "内部错误",
 
-"KloudustCommand": "Kloudust API 命令",
-"DBName": "数据库名称",
-"DBDescription": "数据库描述",
-
 "WelcomeHeading": "Kloudust - Welcome {{{user}}}",
-"WelcomeSubheading": "Click any page from the left bar or choose from below"
+"WelcomeSubheading": "Click any page from the left bar or choose from below",
+
+"ActiveProject": "Active project"
 }

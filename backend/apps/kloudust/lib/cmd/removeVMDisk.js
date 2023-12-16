@@ -1,5 +1,5 @@
 /** 
- * deleteVMDisk.js - Detaches an existing disk from the VM, optionally can delete it too 
+ * removeVMDisk.js - Detaches an existing disk from the VM, optionally can delete it too 
  * (destructive non recoverable operation).
  * 
  * Params - 0 - VM Name, 2 - disk name, 3 - delete disk - should be set to true if needed, 
@@ -36,7 +36,7 @@ module.exports.exec = async function(params) {
         console: params.consoleHandlers,
         other: [
             hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey,  
-            `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/deleteVM.sh`,
+            `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/removeVMDisk.sh`,
             vm_name, "", "", "", disk_name, "false", delete_disk?.toLowerCase()=="true"?"delete":"true", 
             restart?.toLowerCase()||"false"
         ]

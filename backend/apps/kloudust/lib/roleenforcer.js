@@ -9,8 +9,8 @@ const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
 
 exports.ACTIONS = Object.freeze({
     edit_cloud_resource: Symbol("edit_cloud_resource"),
-    lookup_cloud_resource: Symbol("edit_cloud_resource"),
-    lookup_cloud_resource_for_project: Symbol("lookup_cloud_resource"),
+    lookup_cloud_resource: Symbol("lookup_cloud_resource"),
+    lookup_cloud_resource_for_project: Symbol("lookup_cloud_resource_for_project"),
 
     edit_project_resource: Symbol("edit_project_resource"),
     lookup_project_resource: Symbol("lookup_project_resource"),
@@ -64,6 +64,10 @@ exports.isOrgAdminLoggedIn = _ => KLOUD_CONSTANTS.env.role == KLOUD_CONSTANTS.RO
 exports.isNormalUserLoggedIn = _ => KLOUD_CONSTANTS.env.role == KLOUD_CONSTANTS.ROLES.USER;
 
 exports.getNormalizedOrg = org => exports.isCloudAdminLoggedIn() && org ? org : KLOUD_CONSTANTS.env.org;
+
+exports.getCurrentOrg = _ => KLOUD_CONSTANTS.env.org;
+
+exports.getCurrentuser = _ => KLOUD_CONSTANTS.env.userid;
 
 exports.getNormalizedProject = prj => prj && (exports.isCloudAdminLoggedIn() || exports.isOrgAdminLoggedIn) ?
     prj : KLOUD_CONSTANTS.env.prj;

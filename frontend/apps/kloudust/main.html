@@ -78,6 +78,24 @@ div#button {
 	cursor: pointer;
 }
 div#button img {width: 5em; height: 5em;}
+
+select#projects {
+	padding: 0.5em;
+    border-radius: 0.5em;
+    width: 100%;
+    outline: none;
+    border-color: transparent;
+    margin-bottom: 2em;
+    text-transform: capitalize;
+    background-color: #F2FAFF;
+    color: #4C4C4C;
+}
+option.projects {text-transform: capitalize;}
+label#projects {
+	font-size: 0.9em;
+    margin-left: 0.2em;
+    color: #4c4c4c;
+}
 </style>
 
 <!doctype html>
@@ -110,6 +128,10 @@ div#button img {width: 5em; height: 5em;}
 </div>
 
 <div id="bottomleftbaritems">
+	<label for="projects" id="projects">{{i18n.ActiveProject}}</label>
+	<span class="leftbaritem"><select id="projects" onchange="window.monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.activeProjectChanged(this.value)">
+		{{#mainPageData.userprojects}}<option class="projects" name="{{{name}}}" value="{{{name}}}">{{name}}</option>{{/mainPageData.userprojects}}
+	</select></span>
 	<span class="leftbaritem" onclick="window.monkshu_env.apps[APP_CONSTANTS.APP_NAME].loginmanager.logout()"><img src="img/door.svg"><span>Logout</span></span>
 </div>
 </div>

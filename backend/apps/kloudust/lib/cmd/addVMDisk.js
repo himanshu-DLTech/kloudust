@@ -34,7 +34,7 @@ module.exports.exec = async function(params) {
         console: params.consoleHandlers,
         other: [
             hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey,  
-            `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/deleteVM.sh`,
+            `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/addVMDisk.sh`,
             vm_name, "", "", "", disk_name, "true", "false", restart?.toLowerCase()||"false"
         ]
     }

@@ -313,6 +313,19 @@ exports.addProject = async(name, description="", orgIn=KLOUD_CONSTANTS.env.org) 
 }
 
 /**
+ * Returns the currently logged in user's (or given user, if called by cloudadmin) projects.
+ * @param {string} userid The user whose projects are needed, only cloudadmin can use this param.
+ * @returns The currently logged in or the given user's projects.
+ */
+exports.getUserProjects = async userid => {
+    if (userid && (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource))) {_logUnauthorized(); return false;}
+    if (!userid) userid = KLOUD_CONSTANTS.env.userid;
+    const query = "select * from projects where id in (select projectid from projectusermappings where userid=?)";
+    const results = await _db().getQuery(query, userid);
+    return results || [];
+}
+
+/**
  * Returns the project or all if name is null. For users it returns
  * projects they are mapped to, and for admins it goes across org projects
  * @param {string} name Project name

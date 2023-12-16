@@ -59,11 +59,20 @@ const interceptPageLoadData = _ => router.addOnLoadPageData(APP_CONSTANTS.MAIN_H
     mainPageData.welcomeHeading = mustache.render(await i18n.get("WelcomeHeading"), {user: session.get(APP_CONSTANTS.USERNAME)});
 	mainPageData.leftbarCommands = await cmdlist.fetchCommands(LEFTBAR_COMMANDS); 
     mainPageData.mainCommands = await cmdlist.fetchCommands(MAIN_COMMANDS);
+    const projectsLookupResult = await window.monkshu_env.frameworklibs.apimanager.rest(APP_CONSTANTS.API_KLOUDUSTCMD, 
+        'POST', {cmd: 'getUserProjects'}, true);
+    mainPageData.userprojects = projectsLookupResult?projectsLookupResult.projects:[];
+    session.set(APP_CONSTANTS.ACTIVE_PROJECT, mainPageData.userprojects && mainPageData.userprojects.length ? 
+        mainPageData.userprojects[0].name : APP_CONSTANTS.DEFAULT_PROJECT);
     data.mainPageData = mainPageData;
     
     for (const cmd of [...mainPageData.leftbarCommands, ...mainPageData.mainCommands]) try{
         cmdman.registerCommand(cmd); } catch (err) {LOG.error(`Error registering command ${cmd.id}.`);}
 });
+
+function activeProjectChanged(new_project) {
+    session.set(APP_CONSTANTS.ACTIVE_PROJECT, new_project);
+}
 
 function _getHTMLNodesToInsert(htmlContent) {
     const wrapper = document.createElement("div"); wrapper.innerHTML = htmlContent;
@@ -71,4 +80,4 @@ function _getHTMLNodesToInsert(htmlContent) {
 }
 
 export const main = {interceptPageLoadData, registerHostingDivAndInitialContentTemplate, showContent,
-    cmdClicked: (_element, id) => cmdman.cmdClicked(id), hideOpenContent};
+    cmdClicked: (_element, id) => cmdman.cmdClicked(id), hideOpenContent, activeProjectChanged};

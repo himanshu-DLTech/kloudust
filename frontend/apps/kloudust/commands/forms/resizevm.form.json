@@ -21,7 +21,7 @@
         "VMYes": "Yes",
         "VMNo": "No",
         "VMAdvanced": "Advanced",
-        "VMResizeInplaceDisk": "Resize exisiting disk in place? Will shutdown the virtual machine if yes."
+        "VMResizeInplaceDisk": "Resize the exisiting disk in place? Will shutdown the machine if selected."
     },
     "hi": {
         "VMResizeTitle": "Resize Virtual Machine",
@@ -37,7 +37,7 @@
         "VMYes": "Yes",
         "VMNo": "No",
         "VMAdvanced": "Advanced",
-        "VMResizeInplaceDisk": "Resize exisiting disk in place? Will shutdown the virtual machine if yes."
+        "VMResizeInplaceDisk": "Resize the exisiting disk in place? Will shutdown the machine if selected."
     },
     "ja": {
         "VMResizeTitle": "Resize Virtual Machine",
@@ -53,7 +53,7 @@
         "VMYes": "Yes",
         "VMNo": "No",
         "VMAdvanced": "Advanced",
-        "VMResizeInplaceDisk": "Resize exisiting disk in place? Will shutdown the virtual machine if yes."
+        "VMResizeInplaceDisk": "Resize the exisiting disk in place? Will shutdown the machine if selected."
     },
     "zh": {
         "VMResizeTitle": "Resize Virtual Machine",
@@ -69,7 +69,7 @@
         "VMYes": "Yes",
         "VMNo": "No",
         "VMAdvanced": "Advanced",
-        "VMResizeInplaceDisk": "Resize exisiting disk in place? Will shutdown the virtual machine if yes."
+        "VMResizeInplaceDisk": "Resize the exisiting disk in place? Will shutdown the machine if selected."
     }
 },
 

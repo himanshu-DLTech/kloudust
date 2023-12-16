@@ -14,10 +14,8 @@ export const i18n = {
 "Cancel": "Cancel",
 "InternalError": "Internal error",
 
-"KloudustCommand": "Kloudust API Command",
-"DBName": "DB Name",
-"DBDescription": "DB Description",
-
 "WelcomeHeading": "Kloudust - Welcome {{{user}}}",
 "WelcomeSubheading": "Click any page from the left bar or choose from below",
+
+"ActiveProject": "Active project"
 }

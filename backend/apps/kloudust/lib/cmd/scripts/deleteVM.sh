@@ -23,17 +23,20 @@ fi
 
 printf "WARNING!! VM $NAME will be deleted permanently at the end of this operation.\n"
 
-VM_DISK=`virsh dumpxml $NAME | grep -oP "source\sfile=\s*'\K\/kloudust\/disks\/$NAME.+?(?=')"`
-if [ -z $VM_DISK ]; then
+VM_DISKS=(`virsh dumpxml $NAME | grep -oP "source\sfile=\s*'\K\/kloudust\/disks\/$NAME.+?(?=')"`)
+if [ -z $VM_DISKS ]; then
     echo Error!! Unable to find VM disk. 
     exitFailed
 fi
-echo VM disk located at $VM_DISK.
+echo VM disks located at ${VM_DISKS[*]}.
 
 printf "\n\nDeleting $NAME\n"
 EPOCH=`date +%s`
 if ! virsh undefine $NAME --nvram; then exitFailed; fi
-if ! mv $VM_DISK /kloudust/recyclebin/$NAME.$EPOCH.qcow2; then exitFailed; fi
+for VM_DISK in "${VM_DISKS[@]}"; do
+    DISK_THIS=`echo $VM_DISK | grep -Po "$NAME.*"`
+    if ! mv $VM_DISK /kloudust/recyclebin/$DISK_THIS.$EPOCH.qcow2; then exitFailed; fi
+done
 if ! mv /kloudust/metadata/$NAME.xml /kloudust/recyclebin/$NAME.$EPOCH.xml; then exitFailed; fi
 if ! mv /kloudust/metadata/$NAME.metadata /kloudust/recyclebin/$NAME.$EPOCH.metadata; then exitFailed; fi
 

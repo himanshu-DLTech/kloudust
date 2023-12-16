@@ -1,7 +1,7 @@
 /** 
  * listVMImages.js - Lists the VM images we can instantiate.
  * 
- * Params - Nothing. Anyone can call this.
+ * Params - 0 - The image type, defaults to VM images.
  * 
  * (C) 2020 TekMonks. All rights reserved.
  * License: See enclosed LICENSE file.
@@ -18,8 +18,9 @@ const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
  */
 module.exports.exec = async function(params) {
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource_for_project)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
+    const vmImageType = params[0] || addImage.VMIMAGE;
 
-    const hostResources = await dbAbstractor.getHostResources(addImage.VMIMAGE); 
+    const hostResources = await dbAbstractor.getHostResources(vmImageType); 
     if (!hostResources) {const err = "No registered host resources found"; params.consoleHandlers.LOGERROR(err); 
         return CMD_CONSTANTS.FALSE_RESULT(err); }
 
