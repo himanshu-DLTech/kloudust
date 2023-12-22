@@ -79,7 +79,9 @@
     "required_label": "{{{i18n.Required}}}",
     "required_fields": [
     {"id": "vm_name", "type": "text", "placeholder": "{{{i18n.VMName}}}", "required": true, 
-        "pattern":"\\s*\\w+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+        "pattern":"\\s*\\w+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}", 
+        "value":"{{{APP_CONSTANTS.ENV._vms_form_data.name_raw}}}", 
+        "readonly":"{{#APP_CONSTANTS.ENV._vms_form_data.name_raw}}true{{/APP_CONSTANTS.ENV._vms_form_data.name_raw}}"},
     {"id": "cores", "type": "number", "placeholder": "{{{i18n.VMCores}}}", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
     {"id": "memory", "type": "number", "placeholder": "{{{i18n.VMMemory}}}", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
     {"id": "disk", "type": "number", "placeholder": "{{{i18n.VMNewDisk}}}", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},

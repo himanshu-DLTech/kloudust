@@ -5,14 +5,11 @@
  * License: See enclosed LICENSE file.
  */
 
-import {i18n} from "/framework/js/i18n.mjs";
-import {util} from "/framework/js/util.mjs";
-import {session} from "/framework/js/session.mjs";
-import {apimanager as apiman} from "/framework/js/apimanager.mjs";
-
 const REGISTERED_COMMANDS = {}, KLOUDUST_CMDLINE = "kloudust_cmdline", FRONTEND_MODULE = "frontend_module",
     ALERT_OBJECT_KEY = "__com_tekmonks_kloudust_frontend_alerts", ALERT_ERROR = "error", ALERT_INFO = "info",
-    RAW_COMMANDLINE_COMMAND = "RAW_COMMANDLINE";
+    RAW_COMMANDLINE_COMMAND = "RAW_COMMANDLINE", TABLE_DISPLAY = "table_display", apiman = $$.libapimanager;
+
+const cmd_stack = [];
 
 /**
  * Registers the given command object.
@@ -37,15 +34,17 @@ async function cmdClicked(id) {
         const formJSON = await $$.requireJSON(`${APP_CONSTANTS.FORMS_PATH}/${id}.form.json`, APP_CONSTANTS.INSECURE_DEVELOPMENT_MODE?true:undefined);
         const html = await _getFormHTML(formJSON);
         monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.showContent(html, true);
+        cmd_stack.push(id);
     } catch (err) {LOG.error(`Error loading command files for ${id}: ${err}`); return;}
 }
 
 function closeForm() {
-    monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.hideOpenContent();    // close the form
+    cmd_stack.pop(); const stacked_form = cmd_stack.pop();
+    if (stacked_form) cmdClicked(stacked_form); else monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.hideOpenContent(); 
 }
 
 async function formSubmitted(id, values) {
-    monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.hideOpenContent();    // close the form
+    closeForm();    // close the form
 
     const form = await $$.requireJSON(`${APP_CONSTANTS.FORMS_PATH}/${id}.form.json`); 
     if (form.type != KLOUDUST_CMDLINE) return;  // no need to call backend in this case
@@ -55,7 +54,7 @@ async function formSubmitted(id, values) {
     for (const param of cmdLineMap) command += form.command == RAW_COMMANDLINE_COMMAND?values[param]+" ":" "+('"'+values[param]+'"'||'""');
     command = command.trim();
     
-    const project = session.get(APP_CONSTANTS.ACTIVE_PROJECT, APP_CONSTANTS.DEFAULT_PROJECT);
+    const project = $$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT, APP_CONSTANTS.DEFAULT_PROJECT);
     _processCommandOutput(`Running command for project ${project} - ${command}`, false, true);
     const cmdResult = await apiman.rest(APP_CONSTANTS.API_KLOUDUSTCMD, "POST", {cmd: command, project}, true);
     if (cmdResult?.result) {
@@ -68,13 +67,13 @@ async function formSubmitted(id, values) {
 
 function addAlert(text, isError) {
     const formattedAlert = {type: isError?ALERT_ERROR:ALERT_INFO, message: text};
-    const alertObject = session.get(ALERT_OBJECT_KEY, []);
+    const alertObject = $$.libsession.get(ALERT_OBJECT_KEY, []);
     alertObject.push(formattedAlert);
-    session.set(ALERT_OBJECT_KEY, alertObject);
+    $$.libsession.set(ALERT_OBJECT_KEY, alertObject);
 }
 
 function getAlerts() {
-    const alertObject = session.get(ALERT_OBJECT_KEY, []);
+    const alertObject = $$.libsession.get(ALERT_OBJECT_KEY, []);
     return [...alertObject];
 }
 
@@ -86,16 +85,24 @@ function _processCommandOutput(text, isError=false, firstLineOfNewCommand=false)
 async function _getFormHTML(formJSON) {
     let html = "";
 
-    if (formJSON.type == KLOUDUST_CMDLINE) {
-        const base64FormJSON = util.stringToBase64(JSON.stringify(formJSON.form)), id = formJSON.id;
-        if (formJSON.i18n) for (const [lang, i18nObject] of Object.entries(formJSON.i18n)) await i18n.setI18NObject(lang, i18nObject);
+    if (formJSON.type.toLowerCase() == KLOUDUST_CMDLINE) {
+        const base64FormJSON = $$.libutil.stringToBase64(JSON.stringify(formJSON.form)), id = formJSON.id;
+        if (formJSON.i18n) for (const [lang, i18nObject] of Object.entries(formJSON.i18n)) await $$.libi18n.setI18NObject(lang, i18nObject);
 
         html = `<form-runner id="${id}" data-form='${base64FormJSON}'
-            onclose='monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.hideOpenContent()'
+            onclose='monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager.closeForm()'
             onsubmit='monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager.formSubmitted("${id}", formdata)'></form-runner>`;
     }
+
+    if (formJSON.type.toLowerCase() == TABLE_DISPLAY) {
+        const base64TabledefJSON = $$.libutil.stringToBase64(JSON.stringify(formJSON.tabledef)), id = formJSON.id;
+        if (formJSON.i18n) for (const [lang, i18nObject] of Object.entries(formJSON.i18n)) await $$.libi18n.setI18NObject(lang, i18nObject);
+
+        html = `<table-list id="${id}" data-tabledef='${base64TabledefJSON}'
+            onclose='monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager.closeForm()'></table-list>`;
+    }
     
-    if (formJSON.type == FRONTEND_MODULE) {
+    if (formJSON.type.toLowerCase() == FRONTEND_MODULE) {
         const formModule = await import(`${APP_CONSTANTS.FORM_MODULES_PATH}/${formJSON.command}.mjs`);
         html = await formModule[formJSON.command].getHTML(formJSON, cmdmanager);
     }

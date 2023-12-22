@@ -6,8 +6,6 @@
  * License: See enclosed license.txt file.
  */
 
-import {router} from "/framework/js/router.mjs";
-
 const HTML_TEMPLATE = `
 <style>
 ::-webkit-scrollbar {
@@ -99,7 +97,7 @@ async function getHTML(formObject, cmdmanager) {
     const commands = await cmdlist.getCommands(undefined, formObject); 
     for (const command of commands) cmdmanager.registerCommand(command);
 
-    const html = await router.expandPageData(HTML_TEMPLATE, undefined, {icons: commands, style: formObject.style});
+    const html = await $$.librouter.expandPageData(HTML_TEMPLATE, undefined, {icons: commands, style: formObject.style});
     return html;
 }
 

@@ -21,7 +21,7 @@ module.exports.exec = async function(params) {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
 
     const vm_name_old_raw = params[0], vm_name_old = createVM.resolveVMName(vm_name_old_raw),
-    vm_name_new_raw = params[1], vm_name_new = createVM.resolveVMName(vm_name_new_raw), 
+        vm_name_new_raw = params[1], vm_name_new = createVM.resolveVMName(vm_name_new_raw), 
         shutdown_timeout = params[2]||KLOUD_CONSTANTS.CONF.DEFAULT_VM_SHUTDOWN_WAIT;
 
     const vm = await dbAbstractor.getVM(vm_name_old);
@@ -43,7 +43,7 @@ module.exports.exec = async function(params) {
 
     const results = await xforge(xforgeArgs);
     if (results.result) {
-        if (await dbAbstractor.renameVM(vm_name_old, vm_name_new)) return results;
+        if (await dbAbstractor.renameVM(vm_name_old, vm_name_new, vm_name_new_raw)) return results;
         else {params.consoleHandlers.LOGERROR("DB failed"); return {...results, result: false};}
     } else return results;
 }

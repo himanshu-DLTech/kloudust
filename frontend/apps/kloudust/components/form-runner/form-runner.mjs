@@ -59,9 +59,10 @@ async function _runOnSubmitJavascript(retObject, form) {
 
 async function _runOnLoadJavascript(form) {
     if (!form.load_javascript) return form;
+    const onloadjs = (Array.isArray(taformbledef.load_javascript)?form.load_javascript:[form.load_javascript]).join("\n");
 
     const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
-    const load_js_result = await (new AsyncFunction(form.load_javascript))(form);
+    const load_js_result = await (new AsyncFunction(onloadjs))(form);
     if (!load_js_result) {
         LOG.error(`Form load JS failed`);
         return form;

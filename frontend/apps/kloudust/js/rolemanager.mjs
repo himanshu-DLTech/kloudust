@@ -4,8 +4,6 @@
  * License: See enclosed LICENSE file.
  */
 
-import {session} from "/framework/js/session.mjs";
-
 /** @return The filtered role list for file holding role list object */
 const fetchFilteredRoleList = async url => filterRoleList(await $$.requireJSON(url));
 
@@ -16,7 +14,7 @@ const fetchFilteredRoleList = async url => filterRoleList(await $$.requireJSON(u
  * @returns Returns all objects from the list which are allowed for the current role
  */
 function filterRoleList(rolelist) {
-    const currentRole = session.get(APP_CONSTANTS.LOGGEDIN_USEROLE).toString(), 
+    const currentRole = $$.libsession.get(APP_CONSTANTS.LOGGEDIN_USEROLE).toString(), 
         _asArray = object => Array.isArray(object) ? object : [object];
     const retlist = []; for (const [role, value] of Object.entries(rolelist)) {
         if (role.toLocaleLowerCase() == currentRole.toLocaleLowerCase()) retlist.push(..._asArray(value));

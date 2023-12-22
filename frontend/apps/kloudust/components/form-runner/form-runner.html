@@ -163,7 +163,8 @@ span#submit {
     placeholder="{{placeholder}}" {{#required}}required{{/required}} {{#value}}value="{{.}}"{{/value}}
     {{#pattern}}pattern="{{.}}"{{/pattern}} {{#min}}min="{{.}}"{{/min}} {{#title}}title="{{.}}"{{/title}}
     oninvalid="this.setCustomValidity('{{validation_error}}')" {{#style}}style="{{{.}}}"{{/style}} 
-    oninput="setCustomValidity('')"></{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}}>
+    oninput="setCustomValidity('')" {{#readonly}}readonly{{/readonly}}>
+</{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}}>
 {{/multioption}}
 
 {{#multioption}}

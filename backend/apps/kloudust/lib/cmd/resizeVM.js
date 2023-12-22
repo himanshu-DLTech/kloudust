@@ -49,5 +49,8 @@ module.exports.exec = async function(params) {
     }
 
     const results = await xforge(xforgeArgs);
+    vm.disks.push({diskname: DEFAULT_DISK, size: parseInt(disk)});
+    if (results.result) await dbAbstractor.updateVM(vm_name, vm.vm_description, vm.hostname, vm.ostype, 
+        cores, memory, vm.disks, vm.creationcmd);
     return results;
 }

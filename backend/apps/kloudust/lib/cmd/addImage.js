@@ -30,7 +30,7 @@ const {xforge} = require(`${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/xforge`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
 const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 
-const VMIMAGE = "vmimage";
+const VMIMAGE = "vm";
 
 /**
  * Adds the given image to the catalog

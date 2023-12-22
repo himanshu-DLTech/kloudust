@@ -8,6 +8,7 @@
  */
 
 const roleman = require(`${KLOUD_CONSTANTS.LIBDIR}/roleenforcer.js`);
+const createVM = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/createVM.js`);
 const {xforge} = require(`${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/xforge`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
 const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
@@ -24,7 +25,7 @@ module.exports.exec = async function(params) {
     const hostInfo = hostname?await dbAbstractor.getHostEntry(hostname):null; 
     if (!hostInfo) { const error = "Bad hostname or host not found"; 
         params.consoleHandlers.LOGERROR(error); return CMD_CONSTANTS.FALSE_RESULT(error); }
-    const vms = await dbAbstractor.listVMsForCloudAdmin(hostname, true);
+    const vms = await dbAbstractor.listVMsForCloudAdmin(createVM.VM_TYPE_VM, hostname);
     const vms_ret = []; if (vms) for (const vm of vms) vms_ret.push({...vm, creationcmd: undefined});
 
     let out = "VM information from the database follows.";

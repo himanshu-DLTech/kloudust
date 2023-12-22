@@ -4,25 +4,23 @@
  * License: See enclosed license.txt file.
  */
  
-import {router} from "/framework/js/router.mjs";
-import {session} from "/framework/js/session.mjs";
-import {securityguard} from "/framework/js/securityguard.mjs";
-import {apimanager as apiman} from "/framework/js/apimanager.mjs";
 import {APP_CONSTANTS as AUTO_APP_CONSTANTS} from "./constants.mjs";
+
+const apiman = $$.libapimanager;
 
 const init = async hostname => {
 	window.APP_CONSTANTS = (await import ("./constants.mjs")).APP_CONSTANTS; 
-	window.monkshu_env.apps[AUTO_APP_CONSTANTS.APP_NAME] = {};
-	const mustache = await router.getMustache();
+	window.monkshu_env.apps[AUTO_APP_CONSTANTS.APP_NAME] = AUTO_APP_CONSTANTS.ENV;
+	const mustache = await $$.librouter.getMustache();
 	window.APP_CONSTANTS = JSON.parse(mustache.render(JSON.stringify(AUTO_APP_CONSTANTS), {hostname}));
 	await _readConfig(); 
 
 	window.LOG = (await import ("/framework/js/log.mjs")).LOG;
-	if (!session.get($$.MONKSHU_CONSTANTS.LANG_ID)) session.set($$.MONKSHU_CONSTANTS.LANG_ID, "en");
+	if (!$$.libsession.get($$.MONKSHU_CONSTANTS.LANG_ID)) $$.libsession.set($$.MONKSHU_CONSTANTS.LANG_ID, "en");
 	
 	// setup permissions and roles
-	securityguard.setPermissionsMap(APP_CONSTANTS.PERMISSIONS_MAP);
-	securityguard.setCurrentRole(securityguard.getCurrentRole() || APP_CONSTANTS.GUEST_ROLE);
+	$$.libsecurityguard.setPermissionsMap(APP_CONSTANTS.PERMISSIONS_MAP);
+	$$.libsecurityguard.setCurrentRole($$.libsecurityguard.getCurrentRole() || APP_CONSTANTS.GUEST_ROLE);
 
 	// register backend API keys
 	apiman.registerAPIKeys(APP_CONSTANTS.API_KEYS, APP_CONSTANTS.KEY_HEADER); 	
@@ -40,14 +38,15 @@ const init = async hostname => {
 const main = async _ => {
 	await _addPageLoadInterceptors(); await _registerComponents();
 
-	const decodedURL = new URL(router.decodeURL(window.location.href)), 
+	const decodedURL = new URL($$.librouter.decodeURL(window.location.href)), 
 		justURL = new URL(`${decodedURL.protocol}//${decodedURL.hostname}${decodedURL.pathname}`).href;
-	if (securityguard.isAllowed(justURL)) router.loadPage(decodedURL.href);
-	else router.loadPage(APP_CONSTANTS.LOGIN_HTML);
+	if ($$.libsecurityguard.isAllowed(justURL)) $$.librouter.loadPage(decodedURL.href);
+	else $$.librouter.loadPage(APP_CONSTANTS.LOGIN_HTML);
 }
 
-const interceptPageLoadData = _ => router.addOnLoadPageData("*", async (data, _url) => {
+const interceptPageLoadData = _ => $$.librouter.addOnLoadPageData("*", async (data, _url) => {
 	data.APP_CONSTANTS = APP_CONSTANTS; 
+	data["APP_ENV"] = _ => (key, render) => $$.libutils.getObjProperty(APP_CONSTANTS.ENV, render(key));
 });
 
 async function _readConfig() {

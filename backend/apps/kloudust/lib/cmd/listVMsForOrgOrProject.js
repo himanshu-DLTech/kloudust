@@ -14,6 +14,7 @@
  */
 
 const roleman = require(`${KLOUD_CONSTANTS.LIBDIR}/roleenforcer.js`);
+const createVM = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/createVM.js`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
 const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 
@@ -26,7 +27,7 @@ module.exports.exec = async function(params) {
         params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT(); }
 
     const [org, project] = [...params];
-    const vms = await dbAbstractor.listVMsForOrgOrProject(org, project);
+    const vms = await dbAbstractor.listVMsForOrgOrProject(createVM.VM_TYPE_VM, org, project);
 
     const vms_ret = []; if (vms) for (const vm of vms) vms_ret.push({...vm, creationcmd: undefined});
 

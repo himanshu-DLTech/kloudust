@@ -108,33 +108,34 @@ exports.getHostsMatchingProcessorArchitecture = async(processor_architecture) =>
 exports.addHostResource = async (name, uri, processor_architecture, description, extra, type) => {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {_logUnauthorized(); return false; }
 
-    const query = "replace into hostresources(name, uri, processorarchitecture, description, extrainfo) values (?,?,?,?,?,?)";
+    const query = "replace into hostresources(name, uri, processorarchitecture, description, extrainfo, type) values (?,?,?,?,?,?)";
     return await _db().runCmd(query, [name, uri, processor_architecture, description, extra, type]);
 }
 
 /**
  * Returns the given host resource for project
  * @param {string} name The resource name
+ * @param {string} type The resource type
  * @return host resource object on success or null otherwise
  */
-exports.getHostResourceForProject = async name => {
+exports.getHostResourceForProject = async (name, type) => {
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource_for_project)) {_logUnauthorized(); return false; }
 
-    const query = "select * from hostresources where name=?";
-    const resources = await _db().getQuery(query, [name]);
+    const query = type?"select * from hostresources where name=? and type = ?":"select * from hostresources where name=?";
+    const resources = await _db().getQuery(query, type?[name,type]:[name]);
     if ((!resources) || (!resources.length)) return null; else return resources[0];
 }
 
 /**
- * Returns all registered host resources. 
+ * Returns all registered host resources of a given type.
  * @param type The type of resource
  * @return All registered host resources or null on errors.
  */
 exports.getHostResources = async type => {
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource_for_project)) {_logUnauthorized(); return false; }
 
-    const query = "select * from hostresources where type = ?";
-    const resources = await _db().getQuery(query, [type]);
+    const query = type?"select * from hostresources where type = ?":"select * from hostresources";
+    const resources = await _db().getQuery(query, type?[type]:[]);
     if ((!resources) || (!resources.length)) return null; else return resources;
 }
 
@@ -175,21 +176,23 @@ exports.getHostEntry = async hostname => {
  * @param {string} os The OS
  * @param {integer} cpus The CPU
  * @param {integer} memory The memory
- * @param {integer} disk The disk
+ * @param {string} disks The disks object
  * @param {string} creation_cmd The VM creation command
+ * @param {string} name_raw The VM name raw 
+ * @param {string} vmtype The VM type
  * @param {string} project The project, if skipped is auto picked from the environment
  * @param {string} org The org, if skipped is auto picked from the environment
  * @return true on success or false otherwise
  */
-exports.addVMToDB = async (name, description, hostname, os, cpus, memory, disk, creation_cmd="undefined", 
-        project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANTS.env.org) => {
+exports.addVMToDB = async (name, description, hostname, os, cpus, memory, disks, creation_cmd="undefined", 
+        name_raw, vmtype, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANTS.env.org) => {
 
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
 
     const id = `${org}_${project}_${name}`;
-    const query = "insert into vms(id, name, description, hostname, org, projectid, os, cpus, memory, disk, creationcmd) values (?,?,?,?,?,?,?,?,?,?,?)";
-    return await _db().runCmd(query, [id, name, description, hostname, org, _getProjectID(), os, cpus, memory, disk, creation_cmd]);
+    const query = "insert into vms(id, name, description, hostname, org, projectid, os, cpus, memory, disksjson, creationcmd, name_raw, vmtype) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    return await _db().runCmd(query, [id, name, description, hostname, org, _getProjectID(), os, cpus, memory, JSON.stringify(disks), name_raw, vmtype, creation_cmd]);
 }
 
 /**
@@ -212,19 +215,20 @@ exports.getVM = async (name, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANT
  * changed via this command. The renmaed VM belongs to the same org.
  * @param {string} name The VM name
  * @param {string} newname The VM new name
+ * @param {string} newname_raw The VM new name raw
  * @param {string} project The project, if skipped is auto picked from the environment
  * @param {string} org The org, if skipped is auto picked from the environment
  * @param {string} newproject The new project, if skipped is set to the original project
  * @return true on success or false otherwise
  */
-exports.renameVM = async (name, newname, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANTS.env.org, newproject) => {
+exports.renameVM = async (name, newname, newname_raw, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANTS.env.org, newproject) => {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org); 
         newproject = roleman.getNormalizedProject(newproject||project);
 
     const vm = await exports.getVM(name, project, org); if (!vm) return false;
-    if (!await exports.addVMToDB(newname, vm.description, vm.hostname, vm.os, vm.cpus, vm.memory, vm.disk, 
-        vm.creation_cmd, newproject, org)) return false;
+    if (!await exports.addVMToDB(newname, vm.description, vm.hostname, vm.os, vm.cpus, vm.memory, JSON.parse(vm.disksjson), 
+        newname_raw, vm.vmtype, vm.creation_cmd, newproject, org)) return false;
     return await exports.deleteVM(name, project, org); 
 }
 
@@ -265,33 +269,36 @@ exports.updateVMHost = async (vmid, newHostname) => {
 /**
  * Returns VMs for the given org and / or current project. All VMs for the current project
  * are returned if hostname is skipped. This is for project admins or project users.
+ * @param {string} type The VM type
  * @param {string} org The org, if skipped is auto picked from the environment
  * @param {string} project The project, if skipped is auto picked from the environment if needed
  * @return The list of VMs
  */
-exports.listVMsForOrgOrProject = async (org=KLOUD_CONSTANTS.env.org, project) => {
+exports.listVMsForOrgOrProject = async (type, org=KLOUD_CONSTANTS.env.org, project) => {
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_project_resource)) {_logUnauthorized(); return false;}
     if (project) project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
     if ((!project) && (!roleman.isOrgAdminLoggedIn()) && (!roleman.isOrgAdminLoggedIn())) project=KLOUD_CONSTANTS.env.prj;
 
     const projectid = _getProjectID(project, org);
-    const query = project?"select * from vms where projectid = ? and org = ?":"select * from vms where org = ?";
-    const results = await _db().getQuery(query, project?[projectid,org]:[org]);
+    const query = project?"select * from vms where projectid = ? and org = ? and vmtype = ?":
+        "select * from vms where org = ? and vmtype = ?";
+    const results = await _db().getQuery(query, project?[projectid,org,type]:[org,type]);
     return results;
 }
 
 /**
  * Returns VMs for the given host. All VMs are returned if hostname is skipped. 
  * This is for cloud admins.
+ * @param {string} type The VM type
  * @param {string} hostname The host (optional)
  * @return The list of VMs
  */
-exports.listVMsForCloudAdmin = async hostname => {
+exports.listVMsForCloudAdmin = async (type, hostname) => {
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource)) {_logUnauthorized(); return false;}
 
-    const query = hostname ? "select * from vms where hostname = ?" : "select * from vms";
+    const query = hostname ? "select * from vms where hostname = ? and vmtype = ?" : "select * from vms where vmtype = ?";
 
-    const results = await _db().getQuery(query, hostname?[hostname]:[]);
+    const results = await _db().getQuery(query, hostname?[type,hostname]:[type]);
     return results;
 }
 

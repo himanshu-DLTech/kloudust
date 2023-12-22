@@ -5,10 +5,7 @@
  * License: See enclosed license.txt file.
  */
 
-import {util} from "/framework/js/util.mjs";
-import {router} from "/framework/js/router.mjs";
-
-const RESOURCES_PATH = util.getModulePath(import.meta)+"/resources";
+const RESOURCES_PATH = $$.libutil.getModulePath(import.meta)+"/resources";
 
 const HTML_TEMPLATE = `
 <style>
@@ -72,9 +69,12 @@ div#main div#alertdiv:nth-child(odd) {background-color: #858585;}
 div#main div#alertdiv:first-child{border-top: 1px solid #ffffff;}
 div#main div#alertdiv:last-child{border-bottom: 1px solid #ffffff;}
 span#alertmessage {
-    width: 100%;
+    width: calc(100% - 2.5em);
     font-family: monospace;
     user-select: text;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 span#alerticon {
     margin-right: 1em;
@@ -103,9 +103,9 @@ async function getHTML(_formJSON, cmdmanager) {
     const alerts = _safeDeepCloneArray(cmdmanager.getAlerts()); for (const alert of alerts) {
         if (alert.type == cmdmanager.ALERT_ERROR) alert.error = true;
         alert.alerticon = alert.error?`${RESOURCES_PATH}/alerts_error.svg`:`${RESOURCES_PATH}/alerts_info.svg`;
-        alert.message = util.encodeHTMLEntities(alert.message).replaceAll(/\r?\n/g, "<br/>");
+        alert.message = $$.libutil.encodeHTMLEntities(alert.message).replaceAll(/\r?\n/g, "<br/>");
     }
-    const html = router.expandPageData(HTML_TEMPLATE, undefined, {alerts, 
+    const html = $$.librouter.expandPageData(HTML_TEMPLATE, undefined, {alerts, 
         info_icon: `${RESOURCES_PATH}/alerts_info.svg`, error_icon: `${RESOURCES_PATH}/alerts_error.svg`});
     return html;
 }

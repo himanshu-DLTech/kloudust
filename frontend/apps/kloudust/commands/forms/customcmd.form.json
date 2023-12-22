@@ -1,0 +1,70 @@
+{
+"id": "customcmd",
+"command": "customCmd",
+"type": "kloudust_cmdline",
+"kloudust_cmdline_params": ["sql", "hostname", "hostcommand"],
+
+"title": "{{{i18n.RunCloudAdminCommand}}}",
+
+"i18n": {
+    "en": {
+        "RunCloudAdminCommand": "Run a cloud administration command",
+        "CloudCommandDescription": "Run a cloud administration command below. Warning: Cloud commands can destabilize the entire cloud or crash it.",
+        "Required": "Required",
+        "CloudAdminSQL": "SQL to run",
+        "Hostname": "Hostname",
+        "HostCommand": "Host command",
+        "CloudAdminCommandRun": "Run",
+        "FieldValidationErrorGeneric": "Validation error"
+    },
+    "hi": {
+        "RunCloudAdminCommand": "Run a cloud administration command",
+        "CloudCommandDescription": "Run a cloud administration command below. Warning: Cloud commands can destabilize the entire cloud or crash it.",
+        "Required": "Required",
+        "CloudAdminSQL": "SQL to run",
+        "Hostname": "Hostname",
+        "HostCommand": "Host command",
+        "CloudAdminCommandRun": "Run",
+        "FieldValidationErrorGeneric": "Validation error"
+    },
+    "ja": {
+        "RunCloudAdminCommand": "Run a cloud administration command",
+        "CloudCommandDescription": "Run a cloud administration command below. Warning: Cloud commands can destabilize the entire cloud or crash it.",
+        "Required": "Required",
+        "CloudAdminSQL": "SQL to run",
+        "Hostname": "Hostname",
+        "HostCommand": "Host command",
+        "CloudAdminCommandRun": "Run",
+        "FieldValidationErrorGeneric": "Validation error"
+    },
+    "zh": {
+        "RunCloudAdminCommand": "Run a cloud administration command",
+        "CloudCommandDescription": "Run a cloud administration command below. Warning: Cloud commands can destabilize the entire cloud or crash it.",
+        "Required": "Required",
+        "CloudAdminSQL": "SQL to run",
+        "Hostname": "Hostname",
+        "HostCommand": "Host command",
+        "CloudAdminCommandRun": "Run",
+        "FieldValidationErrorGeneric": "Validation error"
+    }
+},
+
+"form": {
+    "description": "{{{i18n.CloudCommandDescription}}}",
+
+    "required_label": "{{{i18n.Required}}}",
+    "required_fields": [
+    {"id": "sql", "inputtype": "textarea", "type": "text", "placeholder": "{{{i18n.CloudAdminSQL}}}", 
+        "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}", 
+        "style":"height: 20vh; font-family: monospace; font-size: larger; background-color: #212121;"},
+    {"id": "hostname", "type": "text", "placeholder": "{{{i18n.Hostname}}}", "pattern":"\\s*[A-Za-z0-9]+\\s*",
+        "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+    {"id": "hostcommand", "inputtype": "textarea", "type": "text", "placeholder": "{{{i18n.HostCommand}}}", 
+        "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}", 
+        "style":"height: 35vh; font-family: monospace; font-size: larger; background-color: #212121;"}
+    ],
+
+    "submitlabel": "{{{i18n.CloudAdminCommandRun}}}"
+}
+
+}

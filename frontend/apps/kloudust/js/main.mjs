@@ -5,10 +5,6 @@
  */
 
 import {cmdlist} from "./cmdlist.mjs";
-import {i18n} from "/framework/js/i18n.mjs";
-import {util} from "/framework/js/util.mjs";
-import {router} from "/framework/js/router.mjs";
-import {session} from "/framework/js/session.mjs";
 import {cmdmanager as cmdman} from "./cmdmanager.mjs";
 
 const LEFTBAR_COMMANDS = `${APP_CONSTANTS.FORMS_PATH}/main_leftbar.json`, 
@@ -38,7 +34,7 @@ function showContent(contentNode, disableAnimation=false) {
     if (!_hostingDiv) {LOG.error(`Asked to show content but no hosting DIV is registered`); return;}
     if (_closingClass && (!disableAnimation)) _hostingDiv.classList.add(_closingClass);
     const _refreshWithNewContent = _ => {
-        util.removeAllChildElements(_hostingDiv); 
+        $$.libutil.removeAllChildElements(_hostingDiv); 
         const content = contentNode ? (typeof contentNode === "string" ? _getHTMLNodesToInsert(contentNode) : contentNode) : 
             _initialContentTemplate.content.cloneNode(true);
         _hostingDiv.appendChild(content);
@@ -54,15 +50,15 @@ function showContent(contentNode, disableAnimation=false) {
 function hideOpenContent(disableAnimation) {showContent(undefined, disableAnimation);}
 
 /** Plugs in our data interceptor which loads initial main and leftbar contents */
-const interceptPageLoadData = _ => router.addOnLoadPageData(APP_CONSTANTS.MAIN_HTML, async (data, _url) => {
-    const mustache = await router.getMustache(), mainPageData = {};
-    mainPageData.welcomeHeading = mustache.render(await i18n.get("WelcomeHeading"), {user: session.get(APP_CONSTANTS.USERNAME)});
+const interceptPageLoadData = _ => $$.librouter.addOnLoadPageData(APP_CONSTANTS.MAIN_HTML, async (data, _url) => {
+    const mustache = await $$.librouter.getMustache(), mainPageData = {};
+    mainPageData.welcomeHeading = mustache.render(await $$.libi18n.get("WelcomeHeading"), {user: $$.libsession.get(APP_CONSTANTS.USERNAME)});
 	mainPageData.leftbarCommands = await cmdlist.fetchCommands(LEFTBAR_COMMANDS); 
     mainPageData.mainCommands = await cmdlist.fetchCommands(MAIN_COMMANDS);
     const projectsLookupResult = await window.monkshu_env.frameworklibs.apimanager.rest(APP_CONSTANTS.API_KLOUDUSTCMD, 
         'POST', {cmd: 'getUserProjects'}, true);
     mainPageData.userprojects = projectsLookupResult?projectsLookupResult.projects:[];
-    session.set(APP_CONSTANTS.ACTIVE_PROJECT, mainPageData.userprojects && mainPageData.userprojects.length ? 
+    $$.libsession.set(APP_CONSTANTS.ACTIVE_PROJECT, mainPageData.userprojects && mainPageData.userprojects.length ? 
         mainPageData.userprojects[0].name : APP_CONSTANTS.DEFAULT_PROJECT);
     data.mainPageData = mainPageData;
     
@@ -71,7 +67,7 @@ const interceptPageLoadData = _ => router.addOnLoadPageData(APP_CONSTANTS.MAIN_H
 });
 
 function activeProjectChanged(new_project) {
-    session.set(APP_CONSTANTS.ACTIVE_PROJECT, new_project);
+    $$.libsession.set(APP_CONSTANTS.ACTIVE_PROJECT, new_project);
 }
 
 function _getHTMLNodesToInsert(htmlContent) {
