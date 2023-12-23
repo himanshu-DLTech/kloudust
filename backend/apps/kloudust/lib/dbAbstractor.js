@@ -64,7 +64,7 @@ exports.addHostToDB = async (hostname, hostaddress, type, rootid, rootpw, hostke
 exports.deleteHostFromDB = async (hostname) => {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {_logUnauthorized(); return false; }
 
-    const query = "delete from hosts where hostname = ?";
+    const query = "delete from hosts where hostname = ? collate nocase";
     return await _db().runCmd(query, [hostname]);
 }
 
@@ -77,7 +77,7 @@ exports.deleteHostFromDB = async (hostname) => {
 exports.updateHostSynctime = async(hostname, timestamp) => {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {_logUnauthorized(); return false; }
 
-    const query = "update hosts set synctimestamp = ? where hostname = ?";
+    const query = "update hosts set synctimestamp = ? where hostname = ? collate nocase";
     return await _db().runCmd(query, [timestamp, hostname]);
 }
 
@@ -121,7 +121,8 @@ exports.addHostResource = async (name, uri, processor_architecture, description,
 exports.getHostResourceForProject = async (name, type) => {
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource_for_project)) {_logUnauthorized(); return false; }
 
-    const query = type?"select * from hostresources where name=? and type = ?":"select * from hostresources where name=?";
+    const query = type?"select * from hostresources where name=? collate nocase and type = ? collate nocase":
+        "select * from hostresources where name=? collate nocase";
     const resources = await _db().getQuery(query, type?[name,type]:[name]);
     if ((!resources) || (!resources.length)) return null; else return resources[0];
 }
@@ -134,7 +135,7 @@ exports.getHostResourceForProject = async (name, type) => {
 exports.getHostResources = async type => {
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource_for_project)) {_logUnauthorized(); return false; }
 
-    const query = type?"select * from hostresources where type = ?":"select * from hostresources";
+    const query = type?"select * from hostresources where type = ? collate nocase":"select * from hostresources";
     const resources = await _db().getQuery(query, type?[type]:[]);
     if ((!resources) || (!resources.length)) return null; else return resources;
 }
@@ -147,7 +148,7 @@ exports.getHostResources = async type => {
 exports.deleteHostResource = async (name) => {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {_logUnauthorized(); return false; }
 
-    const query = "delete from hostresources where name = ?";
+    const query = "delete from hostresources where name = ? collate nocase";
     return await _db().runCmd(query, [name]);
 }
 
@@ -161,7 +162,7 @@ exports.deleteHostResource = async (name) => {
 exports.getHostEntry = async hostname => {
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource_for_project)) {_logUnauthorized(); return false; }
 
-    const hosts = await _db().getQuery("select * from hosts where hostname = ?", hostname);
+    const hosts = await _db().getQuery("select * from hosts where hostname = ? collate nocase", hostname);
     if (!hosts || !hosts.length) return null;
 
     hosts[0].rootpw = crypt.decrypt(hosts[0].rootpw);  // decrypt the password
@@ -206,7 +207,7 @@ exports.getVM = async (name, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANT
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_project_resource)) {_logUnauthorized(); return false;}
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
 
-    const vmid = `${org}_${project}_${name}`, results = await _db().getQuery("select * from vms where id = ?", [vmid]);
+    const vmid = `${org}_${project}_${name}`, results = await _db().getQuery("select * from vms where id = ? collate nocase", [vmid]);
     return results?results[0]:null;
 }
 
@@ -247,7 +248,7 @@ exports.deleteVM = async (name, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONST
     const vm = await exports.getVM(name, project, org); if (!vm) return true; // doesn't exist in the DB anyways
 
     const vmid = `${org}_${project}_${name}`;
-    const deletionResult = await _db().runCmd("delete from vms where id = ?", [vmid]);
+    const deletionResult = await _db().runCmd("delete from vms where id = ? collate nocase", [vmid]);
     if (deletionResult) if (!await this.addObjectToRecycleBin(vmid, vm, project, org)) 
         KLOUD_CONSTANTS.LOGWARN(`Unable to add VM ${name} to the recycle bin.`);
     return deletionResult;
@@ -262,43 +263,58 @@ exports.deleteVM = async (name, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONST
 exports.updateVMHost = async (vmid, newHostname) => {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {_logUnauthorized(); return false;}
 
-    const updateResult = await _db().runCmd("update vms set hostname = ? where id = ?", [newHostname, vmid]);
+    const updateResult = await _db().runCmd("update vms set hostname = ? where id = ? collate nocase", [newHostname, vmid]);
     return updateResult;
 }
 
 /**
  * Returns VMs for the given org and / or current project. All VMs for the current project
  * are returned if hostname is skipped. This is for project admins or project users.
- * @param {string} type The VM type
+ * @param {array} types The VM types
  * @param {string} org The org, if skipped is auto picked from the environment
  * @param {string} project The project, if skipped is auto picked from the environment if needed
  * @return The list of VMs
  */
-exports.listVMsForOrgOrProject = async (type, org=KLOUD_CONSTANTS.env.org, project) => {
+exports.listVMsForOrgOrProject = async (types, org=KLOUD_CONSTANTS.env.org, project) => {
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_project_resource)) {_logUnauthorized(); return false;}
     if (project) project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
     if ((!project) && (!roleman.isOrgAdminLoggedIn()) && (!roleman.isOrgAdminLoggedIn())) project=KLOUD_CONSTANTS.env.prj;
 
-    const projectid = _getProjectID(project, org);
-    const query = project?"select * from vms where projectid = ? and org = ? and vmtype = ?":
-        "select * from vms where org = ? and vmtype = ?";
-    const results = await _db().getQuery(query, project?[projectid,org,type]:[org,type]);
+    const projectid = _getProjectID(project, org), sqltypes = (Array.isArray(types)?types:[types]);
+    const sqltypesPlaceholders = sqltypes.map(_=>"?").join(",");
+    const returnAllVMTypes = types.length == 1 && types[0].trim() == "*";
+
+    const query = returnAllVMTypes ? (project ? "select * from vms where projectid = ? collate nocase and org = ? collate nocase ":
+            "select * from vms where org = ? collate nocase ") : 
+        (project?`select * from vms where projectid = ? collate nocase and org = ? collate nocase and vmtype in (${sqltypesPlaceholders}) collate nocase `:
+            `select * from vms where org = ? collate nocase and vmtype in (${sqltypesPlaceholders}) collate nocase`);
+
+    const results = await _db().getQuery(query, returnAllVMTypes ? (project?[projectid,org]:[org]) : 
+        (project?[projectid,org,...sqltypes]:[org,...sqltypes]));
     return results;
 }
 
 /**
  * Returns VMs for the given host. All VMs are returned if hostname is skipped. 
  * This is for cloud admins.
- * @param {string} type The VM type
+ * @param {array} types The VM types
  * @param {string} hostname The host (optional)
  * @return The list of VMs
  */
-exports.listVMsForCloudAdmin = async (type, hostname) => {
+exports.listVMsForCloudAdmin = async (types, hostname) => {
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource)) {_logUnauthorized(); return false;}
 
-    const query = hostname ? "select * from vms where hostname = ? and vmtype = ?" : "select * from vms where vmtype = ?";
+    const sqltypes = (Array.isArray(types)?types:[types]), sqltypesPlaceholders = sqltypes.map(_=>"?").join(",");
 
-    const results = await _db().getQuery(query, hostname?[type,hostname]:[type]);
+    const returnAllVMTypes = types.length == 1 && types[0].trim() == "*";
+
+    const query = returnAllVMTypes ? (hostname ? "select * from vms where hostname = ? collate nocase" : 
+            "select * from vms") : 
+        (hostname ? `select * from vms where hostname = ? collate nocase and vmtype in (${sqltypesPlaceholders}) collate nocase` : 
+            `select * from vms where vmtype in (${sqltypesPlaceholders}) collate nocase`);
+
+    const results = await _db().getQuery(query, 
+        returnAllVMTypes ? (hostname?[hostname]: []) : (hostname?[hostname, ...sqltypes]:[...sqltypes]));
     return results;
 }
 
@@ -327,7 +343,7 @@ exports.addProject = async(name, description="", orgIn=KLOUD_CONSTANTS.env.org) 
 exports.getUserProjects = async userid => {
     if (userid && (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource))) {_logUnauthorized(); return false;}
     if (!userid) userid = KLOUD_CONSTANTS.env.userid;
-    const query = "select * from projects where id in (select projectid from projectusermappings where userid=?)";
+    const query = "select * from projects where id in (select projectid from projectusermappings where userid=? collate nocase)";
     const results = await _db().getQuery(query, userid);
     return results || [];
 }
@@ -343,15 +359,15 @@ exports.getProject = async (name, org=KLOUD_CONSTANTS.env.org) => {
 
     let results;
     if (roleman.isCloudAdminLoggedIn() || roleman.isOrgAdminLoggedIn()) {
-        if (name) results = await _db().getQuery("select * from projects where id=? and org=?", 
+        if (name) results = await _db().getQuery("select * from projects where id=? collate nocase and org=? collate nocase", 
             [projectid, org]);
-        else results = await _db().getQuery("select * from projects where org=?)", [org]);
+        else results = await _db().getQuery("select * from projects where org=? collate nocase)", [org]);
     }
     else {
         if (name) results = await _db().getQuery("select * from projects where id in \
-            (select projectid from projectusermappings where userid=?) and name=?", [userid,name]);
+            (select projectid from projectusermappings where userid=? collate nocase) collate nocase and name=? collate nocase", [userid,name]);
         else results = await _db().getQuery("select * from projects where id in \
-            (select projectid from projectusermappings where userid=?)", [userid]);
+            (select projectid from projectusermappings where userid=? collate nocase) collate nocase", [userid]);
     }
 
     return results && results.length ? results[0] : null;
@@ -370,11 +386,11 @@ exports.deleteProject = async (name, org=KLOUD_CONSTANTS.env.org) => {
     const id = _getProjectID(name, org);
     const commandsToUpdate = [
         {
-            cmd: "delete from projects where id = ?", 
+            cmd: "delete from projects where id = ? collate nocase", 
             params: [id]
         },
         {
-            cmd: "delete from projectusermappings where projectid = ?",
+            cmd: "delete from projectusermappings where projectid = ? collate nocase",
             params: [id]
         }
     ];
@@ -394,7 +410,7 @@ exports.deleteProject = async (name, org=KLOUD_CONSTANTS.env.org) => {
 exports.changeUserRole = async function(email, role, org) {
     if ((!roleman.isCloudAdminLoggedIn()) && (!roleman.isOrgAdminLoggedIn())) {_logUnauthorized(); return false;}
 
-    const query = "update users set role = ? where id = ? and org = ?", 
+    const query = "update users set role = ? where id = ? collate nocase and org = ? collate nocase", 
         orgFixed = roleman.getNormalizedOrg(org), roleFixed = roleman.getNormalizedRole(role);
     return await _db().runCmd(query, [roleFixed, email, orgFixed]);
 }
@@ -437,11 +453,11 @@ exports.removeUserFromDB = async (email, org=KLOUD_CONSTANTS.env.org) => {
 
     const commandsToUpdate = [
         {
-            cmd: "delete from users where id=? and org=?", 
+            cmd: "delete from users where id=? collate nocase and org=? collate nocase", 
             params: [userid, orgFixed]
         },
         {
-            cmd: "delete from projectusermappings where userid=?",
+            cmd: "delete from projectusermappings where userid=? collate nocase",
             params: [userid]
         }
     ];
@@ -479,7 +495,7 @@ exports.removeUserFromProject = async (user, project=KLOUD_CONSTANTS.env.prj, or
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
 
-    const query = "delete from projectusermappings where userid=? and projectid=?"
+    const query = "delete from projectusermappings where userid=? collate nocase and projectid=? collate nocase"
     return await _db().runCmd(query, [user, _getProjectID(project, org)]);
 }
 
@@ -495,7 +511,7 @@ exports.getAllAdmins = async (org=KLOUD_CONSTANTS.env.org) => {
     org = roleman.getNormalizedOrg(org);
 
     const users = await _db().getQuery(
-        `select * from users where org = ? and role = ${KLOUD_CONSTANTS.ROLES.ORG_ADMIN} collate nocase`, 
+        `select * from users where org = ? collate nocase and role = ${KLOUD_CONSTANTS.ROLES.ORG_ADMIN} collate nocase`, 
         [roleman.isCloudAdminLoggedIn()?org:KLOUD_CONSTANTS.env.org]);
     return users;
 }
@@ -512,7 +528,7 @@ exports.getAllAdmins = async (org=KLOUD_CONSTANTS.env.org) => {
 exports.getUserForEmail = async (email, org=KLOUD_CONSTANTS.env.org) => {
     org = roleman.getNormalizedOrg(org);
 
-    const users = await _db().getQuery("select * from users where id = ? and org = ?", 
+    const users = await _db().getQuery("select * from users where id = ? collate nocase and org = ? collate nocase", 
         [email.toLocaleLowerCase(), roleman.isCloudAdminLoggedIn()?org:KLOUD_CONSTANTS.env.org]);
     if (users && users.length) return users[0]; else return null;
 }
@@ -533,7 +549,7 @@ exports.loginUser = async (email, project=KLOUD_CONSTANTS.DEFAULT_PROJECT) => {
         return {name: KLOUD_CONSTANTS.env.username, email, org: KLOUD_CONSTANTS.env.org, role: KLOUD_CONSTANTS.env.role};
     } // in setup mode we don't need to do these checks as DB is empty
 
-    const users = await _db().getQuery("select * from users where id = ?", email.toLocaleLowerCase());
+    const users = await _db().getQuery("select * from users where id = ? collate nocase", email.toLocaleLowerCase());
     if (!users || !users.length) return false;  // bad ID 
     KLOUD_CONSTANTS.env.org = users[0].org; // the project check below needs this
     const project_check = (users[0].role == KLOUD_CONSTANTS.ROLES.ORG_ADMIN || 
@@ -562,7 +578,7 @@ exports.checkUserBelongsToProject = async function (userid=KLOUD_CONSTANTS.env.u
     org = roleman.getNormalizedOrg(org);
 
     const projectid = _getProjectID(project, org);
-    const check = await _db().getQuery("select projectid from projectusermappings where userid = ? and projectid = ?", 
+    const check = await _db().getQuery("select projectid from projectusermappings where userid = ? collate nocase and projectid = ? collate nocase", 
         [userid, projectid]);
     if (!check || !check.length) return false;  // user isn't part of this project
     else return true;
@@ -605,7 +621,7 @@ exports.getObjectsFromRecycleBin = async function(objectid, idstamp="", project=
         _logUnauthorized(); return false;}
 
     const id = idstamp||`${org}_${project}_${objectid.toString()}`; // if exact idstamp was provided then use it
-    const query = idstamp ? "select * from recyclebin where id=?" :
+    const query = idstamp ? "select * from recyclebin where id=? collate nocase" :
         "select * from recyclebin where id like ? collate nocase";
     const results = await _db().getQuery(query, [idstamp?id:id+"%"]);
     if (results) for (const result of results) result.object = JSON.parse(result.object);
@@ -629,7 +645,7 @@ exports.deleteObjectsFromRecyclebin = async function(objectid, idstamp="", proje
         _logUnauthorized(); return false;}
 
     const id = idstamp||`${org}_${project}_${objectid.toString()}`;
-    const query = idstamp ? "delete from recyclebin where id=?" : 
+    const query = idstamp ? "delete from recyclebin where id=? collate nocase" : 
         "delete from recyclebin where id like ? collate nocase";
     return await _db().runCmd(query, [idstamp?id:id+"%"]);
 }
@@ -647,7 +663,7 @@ exports.deleteSnapshot = async function(resource_id, snapshot_id, project=KLOUD_
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
 
     const id = `${org}_${project}_${resource_id}_${snapshot_id}`;
-    const query = "delete from snapshots where id=?";
+    const query = "delete from snapshots where id=? collate nocase";
     return await _db().runCmd(query, [id]);
 }
 
@@ -662,7 +678,7 @@ exports.deleteAllSnapshotsForResource = async function(resource_id, project=KLOU
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
 
-    const query = "delete from snapshots where resource_id=?";
+    const query = "delete from snapshots where resource_id=? collate nocase";
     return await _db().runCmd(query, [resource_id]);
 }
 
@@ -736,7 +752,7 @@ exports.deleteSnapshot = async function(resource_id, snapshot_id, project=KLOUD_
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
 
     const id = `${org}_${project}_${resource_id}_${snapshot_id}`;
-    const query = "delete from snapshots where id=?";
+    const query = "delete from snapshots where id=? collate nocase";
     return await _db().runCmd(query, [id]);
 }
 

@@ -9,5 +9,7 @@
     "COMPONENTS": ["components/dialog-box", "components/span-with-menu", "components/form-runner", "components/table-list" ],
     "APP_ABOUT_URL": "https://tekmonks.com/",
     "TKMLOGINAPP_URL": "https://login.tekmonks.com",
-    "INSECURE_DEVELOPMENT_MODE": true
+    "INSECURE_DEVELOPMENT_MODE": true,
+    "VM_TYPE_VM": "vm",
+    "VM_TYPES_SERVICES": ["windowsvdi", "oracledbaas", "mariadbaas"]
 }

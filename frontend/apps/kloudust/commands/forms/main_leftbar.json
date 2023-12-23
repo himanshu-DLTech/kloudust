@@ -6,6 +6,7 @@
 "*":[
     {"id": "create", "label": "{{{i18n.Create}}}", "logo": "img/plus.svg"},
     {"id": "vms", "label": "{{{i18n.VirtualMachines}}}", "logo": "img/vms.svg"},
+    {"id": "cloudservices", "label": "{{{i18n.CloudServices}}}", "logo": "img/cloudservices.svg"},
     {"id": "cloudcommand", "label": "{{{i18n.CloudCommand}}}", "logo": "img/cloudcommand.svg"},
     {"id": "alerts", "label": "{{{i18n.Alerts}}}", "logo": "img/alerts.svg"},
 
@@ -20,6 +21,7 @@
     "Create": "Create",
     "CloudAdmin": "Manage cloud",
     "VirtualMachines": "Virtual machines",
+    "CloudServices": "Cloud services",
     "CloudCommand": "Run cloud command",
     "Alerts": "Alerts",
 
@@ -32,6 +34,7 @@
     "Create": "Create",
     "CloudAdmin": "Manage cloud",
     "VirtualMachines": "Virtual machines",
+    "CloudServices": "Cloud services",
     "CloudCommand": "Run cloud command",
     "Alerts": "Alerts"
 },
@@ -40,6 +43,7 @@
     "Create": "Create",
     "CloudAdmin": "Manage cloud",
     "VirtualMachines": "Virtual machines",
+    "CloudServices": "Cloud services",
     "CloudCommand": "Run cloud command",
     "Alerts": "Alerts"
 },
@@ -48,6 +52,7 @@
     "Create": "Create",
     "CloudAdmin": "Manage cloud",
     "VirtualMachines": "Virtual machines",
+    "CloudServices": "Cloud services",
     "CloudCommand": "Run cloud command",
     "Alerts": "Alerts"
 }

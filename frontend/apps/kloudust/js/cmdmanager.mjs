@@ -34,13 +34,13 @@ async function cmdClicked(id) {
         const formJSON = await $$.requireJSON(`${APP_CONSTANTS.FORMS_PATH}/${id}.form.json`, APP_CONSTANTS.INSECURE_DEVELOPMENT_MODE?true:undefined);
         const html = await _getFormHTML(formJSON);
         monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.showContent(html, true);
-        cmd_stack.push(id);
+        if (!cmd_stack.length) cmd_stack.push(id); else if (cmd_stack[cmd_stack.length-1] != id) cmd_stack.push(id);
     } catch (err) {LOG.error(`Error loading command files for ${id}: ${err}`); return;}
 }
 
 function closeForm() {
-    cmd_stack.pop(); const stacked_form = cmd_stack.pop();
-    if (stacked_form) cmdClicked(stacked_form); else monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.hideOpenContent(); 
+    const _currentForm = cmd_stack.pop(), nextForm = cmd_stack.pop();
+    if (nextForm) cmdClicked(nextForm); else monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.hideOpenContent(); 
 }
 
 async function formSubmitted(id, values) {

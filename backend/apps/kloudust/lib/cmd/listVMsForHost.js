@@ -1,7 +1,9 @@
 /** 
  * listVMs.js - Lists the host VMs - either all or running (default)
  * 
- * Params - 0 - The host name, 1 - if set to verifyhost, then host is cross verified
+ * Params - 0 - The host name - if not specified then cloudadmin can lookup all VMs, 
+ *  1 - comma seperated list of VM types, if skipped then regular VMs are returned, or "*" for all VM types 
+ *  2 - if set to verifyhost, then host is cross verified
  * 
  * (C) 2020 TekMonks. All rights reserved.
  * License: See enclosed LICENSE file.
@@ -20,12 +22,13 @@ const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 module.exports.exec = async function(params) {
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource)) {
         params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT(); }
-    const [hostname, verifyhost] = [...params];
+    const [hostname, vmtypes_raw, verifyhost] = [...params];
+    const vmtypes = vmtypes_raw ? vmtypes_raw.split(",") : [createVM.VM_TYPE_VM];
 
     const hostInfo = hostname?await dbAbstractor.getHostEntry(hostname):null; 
-    if (!hostInfo) { const error = "Bad hostname or host not found"; 
+    if (hostname && (!hostInfo)) { const error = "Bad hostname or host not found"; 
         params.consoleHandlers.LOGERROR(error); return CMD_CONSTANTS.FALSE_RESULT(error); }
-    const vms = await dbAbstractor.listVMsForCloudAdmin(createVM.VM_TYPE_VM, hostname);
+    const vms = await dbAbstractor.listVMsForCloudAdmin(vmtypes, hostname);
     const vms_ret = []; if (vms) for (const vm of vms) vms_ret.push({...vm, creationcmd: undefined});
 
     let out = "VM information from the database follows.";
