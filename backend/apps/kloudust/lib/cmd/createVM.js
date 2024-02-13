@@ -6,7 +6,7 @@
  *  in case the HOST has a VM by the same name already, it will be overwrittern, 8 - max cores
  *  is the maximum cores we can hotplug, 9 - max memory is the max memory we can hotplug, 
  *  10 - additional creation params (optional), 11 - vm type, default is vm, or anything else
- *  12 - set to true to not install qemu-agent,
+ *  12 - set to true to not install qemu-agent, 13 - hostname for the VM (only cloud admins can do this)
  * 
  * (C) 2020 TekMonks. All rights reserved.
  * License: See enclosed LICENSE file.
@@ -26,7 +26,7 @@ module.exports.exec = async function(params) {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
 
     const [vm_name_raw, vm_description, cores_s, memory_s, disk_s, creation_image_name, cloudinit_data, 
-        force_overwrite, max_cores_s, max_memory_s, additional_params, vmtype_raw, no_qemu_agent_raw] = [...params];
+        force_overwrite, max_cores_s, max_memory_s, additional_params, vmtype_raw, no_qemu_agent_raw, hostname] = [...params];
     const vm_name = exports.resolveVMName(vm_name_raw), cores = parseInt(cores_s), memory = parseInt(memory_s), disk = parseInt(disk_s), 
         max_cores = parseInt(max_cores_s||cores_s) > cores ? parseInt(max_cores_s||cores_s) : cores, 
         max_memory = parseInt(max_memory_s||memory_s) > memory ? parseInt(max_memory_s||memory_s) : memory,
@@ -42,7 +42,9 @@ module.exports.exec = async function(params) {
         params.consoleHandlers.LOGERROR("Bad resource name or resource not found"); return CMD_CONSTANTS.FALSE_RESULT();
     }
 
-    const hostInfo = await hostchooser.getHostFor(cores, memory, disk, kdResource.processorarchitecture); 
+    const forceHostByAdmin = hostname && hostname.trim().length && roleman.isCloudAdminLoggedIn();
+    const hostInfo = forceHostByAdmin ? await dbAbstractor.getHostEntry(hostname) : 
+        await hostchooser.getHostFor(cores, memory, disk, kdResource.processorarchitecture); 
     if (!hostInfo) {params.consoleHandlers.LOGERROR("Unable to find a suitable host."); return CMD_CONSTANTS.FALSE_RESULT();}
 
     const extrainfoSplits = kdResource.extrainfo?kdResource.extrainfo.split(":"):[null,null];
@@ -70,7 +72,7 @@ module.exports.exec = async function(params) {
 
     const results = await xforge(xforgeArgs);
     if (results.result) {
-        if (await dbAbstractor.addVMToDB(vm_name, vm_description, hostInfo.hostname, ostype, cores, memory,
+        if (await dbAbstractor.addOrUpdateVMToDB(vm_name, vm_description, hostInfo.hostname, ostype, cores, memory,
             [{diskname: exports.DEFAULT_DISK, size: parseInt(disk)}], ["createVM ", ...params].join(" "),
             vm_name_raw, vmtype)) return results;
         else {params.consoleHandlers.LOGERROR("DB failed"); return {...results, result: false};}

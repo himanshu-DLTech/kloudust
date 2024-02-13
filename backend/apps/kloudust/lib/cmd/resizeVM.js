@@ -49,8 +49,14 @@ module.exports.exec = async function(params) {
     }
 
     const results = await xforge(xforgeArgs);
-    vm.disks.push({diskname: DEFAULT_DISK, size: parseInt(disk)});
-    if (results.result) await dbAbstractor.updateVM(vm_name, vm.vm_description, vm.hostname, vm.ostype, 
-        cores, memory, vm.disks, vm.creationcmd);
+
+    if (disk_name && disk_new_gb && (inplace_disk_resize.toString().toLowerCase() == 'true')) {
+        vm.disks = vm.disks.filter(disk => disk.diskname != createVM.DEFAULT_DISK); // pop old disk so we can replace it's value
+        vm.disks.push({diskname: createVM.DEFAULT_DISK, size: parseInt(disk)});
+    }
+    
+    if (results.result) await dbAbstractor.addOrUpdateVMToDB(vm_name, vm.description, vm.hostname, vm.os, 
+        cores, memory, vm.disks, vm.creationcmd, vm.name_raw, vm.vmtype);
+
     return results;
 }

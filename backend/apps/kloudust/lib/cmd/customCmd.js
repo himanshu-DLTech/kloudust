@@ -54,7 +54,7 @@ module.exports.exec = async function(params) {
         }
 
         const xforgeResults = await xforge(xforgeArgs);
-        out += `\n\nHost output follows for host ${hostname}\n${xforgeResults.out}`;
+        out += `${out!=""?"\n\n":""}Host output follows for host ${hostname}\n${xforgeResults.out}`;
         return {...xforgeResults, out, stdout: out, resultSQL};
     } else return {...CMD_CONSTANTS.TRUE_RESULT(), out, err: "", stdout: out, stderr: "", resultSQL};
     

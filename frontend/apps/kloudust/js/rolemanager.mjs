@@ -25,4 +25,13 @@ function filterRoleList(rolelist) {
     return retlist;
 }
 
-export const rolemanager = {filterRoleList, fetchFilteredRoleList};
+/**
+ * Returns true if cloud admin is logged in, else false.
+ * @return true if cloud admin is logged in, else false.
+ */
+function isCloudAdminLoggedIn() {
+    const currentRole = $$.libsession.get(APP_CONSTANTS.LOGGEDIN_USEROLE).toString();
+    return currentRole == APP_CONSTANTS.KLOUDUST_ROLES.cloudadmin;
+}
+
+export const rolemanager = {filterRoleList, fetchFilteredRoleList, isCloudAdminLoggedIn};

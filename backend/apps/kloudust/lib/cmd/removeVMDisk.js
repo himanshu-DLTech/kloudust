@@ -22,6 +22,8 @@ const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 module.exports.exec = async function(params) {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
     const [vm_name_raw, disk_name, delete_disk, restart] = [...params];
+    if (disk_name.toLowerCase() == createVM.DEFAULT_DISK) {
+        params.consoleHandlers.LOGERROR("Told to remove VM's default disk. Aborting."); return CMD_CONSTANTS.FALSE_RESULT(); }
     const vm_name = createVM.resolveVMName(vm_name_raw);
 
     const vm = await dbAbstractor.getVM(vm_name);
@@ -43,5 +45,10 @@ module.exports.exec = async function(params) {
     }
 
     const results = await xforge(xforgeArgs);
+
+    vm.disks = vm.disks.filter(disk => disk.diskname != disk_name);
+    if (results.result) await dbAbstractor.updateVM(vm_name, vm.vm_description, vm.hostname, vm.ostype, 
+        cores, memory, vm.disks, vm.creationcmd);
+
     return results;
 }

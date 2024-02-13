@@ -1,0 +1,60 @@
+{
+    "id": "firewallvm",
+    "command": "firewallvm",
+    "type": "kloudust_cmdline",
+    "kloudust_cmdline_params": ["vm_name", "firewall_ruleset_name"],
+    
+    "title": "{{{i18n.FirewallVMTitle}}}",
+    
+    "i18n": {
+        "en": {
+            "FirewallVMTitle": "Firewall virtual machine",
+            "VMFirewallDescription": "Firewall a virtual machine. Complete the required fields and then submit to firewall the virtual machine.",
+            "VMFirewallName": "Firewall ruleset name",
+            "VMName": "Virtual machine name",
+            "FieldValidationErrorGeneric": "Validation error",
+            "FirewallVMSubmitLabel": "Firewall"
+        },
+        "hi": {
+            "FirewallVMTitle": "Firewall virtual machine",
+            "VMFirewallDescription": "Firewall a virtual machine. Complete the required fields and then submit to firewall the virtual machine.",
+            "VMFirewallName": "Firewall ruleset नाम",
+            "VMName": "Virtual machine name",
+            "FieldValidationErrorGeneric": "Validation error",
+            "FirewallVMSubmitLabel": "Firewall"
+        },
+        "ja": {
+            "FirewallVMTitle": "Firewall virtual machine",
+            "VMFirewallDescription": "Firewall a virtual machine. Complete the required fields and then submit to firewall the virtual machine.",
+            "VMFirewallName": "Firewall ruleset 名",
+            "VMName": "Virtual machine name",
+            "FieldValidationErrorGeneric": "Validation error",
+            "FirewallVMSubmitLabel": "Firewall"
+        },
+        "zh": {
+            "FirewallVMTitle": "Firewall virtual machine",
+            "VMFirewallDescription": "Firewall a virtual machine. Complete the required fields and then submit to firewall the virtual machine.",
+            "VMFirewallName": "Firewall ruleset 姓名",
+            "VMName": "Virtual machine name",
+            "FieldValidationErrorGeneric": "Validation error",
+            "FirewallVMSubmitLabel": "Firewall"
+        }
+    },
+    
+    "form": {
+        "description": "{{{i18n.VMFirewallDescription}}}",
+    
+        "required_label": "{{{i18n.Required}}}",
+        "required_fields": [
+        {"id": "vm_name", "type": "text", "placeholder": "{{{i18n.VMName}}}", "required": true, 
+            "pattern":"\\s[0-9a-zA-Z-]+\\s", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}",
+            "value":"{{{APP_CONSTANTS.ENV._vms_form_data.name_raw}}}", 
+            "readonly":"{{#APP_CONSTANTS.ENV._vms_form_data.name_raw}}true{{/APP_CONSTANTS.ENV._vms_form_data.name_raw}}"},
+        {"id": "firewall_ruleset_name", "type": "text", "placeholder": "{{{i18n.VMFirewallName}}}", 
+            "required": true, "pattern":"\\s[0-9a-zA-Z-]+\\s", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"}
+        ],
+    
+        "submitlabel": "{{{i18n.FirewallVMSubmitLabel}}}"
+    }
+    
+    }

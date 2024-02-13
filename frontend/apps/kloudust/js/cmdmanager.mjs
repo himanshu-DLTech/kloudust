@@ -5,6 +5,8 @@
  * License: See enclosed LICENSE file.
  */
 
+import {rolemanager as roleman} from "./rolemanager.mjs";
+
 const REGISTERED_COMMANDS = {}, KLOUDUST_CMDLINE = "kloudust_cmdline", FRONTEND_MODULE = "frontend_module",
     ALERT_OBJECT_KEY = "__com_tekmonks_kloudust_frontend_alerts", ALERT_ERROR = "error", ALERT_INFO = "info",
     RAW_COMMANDLINE_COMMAND = "RAW_COMMANDLINE", TABLE_DISPLAY = "table_display", apiman = $$.libapimanager;
@@ -43,6 +45,11 @@ function closeForm() {
     if (nextForm) cmdClicked(nextForm); else monkshu_env.apps[APP_CONSTANTS.APP_NAME].main.hideOpenContent(); 
 }
 
+function reloadForm() {
+    const currentForm = cmd_stack.pop()
+    cmdClicked(currentForm);
+}
+
 async function formSubmitted(id, values) {
     closeForm();    // close the form
 
@@ -77,6 +84,8 @@ function getAlerts() {
     return [...alertObject];
 }
 
+const clearAlerts = _ => $$.libsession.set(ALERT_OBJECT_KEY, []);
+
 function _processCommandOutput(text, isError=false, firstLineOfNewCommand=false) {
     if (isError) addAlert(text, true);
     else addAlert(text);
@@ -110,5 +119,5 @@ async function _getFormHTML(formJSON) {
     return html;
 }
 
-export const cmdmanager = {registerCommand, cmdClicked, formSubmitted, closeForm, addAlert, getAlerts, 
-    ALERT_ERROR, ALERT_INFO};
+export const cmdmanager = {registerCommand, cmdClicked, formSubmitted, closeForm, addAlert, getAlerts, clearAlerts,
+    reloadForm, isCloudAdminLoggedIn: roleman.isCloudAdminLoggedIn, ALERT_ERROR, ALERT_INFO};

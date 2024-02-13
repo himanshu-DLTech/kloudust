@@ -43,6 +43,7 @@ export const APP_CONSTANTS = {
     GUEST_ROLE: "guest",
     ACTIVE_PROJECT: "project",
     DEFAULT_PROJECT: "default",
+    KLOUDUST_ROLES: Object.freeze({cloudadmin: "cloudadmin", orgadmin: "orgadmin", user: "user"}),
 
     TKMLOGIN_LIB: `${APP_PATH}/3p/tkmlogin.mjs`,
 

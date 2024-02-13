@@ -3,7 +3,7 @@
 "command": "createVM",
 "type": "kloudust_cmdline",
 "kloudust_cmdline_params": ["vm_name", "vm_description", "cores", "memory", "disk", "creation_image_name", 
-    "cloudinit_data", "force_overwrite"],
+    "cloudinit_data", "vmtype", "force_overwrite", "maxcores", "maxmemory", "additional_params", "vmtype", "no_qemu_agent"],
 
 "title": "{{{i18n.VMCreateTitle}}}",
 
@@ -23,7 +23,11 @@
         "VMYes": "Yes",
         "VMNo": "No",
         "VMAdvanced": "Advanced",
-        "VMOverwriteForce": "Overwrite if a database instance by the same name exists?"
+        "VMMaxCores": "Maximum cores for scaling",
+        "VMMaxMemory": "Maximum memory for scaling",
+        "VMOverwriteForce": "Overwrite if a virtual machine by the same name exists?",
+        "VMAdditionalParams": "Additional creation params",
+        "VMNoAgent": "Do not install control agent?"
     },
     "hi": {
         "VMCreateTitle": "Create Oracle Database",
@@ -40,7 +44,11 @@
         "VMYes": "Yes",
         "VMNo": "No",
         "VMAdvanced": "Advanced",
-        "VMOverwriteForce": "Overwrite if a database instance by the same name exists?"
+        "VMMaxCores": "Maximum cores for scaling",
+        "VMMaxMemory": "Maximum memory for scaling",
+        "VMOverwriteForce": "Overwrite if a virtual machine by the same name exists?",
+        "VMAdditionalParams": "Additional creation params",
+        "VMNoAgent": "Do not install control agent?"
     },
     "ja": {
         "VMCreateTitle": "Create Oracle Database",
@@ -57,7 +65,11 @@
         "VMYes": "Yes",
         "VMNo": "No",
         "VMAdvanced": "Advanced",
-        "VMOverwriteForce": "Overwrite if a database instance by the same name exists?"
+        "VMMaxCores": "Maximum cores for scaling",
+        "VMMaxMemory": "Maximum memory for scaling",
+        "VMOverwriteForce": "Overwrite if a virtual machine by the same name exists?",
+        "VMAdditionalParams": "Additional creation params",
+        "VMNoAgent": "Do not install control agent?"
     },
     "zh": {
         "VMCreateTitle": "Create Oracle Database",
@@ -74,7 +86,11 @@
         "VMYes": "Yes",
         "VMNo": "No",
         "VMAdvanced": "Advanced",
-        "VMOverwriteForce": "Overwrite if a database instance by the same name exists?"
+        "VMMaxCores": "Maximum cores for scaling",
+        "VMMaxMemory": "Maximum memory for scaling",
+        "VMOverwriteForce": "Overwrite if a virtual machine by the same name exists?",
+        "VMAdditionalParams": "Additional creation params",
+        "VMNoAgent": "Do not install control agent?"
     }
 },
 
@@ -95,6 +111,7 @@
 
     {"id": "adminid", "type": "hidden", "value": "oracleadm"},
     {"id": "adminpass", "type": "hidden", "value": "oracleadm"},
+    {"id": "vmtype", "type": "hidden", "value": "oracledbaas"},
 
     {"id": "creation_image_name", "multioption": true, "type": "select", "label": "{{{i18n.VMImage}}}", 
         "options":[]}
@@ -102,6 +119,12 @@
 
     "optional_label": "{{{i18n.VMAdvanced}}}",
     "optional_fields": [
+    {"id": "cloudinit_data", "inputtype": "textarea", "type": "text", "placeholder": "{{{i18n.VMCloudInitData}}}"},
+    {"id": "maxcores", "type": "number", "placeholder": "{{{i18n.VMMaxCores}}}", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+    {"id": "maxmemory", "type": "number", "placeholder": "{{{i18n.VMMaxMemory}}}", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+    {"id": "additional_params", "inputtype": "textarea", "type": "text", "placeholder": "{{{i18n.VMAdditionalParams}}}"},
+    {"id": "no_qemu_agent", "multioption": true, "type": "select", "label": "{{{i18n.VMNoAgent}}}", 
+        "options":[{"value":"false", "label":"{{{i18n.VMNo}}}"}, {"value":"true", "label":"{{{i18n.VMYes}}}"}]},
     {"id": "force_overwrite", "multioption": true, "type": "select", "label": "{{{i18n.VMOverwriteForce}}}", 
         "options":[{"value":"false", "label":"{{{i18n.VMNo}}}"}, {"value":"true", "label":"{{{i18n.VMYes}}}"}]}
     ],

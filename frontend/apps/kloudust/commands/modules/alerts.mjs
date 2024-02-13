@@ -40,6 +40,21 @@ div#body {
     align-items: flex-end;
 }
 
+span#header {
+    display: flex;
+    flex-direction: row;
+}
+div#clear {
+    padding: 0.4em 0.6em;
+    background-color: #2395EC;
+    border-radius: 0.2em;
+    margin: 1em;
+    cursor: pointer;
+    height: 1em;
+    width: 0.8em;
+    display: flex;
+    justify-content: center;
+}
 div#close {
     padding: 0.2em 0.6em;
     background-color: #BC5205;
@@ -85,7 +100,12 @@ span#alerticon img {height: 100%;}
 </style>
 
 <div id="body">
+<span id="header">
+<div id="clear" onclick='event.stopPropagation(); 
+    monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager.clearAlerts(this);
+    monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager.reloadForm(this)'><img src='{{{clear_icon}}}'></div>
 <div id="close" onclick='event.stopPropagation(); monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager.closeForm(this)'>X</div>
+</span>
 
 <div id="main">
 {{^alerts}}
@@ -105,7 +125,7 @@ async function getHTML(_formJSON, cmdmanager) {
         alert.alerticon = alert.error?`${RESOURCES_PATH}/alerts_error.svg`:`${RESOURCES_PATH}/alerts_info.svg`;
         alert.message = $$.libutil.encodeHTMLEntities(alert.message).replaceAll(/\r?\n/g, "<br/>");
     }
-    const html = $$.librouter.expandPageData(HTML_TEMPLATE, undefined, {alerts, 
+    const html = $$.librouter.expandPageData(HTML_TEMPLATE, undefined, {alerts, clear_icon: `${RESOURCES_PATH}/alerts_clear.svg`,
         info_icon: `${RESOURCES_PATH}/alerts_info.svg`, error_icon: `${RESOURCES_PATH}/alerts_error.svg`});
     return html;
 }

@@ -2,6 +2,28 @@
  * Interprets and runs table list files. Renders the
  * UI for the tables. This component is a table UI generator
  * basically.
+ * 
+ * tabledef attribute contains the table as a Base64 JSON. It can
+ * have second level mustache using {{{mustache_start}}} and {{{mustache_end}}}
+ * to wrap the second level templates.
+ * 
+ * Each tabledef should either contain a static table as a table object or
+ * have its load_javascript return such a table. The structure of this object is
+ * { keys: [list of keys whose value will be combined with the i18nPrefix to generate header titles], 
+ *   table: [array of objects in {key (same as keys above): value} pairs] }
+ * 
+ * Each row's data is sent back when the row is clicked. This data is the row object
+ * in the table array above corresponding to that row. Then the onclickrow_html is shown
+ * when the row is clicked and clickrow_javascript is ran once the HTML has been shown.
+ * 
+ * In case of VMs form for example, onclickrow_html style is static, then an iconlist is
+ * used to geenrate HTML to display the icons and added to onclickrow_html during its 
+ * load_javascript method. So when row is clicked the icons are shown and clicking them 
+ * opens the command (as that's what iconlist does).
+ * 
+ * Then the clickrow_javascript sets the VM's _vms_form_data inside APP_CONSTANTS.ENV._vms_form_data
+ * which is then used inside the VM's resize, etc forms to hard code the VM name when the operation
+ * is called in such a manner, pinning the VM for that operation.
  *  
  * (C) 2023 TekMonks. All rights reserved.
  * License: See enclosed LICENSE file.
@@ -37,7 +59,7 @@ async function rowClicked(event, rowdataJSON) {
 
 async function _displayRowOnClickHTML(event, rowData) {
     const containedElement = event.target, host = table_list.getHostElement(containedElement);
-    const data = table_list.getDataByHost(host); let onclickHTML = _getArrayAsJoinedString(data.onclickrow_html, true);
+    const data = table_list.getDataByHost(host); let onclickHTML = _getArrayAsJoinedString(data.onclickrow_html);
     if (onclickHTML == "") return; onclickHTML = (await $$.librouter.getMustache()).render(onclickHTML, rowData);
     const wrapper = document.createElement("div"); wrapper.id="onclickrow_html"; wrapper.append(...$$.libutil.htmlToDOMNodes(onclickHTML));
 

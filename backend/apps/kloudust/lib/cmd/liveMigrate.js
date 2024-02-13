@@ -9,6 +9,7 @@
  */
 const roleman = require(`${KLOUD_CONSTANTS.LIBDIR}/roleenforcer.js`);
 const createVM = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/createVM.js`);
+const deleteVM = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/deleteVM.js`);
 const {xforge} = require(`${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/xforge`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
 const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
@@ -43,7 +44,18 @@ module.exports.exec = async function(params) {
 
     const results = await xforge(xforgeArgs);
     if (results.result) {
-        if (await dbAbstractor.updateVMHost(vm.id, hostToName)) return results;
-        else {params.consoleHandlers.LOGERROR(`DB failed but VM ${vm_name_raw} was migrated to ${hostToName}`); return {...results, result: false};}
+        if (!await dbAbstractor.updateVMHost(vm.id, hostToName)) {  // fix the DB, if failed give up
+            params.consoleHandlers.LOGERROR(`DB failed but VM ${vm_name_raw} was migrated to ${hostToName}, aborting.`); 
+            if (!await deleteVM.deleteVMFromHost(vm_name, hostToInfo, params.consoleHandlers)) {   // cleanup new host in case of issues
+                params.consoleHandlers.LOGERROR(`Unable to delete the VM ${vm_name_raw} from the new host, cleanup failed.`);
+            }
+            return {...results, result: false}; 
+        } else if (!await deleteVM.deleteVMFromHost(vm_name, hostInfo, params.consoleHandlers)) {  // remove from old host
+            params.consoleHandlers.LOGERROR(`Unable to delete the VM ${vm_name_raw} from the original host, leaving intact.`);
+            if (!await deleteVM.deleteVMFromHost(vm_name, hostToInfo, params.consoleHandlers)) {   // cleanup new host in case of issues
+                params.consoleHandlers.LOGERROR(`Unable to delete the VM ${vm_name_raw} from the new host, cleanup failed.`);
+            }
+            return {...results, result: false}; 
+        } else return results;
     } else return results;
 }

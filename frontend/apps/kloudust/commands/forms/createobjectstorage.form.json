@@ -22,7 +22,7 @@
         "VMYes": "Yes",
         "VMNo": "No",
         "VMAdvanced": "Advanced",
-        "VMOverwriteForce": "Overwrite if a database instance by the same name exists?"
+        "VMOverwriteForce": "Overwrite if an object storage instance by the same name exists?"
     },
     "hi": {
         "VMCreateTitle": "Create Object storage",
@@ -38,7 +38,7 @@
         "VMYes": "Yes",
         "VMNo": "No",
         "VMAdvanced": "Advanced",
-        "VMOverwriteForce": "Overwrite if a database instance by the same name exists?"
+        "VMOverwriteForce": "Overwrite if an object storage instance by the same name exists?"
     },
     "ja": {
         "VMCreateTitle": "Create Object storage",
@@ -54,7 +54,7 @@
         "VMYes": "Yes",
         "VMNo": "No",
         "VMAdvanced": "Advanced",
-        "VMOverwriteForce": "Overwrite if a database instance by the same name exists?"
+        "VMOverwriteForce": "Overwrite if an object storage instance by the same name exists?"
     },
     "zh": {
         "VMCreateTitle": "Create Object storage",
@@ -70,7 +70,7 @@
         "VMYes": "Yes",
         "VMNo": "No",
         "VMAdvanced": "Advanced",
-        "VMOverwriteForce": "Overwrite if a database instance by the same name exists?"
+        "VMOverwriteForce": "Overwrite if an object storage instance by the same name exists?"
     }
 },
 

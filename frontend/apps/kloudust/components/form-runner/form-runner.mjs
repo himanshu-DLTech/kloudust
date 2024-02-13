@@ -48,9 +48,10 @@ async function formSubmitted(element) {
 
 async function _runOnSubmitJavascript(retObject, form) {
     if (!form.submit_javascript) return;
+    const onsubmitjs = (Array.isArray(form.submit_javascript)?form.submit_javascript:[form.form.submit_javascript]).join("\n");
 
     const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
-    const submit_js_result = await (new AsyncFunction(form.submit_javascript))(retObject);
+    const submit_js_result = await (new AsyncFunction(onsubmitjs))(retObject);
     if (!submit_js_result) {
         LOG.error(`Submit failed due to failed on submit javascript`);
         return false;
@@ -59,7 +60,7 @@ async function _runOnSubmitJavascript(retObject, form) {
 
 async function _runOnLoadJavascript(form) {
     if (!form.load_javascript) return form;
-    const onloadjs = (Array.isArray(taformbledef.load_javascript)?form.load_javascript:[form.load_javascript]).join("\n");
+    const onloadjs = (Array.isArray(form.load_javascript)?form.load_javascript:[form.load_javascript]).join("\n");
 
     const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
     const load_js_result = await (new AsyncFunction(onloadjs))(form);

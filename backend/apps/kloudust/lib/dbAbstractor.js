@@ -185,15 +185,15 @@ exports.getHostEntry = async hostname => {
  * @param {string} org The org, if skipped is auto picked from the environment
  * @return true on success or false otherwise
  */
-exports.addVMToDB = async (name, description, hostname, os, cpus, memory, disks, creation_cmd="undefined", 
+exports.addOrUpdateVMToDB = async (name, description, hostname, os, cpus, memory, disks, creation_cmd="undefined", 
         name_raw, vmtype, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANTS.env.org) => {
 
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
 
     const id = `${org}_${project}_${name}`;
-    const query = "insert into vms(id, name, description, hostname, org, projectid, os, cpus, memory, disksjson, creationcmd, name_raw, vmtype) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    return await _db().runCmd(query, [id, name, description, hostname, org, _getProjectID(), os, cpus, memory, JSON.stringify(disks), name_raw, vmtype, creation_cmd]);
+    const query = "replace into vms(id, name, description, hostname, org, projectid, os, cpus, memory, disksjson, creationcmd, name_raw, vmtype) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    return await _db().runCmd(query, [id, name, description, hostname, org, _getProjectID(), os, cpus, memory, JSON.stringify(disks), creation_cmd, name_raw, vmtype]);
 }
 
 /**
@@ -207,8 +207,14 @@ exports.getVM = async (name, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANT
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_project_resource)) {_logUnauthorized(); return false;}
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
 
-    const vmid = `${org}_${project}_${name}`, results = await _db().getQuery("select * from vms where id = ? collate nocase", [vmid]);
-    return results?results[0]:null;
+    const vmid = `${org}_${project}_${name}`, 
+        results = await _db().getQuery("select * from vms where id = ? collate nocase", [vmid]);
+    if ((!results) || (!results.length)) return null;
+    
+    const vm = results[0]; try {vm.disks = JSON.parse(vm.disksjson);} catch (err) {
+        KLOUD_CONSTANTS.LOGERROR(`Unable to parse disks for VM ${vm.name}`); vm.disks = [];
+    };
+    return vm;
 }
 
 /**
@@ -228,8 +234,8 @@ exports.renameVM = async (name, newname, newname_raw, project=KLOUD_CONSTANTS.en
         newproject = roleman.getNormalizedProject(newproject||project);
 
     const vm = await exports.getVM(name, project, org); if (!vm) return false;
-    if (!await exports.addVMToDB(newname, vm.description, vm.hostname, vm.os, vm.cpus, vm.memory, JSON.parse(vm.disksjson), 
-        newname_raw, vm.vmtype, vm.creation_cmd, newproject, org)) return false;
+    if (!await exports.addOrUpdateVMToDB(newname, vm.description, vm.hostname, vm.os, vm.cpus, vm.memory, 
+        JSON.parse(vm.disksjson), newname_raw, vm.vmtype, vm.creation_cmd, newproject, org)) return false;
     return await exports.deleteVM(name, project, org); 
 }
 
@@ -291,6 +297,8 @@ exports.listVMsForOrgOrProject = async (types, org=KLOUD_CONSTANTS.env.org, proj
 
     const results = await _db().getQuery(query, returnAllVMTypes ? (project?[projectid,org]:[org]) : 
         (project?[projectid,org,...sqltypes]:[org,...sqltypes]));
+    if (results) for (const vm of results) try {vm.disks = JSON.parse(vm.disksjson);} catch (err) {
+        KLOUD_CONSTANTS.LOGERROR(`Unable to parse disks for VM ${vm.name}`); vm.disks = [];}
     return results;
 }
 
@@ -315,6 +323,8 @@ exports.listVMsForCloudAdmin = async (types, hostname) => {
 
     const results = await _db().getQuery(query, 
         returnAllVMTypes ? (hostname?[hostname]: []) : (hostname?[hostname, ...sqltypes]:[...sqltypes]));
+    if (results) for (const vm of results) try {vm.disks = JSON.parse(vm.disksjson);} catch (err) {
+        KLOUD_CONSTANTS.LOGERROR(`Unable to parse disks for VM ${vm.name}`); vm.disks = [];}
     return results;
 }
 

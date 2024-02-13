@@ -29,10 +29,19 @@ module.exports.exec = async function(params) {
     const hostInfo = await dbAbstractor.getHostEntry(vm.hostname); 
     if (!hostInfo) {params.consoleHandlers.LOGERROR("Bad hostname for the VM or host not found"); return CMD_CONSTANTS.FALSE_RESULT();}
 
+    const results = await exports.deleteVMFromHost(vm_name, hostInfo, params.consoleHandlers);
+    
+    if (results.result) {
+        if (await dbAbstractor.deleteVM(vm_name)) return results;
+        else {params.consoleHandlers.LOGERROR("DB failed"); return {...results, result: false};}
+    } else return results;
+}
+
+exports.deleteVMFromHost = async function(vm_name, hostInfo, console) {
     const xforgeArgs = {
         colors: KLOUD_CONSTANTS.COLORED_OUT, 
         file: `${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/samples/remoteCmd.xf.js`,
-        console: params.consoleHandlers,
+        console,
         other: [
             hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey,  
             `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/deleteVM.sh`,
@@ -41,8 +50,5 @@ module.exports.exec = async function(params) {
     }
 
     const results = await xforge(xforgeArgs);
-    if (results.result) {
-        if (await dbAbstractor.deleteVM(vm_name)) return results;
-        else {params.consoleHandlers.LOGERROR("DB failed"); return {...results, result: false};}
-    } else return results;
+    return results;
 }

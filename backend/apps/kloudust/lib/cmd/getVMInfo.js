@@ -25,7 +25,7 @@ module.exports.exec = async function(params) {
     if (!vm) {params.consoleHandlers.LOGERROR("Bad VM name or VM not found"); return CMD_CONSTANTS.FALSE_RESULT("Bad VM name or VM not found");}
     const vm_ret = {...vm, creationcmd: undefined};
 
-    let out = "VM information from the database follows." + "\n"+JSON.stringify(vm_ret);
+    let out = "VM information from the database follows." + "\n"+JSON.stringify(vm_ret, null, 4);
 
     if (verifyhost?.trim().toLowerCase() == "verifyhost") {
         const hostInfo = await dbAbstractor.getHostEntry(vm.hostname); 

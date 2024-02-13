@@ -1,0 +1,97 @@
+{
+"id": "createvnet",
+"command": "createVnet",
+"type": "kloudust_cmdline",
+"kloudust_cmdline_params": ["vnet_name", "vnet_description", "starting_ip", "subnet_mask"],
+
+"title": "{{{i18n.VMCreateTitle}}}",
+
+"i18n": {
+    "en": {
+        "VnetCreateTitle": "Create virtual network",
+        "VnetCreateDescription": "Create a virtual network. A virtual network is comparable to VLANs and includes virtual switching. Complete the required fields and then review + create to create a new virtual network.",
+        "VnetName": "Name",
+        "VnetDescription": "Description",
+        "VnetStartingIP": "Starting IP",
+        "VnetMask": "Subnet size",
+        "CreateVnetSubmitLabel": "Create",
+        "FieldValidationErrorGeneric": "Validation error",
+        "FieldValidationErrorMask": "Value must be between 0 and 32",
+        "VnetYes": "Yes",
+        "VnetNo": "No",
+        "VnetAdvanced": "Advanced",
+        "VnetOverwriteForce": "Overwrite if a virtual network by the same name exists?"
+    },
+    "hi": {
+        "VnetCreateTitle": "Create virtual network",
+        "VnetCreateDescription": "Create a virtual network. A virtual network is comparable to VLANs and includes virtual switching. Complete the required fields and then review + create to create a new virtual network.",
+        "VnetName": "Name",
+        "VnetDescription": "Description",
+        "VnetStartingIP": "Starting IP",
+        "VnetMask": "Subnet size",
+        "CreateVnetSubmitLabel": "Create",
+        "FieldValidationErrorGeneric": "Validation error",
+        "FieldValidationErrorMask": "Value must be between 0 and 32",
+        "VnetYes": "Yes",
+        "VnetNo": "No",
+        "VnetAdvanced": "Advanced",
+        "VnetOverwriteForce": "Overwrite if a virtual network by the same name exists?"
+    },
+    "ja": {
+        "VnetCreateTitle": "Create virtual network",
+        "VnetCreateDescription": "Create a virtual network. A virtual network is comparable to VLANs and includes virtual switching. Complete the required fields and then review + create to create a new virtual network.",
+        "VnetName": "Name",
+        "VnetDescription": "Description",
+        "VnetStartingIP": "Starting IP",
+        "VnetMask": "Subnet size",
+        "CreateVnetSubmitLabel": "Create",
+        "FieldValidationErrorGeneric": "Validation error",
+        "FieldValidationErrorMask": "Value must be between 0 and 32",
+        "VnetYes": "Yes",
+        "VnetNo": "No",
+        "VnetAdvanced": "Advanced",
+        "VnetOverwriteForce": "Overwrite if a virtual network by the same name exists?"
+    },
+    "zh": {
+        "VnetCreateTitle": "Create virtual network",
+        "VnetCreateDescription": "Create a virtual network. A virtual network is comparable to VLANs and includes virtual switching. Complete the required fields and then review + create to create a new virtual network.",
+        "VnetName": "Name",
+        "VnetDescription": "Description",
+        "VnetStartingIP": "Starting IP",
+        "VnetMask": "Subnet size",
+        "CreateVnetSubmitLabel": "Create",
+        "FieldValidationErrorGeneric": "Validation error",
+        "FieldValidationErrorMask": "Value must be between 0 and 32",
+        "VnetYes": "Yes",
+        "VnetNo": "No",
+        "VnetAdvanced": "Advanced",
+        "VnetOverwriteForce": "Overwrite if a virtual network by the same name exists?"
+    }
+},
+
+"form": {
+    "description": "{{{i18n.VnetCreateDescription}}}",
+
+    "required_label": "{{{i18n.Required}}}",
+    "required_fields": [
+    {"id": "vnet_name", "type": "text", "placeholder": "{{{i18n.VnetName}}}", "required": true, 
+        "pattern":"\\s*\\w+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+    {"id": "vnet_description", "type": "text", "placeholder": "{{{i18n.VMDescription}}}"},
+    {"id": "starting_ip", "type": "text", "placeholder": "{{{i18n.VnetStartingIP}}}", "required": true, 
+        "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+    {"id": "subnet_mask", "type": "number", "placeholder": "{{{i18n.VnetMask}}}", "required": true, 
+        "min": "0", "max": "32", "validation_error": "{{{i18n.FieldValidationErrorMask}}}"}
+    ],
+
+    "optional_label": "{{{i18n.VMAdvanced}}}",
+    "optional_fields": [
+    {"id": "force_overwrite", "multioption": true, "type": "select", "label": "{{{i18n.VnetOverwriteForce}}}", 
+        "options":[{"value":"false", "label":"{{{i18n.VMNo}}}"}, {"value":"true", "label":"{{{i18n.VMYes}}}"}]}
+    ],
+
+    "submitlabel": "{{{i18n.CreateVMSubmitLabel}}}",
+
+    "submit_javascript": "const retObject = arguments[0]||{};\r\n\r\nif (retObject.cloudinit_data && (retObject.cloudinit_data.trim() != \"\")) {\r\n    LOG.info(`Not overriding existing cloudinit which is: ${retObject.cloudinit_data}`); return true; }\r\n\r\nconst cloudinitTemplate = \"{system_info: {default_user: {name: \\u{007B}\\u{007B}\\u{007B}adminid\\u{007D}\\u{007D}\\u{007D}, home: /home/\\u{007B}\\u{007B}\\u{007B}adminid\\u{007D}\\u{007D}\\u{007D}, sudo: 'ALL=(ALL) NOPASSWD:ALL'}}, password: \\u{007B}\\u{007B}\\u{007B}adminpass\\u{007D}\\u{007D}\\u{007D}, chpasswd: {expire: false}, hostname: \\u{007B}\\u{007B}\\u{007B}vm_name\\u{007D}\\u{007D}\\u{007D}, ssh_pwauth: true, package_upgrade: true, packages: [net-tools], runcmd: null}\";\r\n\r\nconst router = (await import(\"/framework/js/router.mjs\")).router;\r\nconst mustache = await router.getMustache();\r\nconst cloudInit = mustache.render(cloudinitTemplate, retObject);\r\nLOG.info(`Generated cloudinit is: ${cloudInit}`);\r\n\r\nretObject.cloudinit_data = cloudInit;\r\nreturn true;"
+}
+
+}

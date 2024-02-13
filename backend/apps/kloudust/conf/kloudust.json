@@ -1,4 +1,5 @@
 {
+    "DEBUG_MODE": true,
     "tekmonkslogin_backend": "https://login.tekmonks.com:8443",
 	"HOST_TYPES": ["rhel9", "rhel9_compatible", "ubuntu22"],
     "OS_MAPPINGS": [],

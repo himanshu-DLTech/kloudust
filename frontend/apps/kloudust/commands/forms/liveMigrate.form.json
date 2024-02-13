@@ -47,9 +47,9 @@
     "required_label": "{{{i18n.Required}}}",
     "required_fields": [
     {"id": "vm_name", "type": "text", "placeholder": "{{{i18n.LiveMigrateVMName}}}", "required": true, 
-        "pattern":"\\s*\\w+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+        "pattern":"\\s[0-9a-zA-Z-]+\\s", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
     {"id": "host_to", "type": "text", "placeholder": "{{{i18n.LiveMigrateHostToName}}}", "required": true,
-        "pattern":"\\s*\\w+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"}
+        "pattern":"\\s[0-9a-zA-Z-]+\\s", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"}
     ],
 
     "submitlabel": "{{{i18n.LiveMigrateSubmitLabel}}}"

@@ -3,7 +3,7 @@
 "command": "createVM",
 "type": "kloudust_cmdline",
 "kloudust_cmdline_params": ["vm_name", "vm_description", "cores", "memory", "disk", "creation_image_name", 
-    "cloudinit_data", "force_overwrite", "maxcores", "maxmemory", "additional_params", "no_qemu_agent"],
+    "cloudinit_data", "force_overwrite", "maxcores", "maxmemory", "additional_params", "vmtype", "no_qemu_agent"],
 
 "title": "{{{i18n.VMCreateTitle}}}",
 
@@ -120,6 +120,7 @@
         "pattern":"\\s*[A-Za-z0-9]+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
     {"id": "adminpass", "type": "password", "placeholder": "{{{i18n.VMAdministratorPassword}}}", "required": true, 
         "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+    {"id": "vmtype", "type": "hidden", "value": "windowsvdi"},
     {"id": "creation_image_name", "multioption": true, "type": "select", "label": "{{{i18n.VMImage}}}", 
         "options":[]}
     ],
