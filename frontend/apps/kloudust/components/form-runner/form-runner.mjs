@@ -48,7 +48,7 @@ async function formSubmitted(element) {
 
 async function _runOnSubmitJavascript(retObject, form) {
     if (!form.submit_javascript) return;
-    const onsubmitjs = (Array.isArray(form.submit_javascript)?form.submit_javascript:[form.form.submit_javascript]).join("\n");
+    const onsubmitjs =  (Array.isArray(form.submit_javascript)?form.submit_javascript:[form.submit_javascript]).join("\n");
 
     const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
     const submit_js_result = await (new AsyncFunction(onsubmitjs))(retObject);

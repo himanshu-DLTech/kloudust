@@ -1,6 +1,6 @@
 {
     "id": "vnetvm",
-    "command": "vnetvm",
+    "command": "addVnetVM",
     "type": "kloudust_cmdline",
     "kloudust_cmdline_params": ["vm_name", "vnet_name"],
     

@@ -5,9 +5,28 @@
 [
     "BEGIN TRANSACTION",
     
-    // this is a user table - authentication is via Tekmonks' unified login
+    // this is a users table - authentication is via Tekmonks' unified login
     "CREATE TABLE users(id varchar not null primary key, name varchar not null, \
         org varchar not null, role varchar not null, \
+        timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
+
+    // Cross relationship table - shows a relationship between key1 and key2
+    "CREATE TABLE relationships(id integer primary key, pk1 varchar not null, \
+        pk2 varchar not null, type varchar not null, \
+        timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
+
+    // Projects for an ORG
+    "CREATE TABLE projects(id varchar not null primary key, name varchar not null, \
+        org varchar not null, description varchar default '', \
+        timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
+
+    // User to project ID mapping, the project ID embeds the org in it 
+    "CREATE TABLE projectusermappings(userid varchar not null, projectid varchar not null, \
+        timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
+
+    // Recycle bin
+    "CREATE TABLE recyclebin(id varchar not null primary key, resourceid varchar not null, \
+        object varchar not null, org varchar not null, projectid varchar not null, \
         timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
 
     // this hosts the host machines
@@ -31,25 +50,17 @@
         projectid varchar not null, os varchar not null, cpus integer not null, \
         memory integer not null, disksjson varchar not null, creationcmd varchar not null, \
         name_raw varchar not null, vmtype varchar default 'vm', \
+        snapshots_json varchar not null, vnets_json varchar not null, \
+        timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
+
+    // Vnets container table
+    "CREATE TABLE vnets(id varchar not null primary key, name varchar not null, \
+        description varchar, org varchar not null, projectid varchar not null, \
         timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
 
     // Snapshots of any cloud resource
     "CREATE TABLE snapshots(id varchar not null primary key, snapshotname varchar not null, \
-        resourceid varchar not null, extrainfo varchar default '', org varchar not null, \
-        projectid varchar not null, timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
-
-    // Projects for an ORG
-    "CREATE TABLE projects(id varchar not null primary key, name varchar not null, \
-        org varchar not null, description varchar default '', \
-        timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
-
-    // User to project ID mapping, the project ID embeds the org in it 
-    "CREATE TABLE projectusermappings(userid varchar not null, projectid varchar not null, \
-        timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
-
-    // Recycle bin
-    "CREATE TABLE recyclebin(id varchar not null primary key, resourceid varchar not null, \
-        object varchar not null, org varchar not null, projectid varchar not null, \
+        org varchar not null, projectid varchar not null, \
         timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
 
     "COMMIT TRANSACTION"

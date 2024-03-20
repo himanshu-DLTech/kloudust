@@ -160,7 +160,7 @@
 
     "submit_javascript": [
         "const retObject = arguments[0]||{};",
-        "if (retObject.cloudinit_data && (retObject.cloudinit_data.trim() != '')) {",
+        "if (retObject.cloudinit_data && (retObject.cloudinit_data.trim() != '')) { ",
         "   LOG.info(`Not overriding existing cloudinit which is: ${retObject.cloudinit_data}`); return true; }",
         "const cloudinitTemplate = \"{system_info: {default_user: {name: \\u{007B}\\u{007B}\\u{007B}adminid\\u{007D}\\u{007D}\\u{007D}, home: /home/\\u{007B}\\u{007B}\\u{007B}adminid\\u{007D}\\u{007D}\\u{007D}, sudo: 'ALL=(ALL) NOPASSWD:ALL'}}, password: \\u{007B}\\u{007B}\\u{007B}adminpass\\u{007D}\\u{007D}\\u{007D}, chpasswd: {expire: false}, hostname: \\u{007B}\\u{007B}\\u{007B}vm_name\\u{007D}\\u{007D}\\u{007D}, ssh_pwauth: true, package_upgrade: true, packages: [net-tools], runcmd: null}\";",
         "const randomWindowsStr = (Math.random() + 1).toString(36).split(\".\")[1];",
