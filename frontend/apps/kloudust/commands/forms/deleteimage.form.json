@@ -1,0 +1,52 @@
+{
+"id": "addimage",
+"command": "deleteImage",
+"type": "kloudust_cmdline",
+"kloudust_cmdline_params": ["name"],
+
+"title": "{{{i18n.DeleteImageTitle}}}",
+
+"i18n": {
+    "en": {
+        "DeleteImageTitle": "Delete image",
+        "FieldValidationErrorGeneric": "Validation error",
+        "DeleteImageSubmitLabel": "Delete",
+        "ImageName": "Image name. It should use format osname_major_minor_architecture, for example ubuntu-server_22_04_amd64",
+        "DeleteImageDescription": "Delete new virtual machine image. Complete the required fields and then submit."
+    },
+    "hi": {
+        "DeleteImageTitle": "Delete image",
+        "FieldValidationErrorGeneric": "Validation error",
+        "DeleteImageSubmitLabel": "Delete",
+        "ImageName": "Image name. It should use format osname_major_minor_architecture, for example ubuntu-server_22_04_amd64",
+        "DeleteImageDescription": "Delete new virtual machine image. Complete the required fields and then submit."
+    },
+    "ja": {
+        "DeleteImageTitle": "Delete image",
+        "FieldValidationErrorGeneric": "Validation error",
+        "DeleteImageSubmitLabel": "Delete",
+        "ImageName": "Image name. It should use format osname_major_minor_architecture, for example ubuntu-server_22_04_amd64",
+        "DeleteImageDescription": "Delete new virtual machine image. Complete the required fields and then submit."
+    },
+    "zh": {
+        "DeleteImageTitle": "Delete image",
+        "FieldValidationErrorGeneric": "Validation error",
+        "DeleteImageSubmitLabel": "Delete",
+        "ImageName": "Image name. It should use format osname_major_minor_architecture, for example ubuntu-server_22_04_amd64",
+        "DeleteImageDescription": "Delete new virtual machine image. Complete the required fields and then submit."
+    }
+},
+
+"form": {
+    "description": "{{{i18n.DeleteImageDescription}}}",
+
+    "required_label": "{{{i18n.Required}}}",
+    "required_fields": [
+    {"id": "name", "type": "text", "placeholder": "{{{i18n.ImageName}}}", "required": true, 
+        "pattern":"\\s*\\[w-_]+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"}
+    ],
+
+    "submitlabel": "{{{i18n.DeleteImageSubmitLabel}}}"
+}
+
+}

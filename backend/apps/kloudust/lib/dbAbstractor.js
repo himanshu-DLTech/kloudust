@@ -113,6 +113,18 @@ exports.addHostResource = async (name, uri, processor_architecture, description,
 }
 
 /**
+ * Returns the given host resource for cloud admin
+ * @param {string} name The resource name
+ * @return host resource object on success or null otherwise
+ */
+exports.getHostResource = async name => {
+    if (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource)) {_logUnauthorized(); return false; }
+    const query = "get * from hostresources where name=? collate nocase";
+    const resources = await _db().getQuery(query, [name]);
+    if ((!resources) || (!resources.length)) return null; else return resources[0];
+}
+
+/**
  * Returns the given host resource for project
  * @param {string} name The resource name
  * @param {string} type The resource type

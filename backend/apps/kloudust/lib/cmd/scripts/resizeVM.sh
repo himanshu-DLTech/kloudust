@@ -9,7 +9,9 @@
 # {6} Attach disk - if true the disk name provided will be attached
 # {7} Remove disk - if true the disk name provided will be removed, if set to delete it will also be physically deleted
 # {8} Inplace resize - if true the disk is resized in place
-# {8} Restart VM for changes to take effect (should be true, if needed)
+# {9} Restart VM for changes to take effect (should be true, if needed)
+# {10} Restart wait - time to wait for VM shutdown if needed
+
 
 NAME="{1}"
 CORES={2}
@@ -20,6 +22,8 @@ ATTACH_DISK={6}
 REMOVE_DISK={7}
 INPLACE_DISK_RESIZE={8}
 RESTART={9}
+SHUTDOWN_WAIT={10}
+SHUTDOWN_WAIT="${SHUTDOWN_WAIT:-90}"    # Default it to 90 seconds if not provided
 
 function exitFailed() {
     echo Error: $1

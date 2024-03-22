@@ -18,6 +18,7 @@
 # {15} Max memory
 # {16} Additional virt-install params
 # {17} No guest agent - By default QEMU Guest Agent is enabled, if this is true it is disabled
+# {18} Restart wait - time to wait for the first restart to stabalize
 
 NAME="{1}"
 DESCRIPTION="{2}"
@@ -36,10 +37,47 @@ MAX_VCPUS={14}
 MAX_MEMORY={15}
 VIRT_INSTALL_PARAMS="{16}"
 NO_GUEST_AGENT={17}
+SHUTDOWN_WAIT={18}
+SHUTDOWN_WAIT="${SHUTDOWN_WAIT:-20}"    # Default it to 90 seconds if not provided
 
 function exitFailed() {
     echo Failed
     exit 1
+}
+
+function waitProcessKilled() {
+    PID=$1
+    TIME_TO_WAIT=$2
+
+    WAITED_SO_FAR=0
+    while [ $WAITED_SO_FAR -lt $TIME_TO_WAIT ]; do
+        ps --pid $PID
+        if [ "$?" == "1" ]; then return 0; 
+        else 
+            sleep 5
+            WAITED_SO_FAR=$(($WAITED_SO_FAR+5))
+        fi
+    done
+    return 1
+}
+
+function shutdownVM() {
+    VMNAME=$1
+    VMPID=`ps ax | grep $VMNAME | grep kvm | tr -s " " | xargs  | cut -d" " -f1`
+    if ! virsh shutdown $VMNAME; then exitFailed; fi
+    waitProcessKilled $VMPID $SHUTDOWN_WAIT
+    if [ "$?" == "1" ]; then  
+        echo VM graceful shutdown timed out for $VMNAME after waiting $SHUTDOWN_WAIT seconds, destroying it instead. 
+        if ! virsh destroy $VMNAME; then 
+            echo VM destroy failed as well for $VMNAME.
+            return 1
+        else
+            echo VM $VMNAME was shutdown via forced destroy.
+        fi
+    else
+        echo Warning!! VM $VMNAME was shutdown gracefully.
+    fi
+    return 0
 }
 
 SPACE_PATTERN=" |'"
@@ -175,6 +213,8 @@ PROJECT="$PROJECT"
 EOF
 if ! virsh dumpxml $NAME > /kloudust/metadata/$NAME.xml; then exitFailed; fi
 
+printf "Performing an initial restart cycle to stablize"
+if shutdownVM $NAME; then virsh start $NAME; fi
 
 printf "\n\nConnect via VNC to one of the following\n"
 PORT=`virsh vncdisplay $NAME | cut -c 2-`;echo `ip route get 8.8.8.8 | head -1 | cut -d' ' -f7`:`expr 5900 + $PORT`
