@@ -1,5 +1,5 @@
 {
-"id": "addimage",
+"id": "deleteimage",
 "command": "deleteImage",
 "type": "kloudust_cmdline",
 "kloudust_cmdline_params": ["name"],
@@ -11,29 +11,25 @@
         "DeleteImageTitle": "Delete image",
         "FieldValidationErrorGeneric": "Validation error",
         "DeleteImageSubmitLabel": "Delete",
-        "ImageName": "Image name. It should use format osname_major_minor_architecture, for example ubuntu-server_22_04_amd64",
-        "DeleteImageDescription": "Delete new virtual machine image. Complete the required fields and then submit."
+        "DeleteImageDescription": "Delete a virtual machine image. Complete the required fields and then submit."
     },
     "hi": {
         "DeleteImageTitle": "Delete image",
         "FieldValidationErrorGeneric": "Validation error",
         "DeleteImageSubmitLabel": "Delete",
-        "ImageName": "Image name. It should use format osname_major_minor_architecture, for example ubuntu-server_22_04_amd64",
-        "DeleteImageDescription": "Delete new virtual machine image. Complete the required fields and then submit."
+        "DeleteImageDescription": "Delete a virtual machine image. Complete the required fields and then submit."
     },
     "ja": {
         "DeleteImageTitle": "Delete image",
         "FieldValidationErrorGeneric": "Validation error",
         "DeleteImageSubmitLabel": "Delete",
-        "ImageName": "Image name. It should use format osname_major_minor_architecture, for example ubuntu-server_22_04_amd64",
-        "DeleteImageDescription": "Delete new virtual machine image. Complete the required fields and then submit."
+        "DeleteImageDescription": "Delete a virtual machine image. Complete the required fields and then submit."
     },
     "zh": {
         "DeleteImageTitle": "Delete image",
         "FieldValidationErrorGeneric": "Validation error",
         "DeleteImageSubmitLabel": "Delete",
-        "ImageName": "Image name. It should use format osname_major_minor_architecture, for example ubuntu-server_22_04_amd64",
-        "DeleteImageDescription": "Delete new virtual machine image. Complete the required fields and then submit."
+        "DeleteImageDescription": "Delete a virtual machine image. Complete the required fields and then submit."
     }
 },
 
@@ -42,8 +38,17 @@
 
     "required_label": "{{{i18n.Required}}}",
     "required_fields": [
-    {"id": "name", "type": "text", "placeholder": "{{{i18n.ImageName}}}", "required": true, 
-        "pattern":"\\s*\\[w-_]+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"}
+    {"id": "name", "multioption": true, "type": "select", "label": "{{{i18n.VMImage}}}", "options":[]}
+    ],
+
+    "load_javascript": [
+        "const form = arguments[0]||{};",
+        "const vmResult = await window.monkshu_env.frameworklibs.apimanager.rest(APP_CONSTANTS.API_KLOUDUSTCMD, ",
+        "   'POST', {cmd: 'listVMImages'}, true);",
+        "if (vmResult.result) for (const vm of vmResult.resources) { ",
+        "   const imageNameFormField = form.required_fields[form.required_fields.length-1];",
+        "   imageNameFormField.options.push({value: vm.name, label: vm.description}); }",
+        "return form;"
     ],
 
     "submitlabel": "{{{i18n.DeleteImageSubmitLabel}}}"

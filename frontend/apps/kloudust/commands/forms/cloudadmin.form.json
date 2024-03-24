@@ -7,6 +7,7 @@
 "cloudadmin": [
     {"id": "addhost", "label": "{{{i18n.AddHost}}}", "logo": "img/addhost.svg"},
     {"id": "addimage", "label": "{{{i18n.AddImage}}}", "logo": "img/addimage.svg"},
+    {"id": "deleteimage", "label": "{{{i18n.DeleteImage}}}", "logo": "img/deleteimage.svg"},
     {"id": "livemigrate", "label": "{{{i18n.LiveMigrate}}}", "logo": "img/migratevm.svg"},
     {"id": "customcmd", "label": "{{{i18n.CustomCmd}}}", "logo": "img/customcmd.svg"}
 ]
@@ -16,6 +17,7 @@
 "en": {
     "AddHost": "Add host",
     "AddImage": "Add image",
+    "DeleteImage": "Delete image",
     "LiveMigrate": "Live migrate",
     "CustomCmd": "Admin command"
 },
@@ -23,6 +25,7 @@
 "hi": {
     "AddHost": "Add host",
     "AddImage": "Add image",
+    "DeleteImage": "Delete image",
     "LiveMigrate": "Live migrate",
     "CustomCmd": "Admin command"
 },
@@ -30,6 +33,7 @@
 "ja": {
     "AddHost": "Add host",
     "AddImage": "Add image",
+    "DeleteImage": "Delete image",
     "LiveMigrate": "Live migrate",
     "CustomCmd": "Admin command"
 },
@@ -37,6 +41,7 @@
 "zh": {
     "AddHost": "Add host",
     "AddImage": "Add image",
+    "DeleteImage": "Delete image",
     "LiveMigrate": "Live migrate",
     "CustomCmd": "Admin command"
 }

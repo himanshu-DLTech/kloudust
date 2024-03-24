@@ -119,7 +119,7 @@ exports.addHostResource = async (name, uri, processor_architecture, description,
  */
 exports.getHostResource = async name => {
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource)) {_logUnauthorized(); return false; }
-    const query = "get * from hostresources where name=? collate nocase";
+    const query = "select * from hostresources where name=? collate nocase";
     const resources = await _db().getQuery(query, [name]);
     if ((!resources) || (!resources.length)) return null; else return resources[0];
 }

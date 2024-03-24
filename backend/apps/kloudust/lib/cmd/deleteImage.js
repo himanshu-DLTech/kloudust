@@ -28,11 +28,13 @@ module.exports.exec = async function(params) {
     const imgname = params[0], resource = await dbAbstractor.getHostResource(imgname);
 
     if (!resource) {
-        params.consoleHandlers.LOGWARN(`No image ${imgname} was found, treating deletion as success.`);
-        return CMD_CONSTANTS.TRUE_RESULT();
-    } else if (!await dbAbstractor.deletedHostResource(imgname)) {
-        params.consoleHandlers.LOGERROR(`DB error deleting image ${imgname}.`);
-        return CMD_CONSTANTS.FALSE_RESULT();
+        const warning = `No image named ${imgname} was found, treating the deletion as success.`;
+        params.consoleHandlers.LOGWARN(warning);
+        return {...CMD_CONSTANTS.TRUE_RESULT(), out: warning};
+    } else if (!await dbAbstractor.deleteHostResource(imgname)) {
+        const error = `Database error in deleting the image ${imgname}.`;
+        params.consoleHandlers.LOGERROR(error);
+        return {...CMD_CONSTANTS.FALSE_RESULT(), err: error}
     }
 
     const hostinfos = await dbAbstractor.getHostsMatchingProcessorArchitecture(resource.processorarchitecture);
