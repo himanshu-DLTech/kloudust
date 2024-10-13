@@ -19,7 +19,7 @@ const agentConf = {
 
 /**
  * Runs remote SSH script on given host
- * @param {object} conf Contains {user, password, and host}
+ * @param {object} conf Contains {user, password, port, and host}
  * @param {string} remote_script The script to run, path to it
  * @param {object} extra_params The array of parameters
  * @param {Object} streamer If set, output will be streamed to it as it happens, must have member functions 
@@ -34,7 +34,7 @@ exports.runRemoteSSHScript = (conf, remote_script, extra_params, streamer, callb
 
         LOG.debug(`Executing remote script ${agentConf["shellexecprefix_"+process.platform].join(" ")} ${script} ${conf.user} [hostpassword] [hostkey] ${expanded_remote_script} ${conf.host}`);
         _processExec( agentConf["shellexecprefix_"+process.platform], script, 
-            [conf.user, conf.password, conf.hostkey, expanded_remote_script, conf.host], 
+            [conf.user, conf.password, conf.hostkey, expanded_remote_script, conf.port||22, conf.host], 
             streamer, callback );
     });    
 }

@@ -66,7 +66,7 @@ module.exports.exec = async function(params) {
         file: `${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/samples/remoteCmd.xf.js`,
         console: params.consoleHandlers,
         other: [
-            hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey,
+            hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey, hostInfo.port,
             `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/createVM.sh`,
             vm_name, vm_description, cores, memory, disk, creation_image_name, kdResource.uri, ostype, 
             fromCloudImg, cloudinit_data||"undefined", KLOUD_CONSTANTS.env.org, KLOUD_CONSTANTS.env.prj,

@@ -57,7 +57,7 @@ module.exports.exec = async function(params) {
             file: `${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/samples/remoteCmd.xf.js`,
             console: params.consoleHandlers,
             other: [
-                hostinfo.hostaddress, hostinfo.rootid, hostinfo.rootpw, hostinfo.hostkey, 
+                hostinfo.hostaddress, hostinfo.rootid, hostinfo.rootpw, hostinfo.hostkey, hostinfo.port,
                 `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/addImage.sh`,
                 imguri, imgname.toLowerCase()
             ]

@@ -10,6 +10,8 @@ DOMAIN="{1}"
 HOSTTO="{2}"
 HOSTTOID="{3}"
 HOSTTOPW='{4}'
+HOSTTOHOSTKEY='{5}'
+HOSTTOPORT='{6}'
 
 function exitFailed() {
     echo Error: $1
@@ -18,7 +20,7 @@ function exitFailed() {
 }
 
 echo Setting up host-to networks paths
-HOSTTOHOSTNAME=`sshpass -p "$HOSTTOPW" ssh -o StrictHostKeyChecking=accept-new $HOSTTOID@$HOSTTO hostname`
+HOSTTOHOSTNAME=`sshpass -p "$HOSTTOPW" ssh -o StrictHostKeyChecking=accept-new -p $HOSTTOPORT $HOSTTOID@$HOSTTO hostname`
 if [ -z $HOSTTOHOSTNAME ]; then exitFailed "Unable to detect hostname for the TO server"; fi
 if ! cat /etc/hosts | grep $HOSTTOHOSTNAME; then
         echo "$HOSTTO $HOSTTOHOSTNAME" >> /etc/hosts
@@ -42,7 +44,7 @@ if [ -z $DISKSIZE ]; then exitFailed "Unable to detect disk size to migrate"; fi
 if [ -z $DISKSIZEGB ]; then exitFailed "Unable to detect disk size in GB to migrate"; fi
 
 echo Creating remote migration disk 
-if ! sshpass -p "$HOSTTOPW" ssh -o StrictHostKeyChecking=accept-new $HOSTTOID@$HOSTTOHOSTNAME qemu-img create -f qcow2 $DISKTOMIGRATE "$DISKSIZEGB"G; then 
+if ! sshpass -p "$HOSTTOPW" ssh -o StrictHostKeyChecking=accept-new -p $HOSTTOPORT $HOSTTOID@$HOSTTOHOSTNAME qemu-img create -f qcow2 $DISKTOMIGRATE "$DISKSIZEGB"G; then 
     exitFailed "Migration disk creation failed." 
 fi
 CDROMDEVICE=`virsh domblklist $DOMAIN | grep cloudinit.iso | tr -s " " | xargs | cut -d" " -f1`
@@ -52,7 +54,7 @@ if [ $CDROMDEVICE ]; then
 fi
 
 echo Starting $DOMAIN Live Migration
-if ! sshpass -p "$HOSTTOPW" virsh migrate --verbose --live --unsafe --persistent --copy-storage-all --migrate-disks $DISKDEVICETOMIGRATE $DOMAIN qemu+ssh://$HOSTTOHOSTNAME/system; then
+if ! sshpass -p "$HOSTTOPW" virsh migrate --verbose --live --unsafe --persistent --copy-storage-all --migrate-disks $DISKDEVICETOMIGRATE $DOMAIN qemu+ssh://$HOSTTOHOSTNAME:$HOSTTOPORT/system; then
     exitFailed "VM migration failed." 
 fi
 

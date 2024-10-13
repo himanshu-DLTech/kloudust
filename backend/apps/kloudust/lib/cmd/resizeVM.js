@@ -41,7 +41,7 @@ module.exports.exec = async function(params) {
         file: `${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/samples/remoteCmd.xf.js`,
         console: params.consoleHandlers,
         other: [
-            hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey,  
+            hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey, hostInfo.port,
             `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/resizeVM.sh`,
             vm_name, cores||"", memory||"", parseInt(disk_new_gb)||"", disk_name, "false", "false",
             inplace_disk_resize?.toLowerCase()||"false", restart?.toLowerCase()||"false"

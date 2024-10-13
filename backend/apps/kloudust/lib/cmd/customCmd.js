@@ -48,7 +48,7 @@ module.exports.exec = async function(params) {
             file: `${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/samples/remoteCmd.xf.js`,
             console: params.consoleHandlers,
             other: [
-                hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey,
+                hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey, hostInfo.port,
                 tmpFile
             ]
         }

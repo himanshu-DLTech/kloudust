@@ -37,7 +37,7 @@ module.exports.exec = async function(params) {
         file: `${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/samples/remoteCmd.xf.js`,
         console: params.consoleHandlers,
         other: [
-            hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey,  
+            hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey, hostInfo.port,
             `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/removeVMDisk.sh`,
             vm_name, "", "", "", disk_name, "false", delete_disk?.toLowerCase()=="true"?"delete":"true", 
             restart?.toLowerCase()||"false"
