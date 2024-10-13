@@ -10,7 +10,7 @@
 
 const serverutils = require(`${CONSTANTS.LIBDIR}/utils.js`);
 const login = require(`${KLOUD_CONSTANTS.APIDIR}/login.js`);
-const kloudust = require(`${KLOUD_CONSTANTS.ROOTDIR}/kloudust`);
+const kloudust = require(`${KLOUD_CONSTANTS.ROOTDIR}/kloudust.js`);
 
 const REQUEST_HASH_KEY = "__org_kloudust_request_hash_", 
 	MEMORY_PROVIDER = global[KLOUD_CONSTANTS.CONF.KLOUDUST_MEMORY_FOR_API_REQUEST_TRACKING];

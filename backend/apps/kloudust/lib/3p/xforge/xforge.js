@@ -1,5 +1,5 @@
 /**
- * >>>>> NOT REAL XFORGE!
+ * >>>>> NOT REAL XFORGE!!! <<<<<<<
  * 
  * Stub to migrate Kloudust to be independent of XForge. This 
  * provides an interface compatible to XForge in-process args.

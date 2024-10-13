@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /** 
  * Main entry point into Kloudust.
  * 
@@ -8,6 +7,7 @@
 if (!global.KLOUD_CONSTANTS) global.KLOUD_CONSTANTS = require(`${__dirname}/lib/constants.js`);
 
 const utils = require(`${KLOUD_CONSTANTS.LIBDIR}/utils.js`);
+const roleman = require(`${KLOUD_CONSTANTS.LIBDIR}/roleenforcer.js`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
 const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 const processargs = require(`${KLOUD_CONSTANTS.MONKSHU_BACKEND_LIBDIR}/processargs.js`);
@@ -61,10 +61,6 @@ exports.kloudust = async function(inprocessArgs) {
 
     await exports.initAsync(); // init Kloudust this is needed to login the user below
 
-    if (args.setup && ((await dbAbstractor.getUserCount()) == 0) && args.execute?.[0].trim().startsWith("addUser")) 
-        KLOUD_CONSTANTS.env._setup_mode = true;   // setup mode is only allowed with 0 users and addUser command
-    else KLOUD_CONSTANTS.env._setup_mode = false;
-
     const consoleHandler = _createConsoleHandler(args.consoleStreamHandler);
 
     if (!args.user) {_showHelpAndExit(consoleHandler); return {result: false, err: "", out: ""};}
@@ -95,8 +91,32 @@ exports.kloudust = async function(inprocessArgs) {
 
 exports.loginUser = async function(args, consoleHandler) {
     if (!args.user) { consoleHandler.LOGERROR(`User not authorized as user ID is missing."`); consoleHandler.EXITFAILED(); return false; }
-    if (!await dbAbstractor.loginUser(args.user[0], args.project?.[0])) {
-        consoleHandler.LOGERROR(`User not authorized for the project ${args.project?.[0]||"undefined"}.`); consoleHandler.EXITFAILED(); return false; }
+
+    const userObject = await dbAbstractor.loginUser(args.user[0], args.project?.[0]);
+    if (!userObject) {  
+        consoleHandler.LOGERROR(`User ${args.user[0]} not found in the cloud.`); 
+        if (args.role?.[0] == KLOUD_CONSTANTS.LOGINAPP_ORG_ADMIN) { // if user is org admin, register the org and the user into the Kloudust DB
+            const roleAssigned = await roleman.canBeSetupMode() ? KLOUD_CONSTANTS.ROLES.CLOUD_ADMIN : KLOUD_CONSTANTS.ROLES.ORG_ADMIN;
+            _setupKloudustEnvironment(args.name[0], args.user[0], args.org[0], roleAssigned, args.project?.[0]);
+            if (await _execCommand(["addUser", args.user[0], args.name[0], args.org[0], roleAssigned], consoleHandler)) {
+                consoleHandler.LOGINFO(`User ${args.user[0]} from org ${args.org[0]} added to the cloud as ${roleAssigned}.`); 
+                return true;
+            } else consoleHandler.LOGERROR(`User ${args.user[0]} not found in the cloud and adding to Kloudust failed.`); 
+        } else consoleHandler.LOGERROR(`User ${args.user[0]} not found in the cloud and not org admin, skipping.`); 
+        consoleHandler.EXITFAILED(); return false; 
+    }
+    
+    KLOUD_CONSTANTS.env.org = userObject.org; // the project check below needs this
+    const project_check = (userObject.role == KLOUD_CONSTANTS.ROLES.ORG_ADMIN || 
+        userObject.role == KLOUD_CONSTANTS.ROLES.CLOUD_ADMIN) ? true : await dbAbstractor.checkUserBelongsToProject(email, project);  
+    if (!project_check) {   // not part of this project  
+        consoleHandler.LOGERROR(`User not authorized for the project ${args.project?.[0]||"undefined"}.`); 
+        consoleHandler.EXITFAILED();
+        return false;  
+    }
+
+    _setupKloudustEnvironment(userObject.name, userObject.id, userObject.org, userObject.role, args.project?.[0]);
+    
     return true;
 }
 
@@ -125,13 +145,21 @@ async function _execCommand(params, consoleHandler, project) {
     }
 }
 
+function _setupKloudustEnvironment(name, id, org, role, project) {
+    KLOUD_CONSTANTS.env.username = name;
+    KLOUD_CONSTANTS.env.userid = id.toLocaleLowerCase();
+    KLOUD_CONSTANTS.env.org = org;
+    KLOUD_CONSTANTS.env.role = role;
+    KLOUD_CONSTANTS.env.prj = project||KLOUD_CONSTANTS.DEFAULT_PROJECT;
+}
+
 function _createConsoleHandler(consoleStreamHandler) {
     if (!consoleStreamHandler) {return {
         LOGERROR: s => KLOUD_CONSTANTS.LOGERROR(s), LOGWARN: s => KLOUD_CONSTANTS.LOGWARN(s), 
         LOGINFO: s => KLOUD_CONSTANTS.LOGINFO(s), LOGBARE: s => KLOUD_CONSTANTS.LOGBARE(s), 
         LOGEXEC: s => KLOUD_CONSTANTS.LOGEXEC(s), LOGUNAUTH: s => KLOUD_CONSTANTS.LOGUNAUTH(s),
         EXITOK: s => KLOUD_CONSTANTS.EXITOK(s), EXITFAILED: s => KLOUD_CONSTANTS.EXITFAILED(s)
-    }} else {return {
+    };} else {return {
         LOGERROR: err => consoleStreamHandler(undefined, undefined, err), 
         LOGWARN: warn => consoleStreamHandler(undefined, warn, undefined), 
         LOGINFO: info => consoleStreamHandler(info, undefined, undefined),
@@ -140,5 +168,5 @@ function _createConsoleHandler(consoleStreamHandler) {
         LOGUNAUTH: _ => consoleStreamHandler(undefined, undefined, KLOUD_CONSTANTS.UNAUTH_MSG),
         EXITOK: _ => consoleStreamHandler(KLOUD_CONSTANTS.SUCCESS_MSG, undefined, undefined), 
         EXITFAILED: _ => consoleStreamHandler(undefined, undefined, KLOUD_CONSTANTS.FAILED_MSG)
-    }}
+    };}
 }

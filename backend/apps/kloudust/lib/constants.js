@@ -25,6 +25,7 @@ exports.CONF = require(`${exports.CONFDIR}/kloudust.json`);
 exports.MONKSHU_BACKEND_LIBDIR = CONSTANTS.LIBDIR||`${exports.LIBDIR}/3p/monkshu/backend/server/lib`;
 
 exports.ROLES = Object.freeze({CLOUD_ADMIN: "cloudadmin", ORG_ADMIN: "orgadmin", USER: "user"});
+exports.LOGINAPP_ORG_ADMIN = "admin";
 exports.DEFAULT_PROJECT = "default";    // every org should have this and every user for an org should be part of this project
 
 exports.COLORS = colors;

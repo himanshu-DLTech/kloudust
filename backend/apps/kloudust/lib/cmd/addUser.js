@@ -17,7 +17,7 @@ const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
  * @param {array} params The incoming params, see above.
  */
 module.exports.exec = async function(params) {
-    if ((!KLOUD_CONSTANTS.env._setup_mode) && (!roleman.checkAccess(roleman.ACTIONS.add_user_to_org))) {
+    if (!roleman.checkAccess(roleman.ACTIONS.add_user_to_org)) {
         params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT(); }
 
     const _accountExists = async email => {

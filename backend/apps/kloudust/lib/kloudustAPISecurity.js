@@ -13,9 +13,9 @@ function initSync() {
     APIREGISTRY.addCustomSecurityChecker(CHECKER_NAME, module.exports);
 }
 
-async function checkSecurity(apiregentry, _url, req, headers, _servObject, reason) {
+async function checkSecurity(apiregentry, url, req, headers, servObject, reason) {
     if (KLOUD_CONSTANTS.CONF.INSECURE_DEVELOPMENT_MODE && login.getID(headers)) return true;  // we are in in-secure mode, all ok as long as there is SOME JWT token
-    else return APIREGISTRY.getExtension("JWTTokenManager").checkSecurity(apiregentry, _url, req, headers, _servObject, reason);
+    else return APIREGISTRY.getExtension("JWTTokenManager").checkSecurity(apiregentry, url, req, headers, servObject, reason);
 }
 
 module.exports = {checkSecurity, initSync};

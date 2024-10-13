@@ -562,28 +562,8 @@ exports.getUserForEmail = async (email, org=KLOUD_CONSTANTS.env.org) => {
  * @return true on success and false otherwise
  */
 exports.loginUser = async (email, project=KLOUD_CONSTANTS.DEFAULT_PROJECT) => {
-    if (await roleman.isSetupMode()) {
-        KLOUD_CONSTANTS.env.username = "Setup admin";
-        KLOUD_CONSTANTS.env.userid = email;
-        KLOUD_CONSTANTS.env.org = "Setup org";
-        KLOUD_CONSTANTS.env.role = KLOUD_CONSTANTS.ROLES.CLOUD_ADMIN;
-        KLOUD_CONSTANTS.env.prj = project;
-        return {name: KLOUD_CONSTANTS.env.username, email, org: KLOUD_CONSTANTS.env.org, role: KLOUD_CONSTANTS.env.role};
-    } // in setup mode we don't need to do these checks as DB is empty
-
     const users = await _db().getQuery("select * from users where id = ? collate nocase", email.toLocaleLowerCase());
-    if (!users || !users.length) return false;  // bad ID 
-    KLOUD_CONSTANTS.env.org = users[0].org; // the project check below needs this
-    const project_check = (users[0].role == KLOUD_CONSTANTS.ROLES.ORG_ADMIN || 
-        users[0].role == KLOUD_CONSTANTS.ROLES.CLOUD_ADMIN) ? true : await exports.checkUserBelongsToProject(email, project);  
-    if (!project_check) return false;  // not part of this project    
-    
-    KLOUD_CONSTANTS.env.username = users[0].name;
-    KLOUD_CONSTANTS.env.userid = users[0].id.toLocaleLowerCase();
-    KLOUD_CONSTANTS.env.org = users[0].org;
-    KLOUD_CONSTANTS.env.role = users[0].role;
-    KLOUD_CONSTANTS.env.prj = project;
-
+    if (!users || !users.length) return false;  // bad ID   
     return users[0];
 }
 
