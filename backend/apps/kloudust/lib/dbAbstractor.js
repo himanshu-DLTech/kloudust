@@ -37,6 +37,7 @@ exports.getUserCount = async _ => {
  * @param {string} rootid The host's admin user id
  * @param {string} rootpw The host's admin password
  * @param {string} hostkey The hostkey
+ * @param {number} port The SSH port for the host
  * @param {number} cores The cores
  * @param {number} memory The memory
  * @param {number} disk The disk
@@ -46,13 +47,13 @@ exports.getUserCount = async _ => {
  * @param {number} sockets The sockets
  * @return true on success or false otherwise
  */
-exports.addHostToDB = async (hostname, hostaddress, type, rootid, rootpw, hostkey, cores, memory, disk, networkspeed, 
+exports.addHostToDB = async (hostname, hostaddress, type, rootid, rootpw, hostkey, port, cores, memory, disk, networkspeed, 
         processor, processor_architecture, sockets) => {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {_logUnauthorized(); return false;}
 
     const rootpw_encrypted = crypt.encrypt(rootpw);
-    const query = "replace into hosts(hostname, hostaddress, type, rootid, rootpw, hostkey, cores, memory, disk, networkspeed, processor, processorarchitecture, sockets) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    return await _db().runCmd(query, [hostname, hostaddress, type, rootid, rootpw_encrypted, hostkey, cores, memory, 
+    const query = "replace into hosts(hostname, hostaddress, type, rootid, rootpw, hostkey, port, cores, memory, disk, networkspeed, processor, processorarchitecture, sockets) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    return await _db().runCmd(query, [hostname, hostaddress, type, rootid, rootpw_encrypted, hostkey, port, cores, memory, 
         disk, networkspeed, processor, processor_architecture, sockets]);
 }
 

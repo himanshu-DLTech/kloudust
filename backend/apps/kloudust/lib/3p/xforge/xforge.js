@@ -24,8 +24,8 @@ exports.xforge = async function(xforge_args) {
     try {
         const remoteCommand = xforge_args.other;
 
-        const [host, user, password, hostkey, port, scriptPath] = [...remoteCommand].slice(0, 5);
-        const sshArgs = [...remoteCommand].slice(4);    // this is because all Kloudust files start from param 1 so we need param 0 to be the script itself
+        const [host, user, password, hostkey, port, scriptPath] = [...remoteCommand].slice(0, 6);
+        const sshArgs = [...remoteCommand].slice(5);    // this is because all Kloudust files start from param 1 so we need param 0 to be the script itself
         const results = await ssh_cmd(host, user, password, hostkey, port, scriptPath, sshArgs, xforge_args.console);
 
         (xforge_args.console?xforge_args.console.LOGINFO:KLOUD_CONSTANTS.LOGINFO)("Success, done.");
@@ -33,12 +33,13 @@ exports.xforge = async function(xforge_args) {
 	} catch (err) { 
 		(xforge_args.console?xforge_args.console.LOGERROR:KLOUD_CONSTANTS.LOGERROR)(
             `Build failed with remote exit code: ${err.exitCode}, due to error: ${err.stderr}`);
-        return err; 
+        const exitCode = 1, stdout = '', stderr = err.toString();
+        return {result: false, exitCode, stdout, stderr, out: stdout, err: stderr}; 
 	}
 }
 
 function ssh_cmd(host, user, password, hostkey, port=22, shellScriptPath, scriptParams, streamer) {
-    (streamer?streamer.LOGINFO:KLOUD_CONSTANTS.LOGINFO)(`[SSH_CMD]: ${user}@${host} -> ${scriptParams.join(" ")}`);
+    (streamer?streamer.LOGINFO:KLOUD_CONSTANTS.LOGINFO)(`[SSH_CMD]: ${user}@${host}:${port} -> ${scriptParams.join(" ")}`);
     return new Promise((resolve, reject) => {
         remote_ssh.runRemoteSSHScript({user, password, host, hostkey, port}, shellScriptPath, scriptParams, streamer, (err,stdout,stderr) => {
             if (!err) resolve({result: true, exitCode: 0, stdout, stderr, out: stdout, err: stderr});

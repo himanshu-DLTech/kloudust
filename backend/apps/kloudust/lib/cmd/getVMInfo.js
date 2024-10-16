@@ -45,5 +45,5 @@ module.exports.exec = async function(params) {
 
         const xforgeResults = await xforge(xforgeArgs); 
         out += "\n"+xforgeResults.stdout; return {...xforgeResults, out, stdout: out, vm: vm_ret};
-    } else return {result: true, out, err: "", vm: vm_ret};
+    } else return {result: true, out, stdout: out, stderr: "", err: "", vm: vm_ret};
 }

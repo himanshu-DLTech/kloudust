@@ -106,11 +106,11 @@
         "const vms = await $$.libapimanager.rest(APP_CONSTANTS.API_KLOUDUSTCMD, 'POST', {",
             "cmd: `listVMsForOrgOrProject \"${$$.libsession.get(APP_CONSTANTS.USERORG)}\" \"${$$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT)}\" \"${APP_CONSTANTS.VM_TYPE_VM}\"`, ",
             "project: $$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT)}, true);",
-        "for (const vm of vms.vms) {vm.datetime = new Date(vm.timestamp).toLocaleDateString(); vm.disk = vm.disks[0].size;}",
+        "for (const vm of vms.vms||[]) {vm.datetime = new Date(vm.timestamp).toLocaleDateString(); vm.disk = vm.disks[0].size;}",
         "const modIconList = await import(`${APP_CONSTANTS.FORM_MODULES_PATH}/iconlist.mjs`), tabledef = arguments[0];",
         "const html = await modIconList.iconlist.getHTML(tabledef.popupform, monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager);",
         "tabledef.onclickrow_html.push(html);",
-        "return {keys: ['name_raw','description','os','disk','cpus','memory','datetime'], table: vms.vms};"
+        "return {keys: ['name_raw','description','os','disk','cpus','memory','datetime'], table: vms.vms||[]};"
     ]
 }
 }

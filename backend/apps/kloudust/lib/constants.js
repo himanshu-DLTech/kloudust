@@ -16,12 +16,13 @@ exports.COLORS = colors;
 const _getColoredMessage = (s, colorfunc) => exports.COLORED_OUT && (!global.LOG) ? colorfunc(s) : s;
 
 exports.env = {};
-exports.LIBDIR = path.resolve(__dirname);
 exports.ROOTDIR = path.resolve(`${__dirname}/../`);
 exports.DBDIR = path.resolve(`${exports.ROOTDIR}/db`);
+exports.LIBDIR = path.resolve(`${exports.ROOTDIR}/lib`);
 exports.APIDIR = path.resolve(`${exports.ROOTDIR}/apis`);
 exports.CONFDIR = path.resolve(`${exports.ROOTDIR}/conf`);
 exports.CONF = require(`${exports.CONFDIR}/kloudust.json`);
+exports.CMDDIR = path.resolve(`${exports.ROOTDIR}/lib/cmd`);
 exports.MONKSHU_BACKEND_LIBDIR = CONSTANTS.LIBDIR||`${exports.LIBDIR}/3p/monkshu/backend/server/lib`;
 
 exports.ROLES = Object.freeze({CLOUD_ADMIN: "cloudadmin", ORG_ADMIN: "orgadmin", USER: "user"});

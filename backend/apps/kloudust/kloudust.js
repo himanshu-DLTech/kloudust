@@ -136,7 +136,7 @@ async function _execCommand(params, consoleHandler, project) {
         const requireFunction = CONSTANTS.LIBDIR ?  // try to load command modules in debug mode if available
             module => require(`${CONSTANTS.LIBDIR}/utils.js`).requireWithDebug(
                 module, KLOUD_CONSTANTS.CONF.DEBUG_MODE) : module => require(module);
-        const module = requireFunction(`${KLOUD_CONSTANTS.LIBDIR}/cmd/${command}.js`);
+        const module = requireFunction(`${KLOUD_CONSTANTS.CMDDIR}/${command}.js`);
         const result = await module.exec(cmdParams);
         return result;
     } catch (err) {

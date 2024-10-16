@@ -19,7 +19,7 @@ const agentConf = {
 
 /**
  * Runs remote SSH script on given host
- * @param {object} conf Contains {user, password, port, and host}
+ * @param {object} conf Contains {user, password, port, host and hostkey}
  * @param {string} remote_script The script to run, path to it
  * @param {object} extra_params The array of parameters
  * @param {Object} streamer If set, output will be streamed to it as it happens, must have member functions 
@@ -30,13 +30,13 @@ exports.runRemoteSSHScript = (conf, remote_script, extra_params, streamer, callb
     const script = path.normalize(`${__dirname}/ssh_cmd.${process.platform == "win32"?"bat":"sh"}`);
 
     _expandExtraParams(extra_params, remote_script, (err, expanded_remote_script) => {
-        if (err) {callback({"result":false, "err":err, "msg": err.toString()}); return;}
+        if (err) {callback(1, '', err.toString()); return;}
 
         LOG.debug(`Executing remote script ${agentConf["shellexecprefix_"+process.platform].join(" ")} ${script} ${conf.user} [hostpassword] [hostkey] ${expanded_remote_script} ${conf.host}`);
         _processExec( agentConf["shellexecprefix_"+process.platform], script, 
-            [conf.user, conf.password, conf.hostkey, expanded_remote_script, conf.port||22, conf.host], 
+            [conf.user, conf.password, conf.host, conf.hostkey, conf.port||22, expanded_remote_script], 
             streamer, callback );
-    });    
+    });
 }
 
 function _processExec(cmdProcessorArray, script, paramsArray, streamer, callback) {

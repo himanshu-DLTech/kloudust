@@ -24,7 +24,8 @@ module.exports.exec = async function(params) {
     if (!hostinfoRaw) {const err = "Bad hostname or host not found"; params.consoleHandlers.LOGERROR(err); 
         return CMD_CONSTANTS.FALSE_RESULT(err); }
 
-    const hostinfo = {...hostinfoRaw, rootid: undefined, hostkey: undefined, rootpw: undefined};
+    const hostinfo = roleman.isCloudAdminLoggedIn() ? hostinfoRaw :     // let the cloud admin see password etc.
+        {...hostinfoRaw, rootid: undefined, hostkey: undefined, rootpw: undefined};
 
     let formattedOut = `Host information follows for ${hostname}`; 
     for (const [key, value] of Object.entries(hostinfo)) formattedOut = formattedOut+"\n"+key+" - "+value;

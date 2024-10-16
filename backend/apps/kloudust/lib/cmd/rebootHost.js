@@ -7,6 +7,7 @@
  * License: See enclosed LICENSE file.
  */
 
+const roleman = require(`${KLOUD_CONSTANTS.LIBDIR}/roleenforcer.js`);
 const {xforge} = require(`${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/xforge`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
 const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);

@@ -25,5 +25,5 @@ module.exports.exec = async function(params) {
     const out = `Host resource information follows\n${JSON.stringify(hostResources)}`; 
 
     params.consoleHandlers.LOGINFO(out);
-    return {result: true, err: "", out, stdout: out, resources: hostResources};
+    return {result: true, stderr: "", err: "", out, stdout: out, resources: hostResources};
 }

@@ -17,7 +17,7 @@
  * when the row is clicked and clickrow_javascript is ran once the HTML has been shown.
  * 
  * In case of VMs form for example, onclickrow_html style is static, then an iconlist is
- * used to geenrate HTML to display the icons and added to onclickrow_html during its 
+ * used to generate HTML to display the icons and added to onclickrow_html during its 
  * load_javascript method. So when row is clicked the icons are shown and clicking them 
  * opens the command (as that's what iconlist does).
  * 

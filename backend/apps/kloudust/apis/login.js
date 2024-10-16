@@ -15,8 +15,7 @@ const serverutils = require(`${CONSTANTS.LIBDIR}/utils.js`);
 const httpClient = require(`${CONSTANTS.LIBDIR}/httpClient.js`);
 const conf = require(`${KLOUD_CONSTANTS.CONFDIR}/kloudust.json`);
 const kloudust = require(`${KLOUD_CONSTANTS.ROOTDIR}/kloudust.js`);
-const roleman = require(`${KLOUD_CONSTANTS.LIBDIR}/roleenforcer.js`);
-const API_JWT_VALIDATION = `${conf.tekmonkslogin_backend}/apps/loginapp/validatejwt`;
+const API_JWT_VALIDATION = `${conf.TEKMONKS_LOGIN_BACKEND}/apps/loginapp/validatejwt`;
 
 exports.doService = async jsonReq => {
 	if (!validateRequest(jsonReq)) {KLOUD_CONSTANTS.LOGERROR("Validation failure."); return CONSTANTS.FALSE_RESULT;}

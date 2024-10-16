@@ -2,9 +2,9 @@
 
 LOGIN="$1"
 PW="$2"
-HOSTKEY="$3"
-FILE="$4"
+HOST="$3"
+HOSTKEY="$4"
 PORT="$5"
-HOST="$6"
+FILE="$6"
 
-cat "$FILE" | sshpass -p "$PW" ssh -T -o StrictHostKeyChecking=no -l "$LOGIN" $HOST
+cat "$FILE" | sshpass -p "$PW" ssh -T -o StrictHostKeyChecking=no -p $PORT -l "$LOGIN" $HOST

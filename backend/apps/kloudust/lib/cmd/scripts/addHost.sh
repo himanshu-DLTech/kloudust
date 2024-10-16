@@ -3,9 +3,12 @@
 # Params
 # {1} The new password for this host for the ID which is logged in to run this script
 # {2} The JSON out splitter
+# {3} The new SSH port, defaults to 22 if not provided
 
 NEW_PASSWORD="{1}"
 JSONOUT_SPLITTER="{2}"
+CHANGED_SSH_PORT={3}
+NEW_SSH_PORT=${CHANGED_SSH_PORT:-22}
 
 function exitFailed() {
     echo Failed
@@ -37,7 +40,8 @@ $1
     "processor": "$PROCESSORMAKER:$PROCESSORNAME:$PROCESSORMODEL:$PROCESSORSPEED",
     "processorarchitecture": "$PROCESSORARCH",
     "sockets": "$SOCKETS",
-    "ostype": "$OSRELEASE"
+    "ostype": "$OSRELEASE",
+    "sshport": "$NEW_SSH_PORT"
 }
 ENDJSON
 }
@@ -55,12 +59,15 @@ printf "Installing required software\n"
 if [ -f "`which yum`" ]; then 
     if ! sudo yum -y install fail2ban; then exitFailed; fi
     if ! sudo yum -y install sshpass; then exitFailed; fi
-    if ! sudo yum -y install qemu-kvm libvirt virt-top bridge-utils libguestfs-tools virt-install tuned genisoimage; then exitFailed; fi
+    if ! sudo yum -y install qemu-kvm libvirt virt-top bridge-utils libguestfs-tools virt-install tuned genisoimage ufw; then exitFailed; fi
 else
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install fail2ban; then exitFailed; fi
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install sshpass; then exitFailed; fi
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install net-tools; then exitFailed; fi
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install qemu-system-x86 libvirt-daemon-system libvirt-clients bridge-utils virtinst libosinfo-bin guestfs-tools tuned genisoimage; then exitFailed; fi
+    # Remove snapd on Ububtu as it opens outgoing connections to the snap store
+    snap list | egrep -v 'base$|snapd$|Notes$' | awk '{print $1}' | xargs -I{} sudo snap remove {} --purge && sudo apt purge -y snapd && rm -rf ~/snap
+    apt -y autoremove && apt-mark hold snapd
 fi
 
 printf "\n\nSecuring the system against SSH attacks\n"
@@ -119,13 +126,23 @@ else
     if ! sudo chgrp -R libvirt /kloudust/; then exitFailed; fi
 fi
 
-printf "\n\nChanging password, Kloudust is taking over the system\n"
+
+printf "\n\nChanging password and SSH ports, Kloudust is taking over the system\n"
 if [ -f "`which yum`" ]; then 
     if ! echo '{1}' | passwd --stdin `whoami` > /dev/null; then exitFailed; fi
 else
     if ! echo `whoami`':{1}' | sudo chpasswd > /dev/null; then exitFailed; fi
 fi
+if ! sed -i 's/^#\?[ ]*[Pp]ort[ ]\+[0-9]\+[ ]*$//g' /etc/ssh/sshd_config; then exitFailed; fi
+if ! echo "Port $NEW_SSH_PORT" >> /etc/ssh/sshd_config; then exitFailed; fi
 
-printf "\n\nSystem initialization finished successfully\n"
+printf "\n\nSetting up the firewall\n"
+if ! ufw allow $NEW_SSH_PORT; then exitFailed; fi
+if ! ufw deny 22; then exitFailed; fi
+if ! systemctl enable ufw; then exitFailed; fi
+if ! ufw --force enable; then exitFailed; fi
+if ! systemctl restart sshd; then exitFailed; fi
+
+printf "\n\nSystem initialization finished successfully, reboot needed\n"
 printConfig $JSONOUT_SPLITTER
 exit 0
