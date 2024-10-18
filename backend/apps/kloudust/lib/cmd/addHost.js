@@ -38,6 +38,11 @@ module.exports.exec = async function(params) {
     if ((!KLOUD_CONSTANTS.CONF.HOST_TYPES.includes(ostype.toLowerCase()))) {
         params.consoleHandlers.LOGERROR(`Only ${KLOUD_CONSTANTS.CONF.HOST_TYPES.join(", ")} are supported.`); return CMD_CONSTANTS.FALSE_RESULT();}
 
+    if (await dbAbstractor.getHostEntry(hostname)) {  // check if the host already exists
+        const error = `Host with the name ${hostname} exists already. Please delete it first.`;
+        params.consoleHandlers.LOGERROR(error); return CMD_CONSTANTS.FALSE_RESULT(error);
+    }
+
     const newPassword = nochangepassword.toLowerCase() == "nochange" ? adminpass : cryptoMod.randomBytes(32).toString("hex");
     const xforgeArgs = {
         colors: KLOUD_CONSTANTS.COLORED_OUT, 
@@ -69,14 +74,14 @@ module.exports.exec = async function(params) {
             rebootHost.exec(params);  // reboot the host, we don't care much for the results of it or to wait for it
             return {result: true, stdout: scriptOutChunks[0], out: scriptOutChunks[0], err: results.stderr, stderr: results.stderr}; 
         } else {
-            _showError(newPassword, adminid, adminpass, params.consoleHandlers||KLOUD_CONSTANTS.LOG); 
+            _showError(hostip, newPassword, adminid, adminpass, oldsshport, newsshport, params.consoleHandlers||KLOUD_CONSTANTS.LOG); 
             return {result: false, stdout: scriptOutChunks[0], out: scriptOutChunks[0], err: results.stderr, stderr: results.stderr};
         }
-    } else {_showError(newPassword, params[2], params[3], params.consoleHandlers||KLOUD_CONSTANTS.LOG); return {
+    } else {_showError(hostip, newPassword, adminid, adminpass, oldsshport, newsshport, params.consoleHandlers||KLOUD_CONSTANTS.LOG); return {
         result: false, out: results.stdout, stdout: results.stdout, stderr: results.stderr, err: results.stderr};}
 }
 
-function _showError(newPassword, userid, oldPassword, consoleHandlers) {
+function _showError(hostip, newPassword, userid, oldPassword, oldsshport, newsshport, consoleHandlers) {
     consoleHandlers.LOGERROR("Host initialization failed. Password and SSH ports may be changed.");
-    consoleHandlers.LOGERROR(`Login password for ${hostip} and user ${userid} is one of these now: ${oldPassword} or ${newPassword}. Further the SSH port is either ${KLOUD_CONSTANTS.CONF.DEFAULT_KD_SSH_PORT} or ${sshport}.`);
+    consoleHandlers.LOGERROR(`Login password for ${hostip} and user ${userid} is one of these now: ${oldPassword} or ${newPassword}. Further the SSH port is either ${oldsshport} or ${newsshport}.`);
 }

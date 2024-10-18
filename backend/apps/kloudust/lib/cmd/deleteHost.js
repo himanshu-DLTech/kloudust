@@ -19,17 +19,24 @@ const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
         params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
     const [hostname, cleanhost] = [...params];
 
+    const hostInfo = await dbAbstractor.getHostEntry(hostname); 
     const result = {result: await dbAbstractor.deleteHostFromDB(hostname), err: "", out: ""};
     params.consoleHandlers.LOGWARN(`Host ${hostname} has been deleted from Kloudust cloud.`);
 
     if (cleanhost) {
         params.consoleHandlers.LOGWARN(`Host ${hostname} machine is being cleaned.`);
+        if (!hostInfo) {
+            params.consoleHandlers.LOGERROR(`Bad hostname ${hostname} or host not found, skipping cleanhost`); 
+            return CMD_CONSTANTS.TRUE_RESULT(`Host ${hostname} has been deleted from Kloudust cloud.`, 
+                `Bad hostname ${hostname} or host not found, skipping cleanhost`);
+        }
+
         const xforgeArgs = {
             colors: KLOUD_CONSTANTS.COLORED_OUT, 
             console: params.consoleHandlers,
             file: `${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/samples/remoteCmd.xf.js`,
             other: [
-                hostip, adminid, adminpass, hostsshkey, 
+                hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey, hostInfo.port,
                 `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/deleteHost.sh`
             ]
         }

@@ -166,7 +166,7 @@ if ! virt-install --name $NAME --metadata name=$NAME --metadata title="$DESCRIPT
     --os-variant $OS_VARIANT \
     --network network=default \
     --controller type=scsi,model=virtio-scsi \
-    --graphics vnc,listen=0.0.0.0 --noautoconsole \
+    --noautoconsole \
     --virt-type kvm \
     --video model=qxl,heads=1 \
     $VIRT_INSTALL_PARAMS \
@@ -188,7 +188,7 @@ INSTALL="virt-install --name $NAME --metadata name=$NAME --metadata title=\"$DES
     --os-variant $OS_VARIANT \
     --network network=default \
     --controller type=scsi,model=virtio-scsi \
-    --graphics vnc,listen=0.0.0.0 --noautoconsole \
+    --noautoconsole \
     --virt-type kvm \
     --video model=qxl,heads=1 \
     $VIRT_INSTALL_PARAMS \
@@ -213,12 +213,11 @@ PROJECT="$PROJECT"
 EOF
 if ! virsh dumpxml $NAME > /kloudust/metadata/$NAME.xml; then exitFailed; fi
 
-printf "Performing an initial restart cycle to stablize"
-if shutdownVM $NAME; then virsh start $NAME; fi
+# this seems to stop cloudinit - we can't really do this - reason was that first
+# reboot doesn't auto restart VM - need to think a better solution
 
-printf "\n\nConnect via VNC to one of the following\n"
-PORT=`virsh vncdisplay $NAME | cut -c 2-`;echo `ip route get 8.8.8.8 | head -1 | cut -d' ' -f7`:`expr 5900 + $PORT`
-echo `hostname`:`expr 5900 + $PORT`
+#printf "Performing an initial restart cycle to stablize"
+#if shutdownVM $NAME; then virsh start $NAME; fi
 
 printf "\n\nVM created successfully\n"
 exit 0

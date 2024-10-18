@@ -18,5 +18,5 @@ if ! virsh dumpxml {2} > /kloudust/metadata/{2}.xml; then exitFailed; fi
 printf "Enabling autostart"
 if ! virsh autostart {2}; then exitFailed; fi
 
-printf "\n\nClone successfull\n"
+printf "\n\nClone successful\n"
 exit 0

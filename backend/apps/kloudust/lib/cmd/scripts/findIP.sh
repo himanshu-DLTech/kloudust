@@ -17,9 +17,8 @@ if ! virsh domifaddr $NAME &> /dev/null; then
     exitFailed; 
 fi
 
-printf "\n\nVM IP is below\n"
 IP=`virsh domifaddr $NAME | tr -s ' ' | grep ipv4 | cut -d" " -f5 | cut -d"/" -f1`
-echo $IP
+printf "\n\nVM IP is below\n$IP\n"
 
 printf "\n\nIP located successfully\n"
 exit 0

@@ -59,11 +59,16 @@ printf "Installing required software\n"
 if [ -f "`which yum`" ]; then 
     if ! sudo yum -y install fail2ban; then exitFailed; fi
     if ! sudo yum -y install sshpass; then exitFailed; fi
-    if ! sudo yum -y install qemu-kvm libvirt virt-top bridge-utils libguestfs-tools virt-install tuned genisoimage ufw; then exitFailed; fi
+    if ! sudo yum -y install qemu-kvm libvirt virt-top bridge-utils libguestfs-tools virt-install tuned genisoimage; then exitFailed; fi
+    if ! sudo systemctl stop firewalld; then exitFailed; fi
+    if ! sudo systemctl disable firewalld; then exitFailed; fi
+    if ! sudo systemctl mask firewalld; then exitFailed; fi
+    if ! sudo yum -y install iptables-services; then exitFailed; fi
+    if ! sudo yum -y install ufw; then exitFailed; fi
 else
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install fail2ban; then exitFailed; fi
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install sshpass; then exitFailed; fi
-    if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install net-tools; then exitFailed; fi
+    if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install net-tools iptables-persistent; then exitFailed; fi
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install qemu-system-x86 libvirt-daemon-system libvirt-clients bridge-utils virtinst libosinfo-bin guestfs-tools tuned genisoimage; then exitFailed; fi
     # Remove snapd on Ububtu as it opens outgoing connections to the snap store
     snap list | egrep -v 'base$|snapd$|Notes$' | awk '{print $1}' | xargs -I{} sudo snap remove {} --purge && sudo apt purge -y snapd && rm -rf ~/snap
@@ -135,10 +140,13 @@ else
 fi
 if ! sed -i 's/^#\?[ ]*[Pp]ort[ ]\+[0-9]\+[ ]*$//g' /etc/ssh/sshd_config; then exitFailed; fi
 if ! echo "Port $NEW_SSH_PORT" >> /etc/ssh/sshd_config; then exitFailed; fi
+if ! touch ~/.hushlogin; then exitFailed; fi
 
-printf "\n\nSetting up the firewall\n"
+printf "\n\nSetting up the host firewall\n"
+if ! ufw --force reset; then exitFailed; fi
+if ! ufw default deny incoming; then exitFailed; fi
+if ! ufw default allow outgoing; then exitFailed; fi
 if ! ufw allow $NEW_SSH_PORT; then exitFailed; fi
-if ! ufw deny 22; then exitFailed; fi
 if ! systemctl enable ufw; then exitFailed; fi
 if ! ufw --force enable; then exitFailed; fi
 if ! systemctl restart sshd; then exitFailed; fi
