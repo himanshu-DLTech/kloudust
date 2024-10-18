@@ -49,8 +49,7 @@
         description varchar, hostname varchar not null, org varchar not null, \
         projectid varchar not null, os varchar not null, cpus integer not null, \
         memory integer not null, disksjson varchar not null, creationcmd varchar not null, \
-        name_raw varchar not null, vmtype varchar default 'vm', \
-        snapshots_json varchar, vnets_json varchar, \
+        name_raw varchar not null, vmtype varchar default 'vm', snapshots_json varchar, vnets_json varchar, \
         timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
 
     // Vnets container table
