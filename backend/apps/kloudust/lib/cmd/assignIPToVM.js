@@ -36,7 +36,7 @@ module.exports.exec = async function(params) {
         other: [
             hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey, hostInfo.port,
             `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/assignIPToVM.sh`,
-            vm_name, ip
+            vm_name, ip.trim()
         ]
     }
 

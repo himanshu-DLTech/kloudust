@@ -56,6 +56,7 @@ async function formSubmitted(id, values) {
     const form = await $$.requireJSON(`${APP_CONSTANTS.FORMS_PATH}/${id}.form.json`); 
     if (form.type != KLOUDUST_CMDLINE) return;  // no need to call backend in this case
 
+    if (values._override_form_command) form.command = values._override_form_command;
     let command = form.command == RAW_COMMANDLINE_COMMAND?"":form.command;
     const cmdLineMap = form.kloudust_cmdline_params;
     for (const param of cmdLineMap) command += form.command == RAW_COMMANDLINE_COMMAND?values[param]+" ":" "+('"'+values[param]+'"'||'""');

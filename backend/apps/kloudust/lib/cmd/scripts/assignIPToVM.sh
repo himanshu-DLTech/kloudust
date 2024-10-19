@@ -33,5 +33,5 @@ else
     ip6tables-save > /etc/iptables/rules.v6 # Location for Ubuntu IPv6
 fi
 
-printf "\n\nIP forwarding successfull\n"
+printf "\n\nIP forwarding successful\n"
 exit 0
