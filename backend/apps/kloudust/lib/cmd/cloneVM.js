@@ -33,7 +33,7 @@ module.exports.exec = async function(params) {
     const results = await xforge(xforgeArgs);
     if (results.result) {
         if (await dbAbstractor.addOrUpdateVMToDB(params[1], vm.description, vm.hostname, vm.os, 
-            cores, memory, vm.disks, vm.creationcmd, vm.name_raw, vm.vmtype)) return results;
+            cores, memory, vm.disks, vm.creationcmd, vm.name_raw, vm.vmtype, vm.ips)) return results;
         else {params.consoleHandlers.LOGERROR("DB failed"); return {...results, result: false};}
     } else return results;
 }

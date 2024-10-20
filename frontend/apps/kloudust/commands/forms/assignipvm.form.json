@@ -8,10 +8,10 @@
 
 "i18n": {
     "en": {
-        "VMAssignIPTitle": "Assign IP to a virtual machine",
-        "VMAssignIPDescription": "Assign IP to a virtual machine on the cloud. Complete the required tab then submit.",
+        "VMAssignIPTitle": "Assign or unassign IP to a virtual machine",
+        "VMAssignIPDescription": "Assign or unassign IP to a virtual machine on the cloud. Complete the required tab then submit.",
         "VMName": "Virtual machine name",
-        "VMAssignIPCommand": "IP address to assign",
+        "VMAssignIPCommand": "IP address to assign or unassign",
         "VMAssignIPCommandType": "Assignment type",
         "VMAssignIPAssign": "Assign",
         "VMAssignIPUnassign": "Unassign",
@@ -19,10 +19,10 @@
         "PowerOPVMSubmitLabel": "Submit"
     },
     "hi": {
-        "VMAssignIPTitle": "Assign IP to a virtual machine",
-        "VMAssignIPDescription": "Assign IP to a virtual machine on the cloud. Complete the required tab then submit.",
+        "VMAssignIPTitle": "Assign or unassign IP to a virtual machine",
+        "VMAssignIPDescription": "Assign or unassign IP to a virtual machine on the cloud. Complete the required tab then submit.",
         "VMName": "वीएम नाम",
-        "VMAssignIPCommand": "IP address to assign",
+        "VMAssignIPCommand": "IP address to assign or unassign",
         "VMAssignIPCommandType": "Assignment type",
         "VMAssignIPAssign": "Assign",
         "VMAssignIPUnassign": "Unassign",
@@ -30,10 +30,10 @@
         "PowerOPVMSubmitLabel": "Submit"
     },
     "ja": {
-        "VMAssignIPTitle": "Assign IP to a virtual machine",
-        "VMAssignIPDescription": "Assign IP to a virtual machine on the cloud. Complete the required tab then submit.",
+        "VMAssignIPTitle": "Assign or unassign IP to a virtual machine",
+        "VMAssignIPDescription": "Assign or unassign IP to a virtual machine on the cloud. Complete the required tab then submit.",
         "VMName": "VM名",
-        "VMAssignIPCommand": "IP address to assign",
+        "VMAssignIPCommand": "IP address to assign or unassign",
         "VMAssignIPCommandType": "Assignment type",
         "VMAssignIPAssign": "Assign",
         "VMAssignIPUnassign": "Unassign",
@@ -41,10 +41,10 @@
         "PowerOPVMSubmitLabel": "Submit"
     },
     "zh": {
-        "VMAssignIPTitle": "Assign IP to a virtual machine",
-        "VMAssignIPDescription": "Assign IP to a virtual machine on the cloud. Complete the required tab then submit.",
+        "VMAssignIPTitle": "Assign or unassign IP to a virtual machine",
+        "VMAssignIPDescription": "Assign or unassign IP to a virtual machine on the cloud. Complete the required tab then submit.",
         "VMName": "虚拟机名称",
-        "VMAssignIPCommand": "IP address to assign",
+        "VMAssignIPCommand": "IP address to assign or unassign",
         "VMAssignIPCommandType": "Assignment type",
         "VMAssignIPAssign": "Assign",
         "VMAssignIPUnassign": "Unassign",
@@ -59,16 +59,39 @@
     "required_label": "{{{i18n.Required}}}",
     "required_fields": [
     {"id": "vm_name", "type": "text", "placeholder": "{{{i18n.VMName}}}", "required": true, 
-        "pattern":"\\s[0-9a-zA-Z-]+\\s", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}",
+        "pattern":"\\s[0-9a-zA-Z]+\\s", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}",
         "value":"{{{APP_CONSTANTS.ENV._vms_form_data.name_raw}}}", 
         "readonly":"{{#APP_CONSTANTS.ENV._vms_form_data.name_raw}}true{{/APP_CONSTANTS.ENV._vms_form_data.name_raw}}"},
     {"id": "ip", "type": "text", "placeholder": "{{{i18n.VMAssignIPCommand}}}", "required": true, 
-        "pattern":"[0-9.]+", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+        "pattern":"[0-9.]+", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}", "list": "iplist"},
+    {"id":"iplist", "inputtype": "datalist"},
     {"id": "type", "multioption": true, "type": "select", "label": "{{{i18n.VMAssignIPCommandType}}}", 
     "options":[
         {"value":"assign", "label":"{{{i18n.VMAssignIPAssign}}}"}, 
         {"value":"unassign", "label":"{{{i18n.VMAssignIPUnassign}}}"}
-    ]}
+    ]
+    }
+    ],
+
+    "rendered_javascript": [
+        "const form = arguments[0], shadowroot = form._form_shadowroot;",
+        "const selectElement = shadowroot.querySelector('select#type');",
+        "selectElement.addEventListener('change', async _ => { if (selectElement.value == 'unassign') {",
+        "   const vm_name = shadowroot.querySelector('input#vm_name').value;",
+        "   const query = `select ips from vms where name like '${vm_name}%' and org='${$$.libsession.get(APP_CONSTANTS.USERORG)}' and projectid like '${$$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT)}%'`;",
+        "   const results = await $$.libapimanager.rest(APP_CONSTANTS.API_KLOUDUSTCMD, 'POST', {cmd: `customCmd \"${query}\"`}, true);",
+        "   if (results.result) {",
+        "       const assignedIPs = results.resultSQL[0].ips.split(',');",
+        "       const list = shadowroot.querySelector('#iplist');",
+        "       for (const assignedIP of assignedIPs) {",
+        "           if (assignedIP.trim() == '') continue;",
+        "           const option = document.createElement('option');",
+        "           option.value = assignedIP; option.text = assignedIP;",
+        "           list.appendChild(option);",
+        "       }",
+        "   }",
+        "} else shadowroot.querySelector('#iplist').innerHTML = ''; });",
+        "return true;"
     ],
 
     "submitlabel": "{{{i18n.PowerOPVMSubmitLabel}}}",

@@ -194,19 +194,20 @@ exports.getHostEntry = async hostname => {
  * @param {string} creation_cmd The VM creation command
  * @param {string} name_raw The VM name raw 
  * @param {string} vmtype The VM type
+ * @param {string} ip The VM IPs, default is empty
  * @param {string} project The project, if skipped is auto picked from the environment
  * @param {string} org The org, if skipped is auto picked from the environment
  * @return true on success or false otherwise
  */
 exports.addOrUpdateVMToDB = async (name, description, hostname, os, cpus, memory, disks, creation_cmd="undefined", 
-        name_raw, vmtype, project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANTS.env.org) => {
+        name_raw, vmtype, ips='', project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANTS.env.org) => {
 
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
 
     const id = `${org}_${project}_${name}`;
-    const query = "replace into vms(id, name, description, hostname, org, projectid, os, cpus, memory, disksjson, creationcmd, name_raw, vmtype) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    return await _db().runCmd(query, [id, name, description, hostname, org, _getProjectID(), os, cpus, memory, JSON.stringify(disks), creation_cmd, name_raw, vmtype]);
+    const query = "replace into vms(id, name, description, hostname, org, projectid, os, cpus, memory, disksjson, creationcmd, name_raw, vmtype, ips) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    return await _db().runCmd(query, [id, name, description, hostname, org, _getProjectID(), os, cpus, memory, JSON.stringify(disks), creation_cmd, name_raw, vmtype, ips]);
 }
 
 /**
@@ -248,7 +249,7 @@ exports.renameVM = async (name, newname, newname_raw, project=KLOUD_CONSTANTS.en
 
     const vm = await exports.getVM(name, project, org); if (!vm) return false;
     if (!await exports.addOrUpdateVMToDB(newname, vm.description, vm.hostname, vm.os, vm.cpus, vm.memory, 
-        JSON.parse(vm.disksjson), newname_raw, vm.vmtype, vm.creation_cmd, newproject, org)) return false;
+        JSON.parse(vm.disksjson), vm.creation_cmd, newname_raw, vm.vmtype, vm.ips, newproject, org)) return false;
     return await exports.deleteVM(name, project, org); 
 }
 
@@ -654,7 +655,7 @@ exports.deleteObjectsFromRecyclebin = async function(objectid, idstamp="", proje
 }
 
 /**
- * Deletes the given snapshot, if it exists in the DB.
+ * Deletes the given vnet, if it exists in the DB.
  * @param {string} resource_id The resource ID for which this snapshot is for
  * @param {string} snapshot_id The snapshot ID
  * @param {string} project The project, if skipped is auto picked from the environment

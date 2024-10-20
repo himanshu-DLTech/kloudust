@@ -41,5 +41,10 @@ module.exports.exec = async function(params) {
     }
 
     const results = await xforge(xforgeArgs);
-    return results;
+    if (results.result) {
+        const vmips = vm.ips.split(','), finalVMIPs = vmips.filter(ipThis => ipThis != ip.trim());
+        if (await dbAbstractor.addOrUpdateVMToDB(vm.name, vm.description, vm.hostname, vm.os, 
+            vm.cpus, vm.memory, vm.disks, vm.creationcmd, vm.name_raw, vm.vmtype, finalVMIPs.join(','))) return results;
+        else {params.consoleHandlers.LOGERROR("DB failed"); return {...results, result: false};}
+    } else return results;
 }

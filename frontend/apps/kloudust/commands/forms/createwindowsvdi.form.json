@@ -112,7 +112,7 @@
     "required_label": "{{{i18n.Required}}}",
     "required_fields": [
     {"id": "vm_name", "type": "text", "placeholder": "{{{i18n.VMName}}}", "required": true, 
-        "pattern":"\\s[0-9a-zA-Z-]+\\s", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+        "pattern":"\\s[0-9a-zA-Z]+\\s", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
     {"id": "vm_description", "type": "text", "placeholder": "{{{i18n.VMDescription}}}", "required": true},
     {"id": "cores", "type": "number", "placeholder": "{{{i18n.VMCores}}}", "required": true, "min": 2,
         "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
@@ -140,7 +140,7 @@
     {"id": "force_overwrite", "multioption": true, "type": "select", "label": "{{{i18n.VMOverwriteForce}}}", 
         "options":[{"value":"false", "label":"{{{i18n.VMNo}}}"}, {"value":"true", "label":"{{{i18n.VMYes}}}"}]},
     {"id": "override_host", "type": "text", "placeholder": "{{{i18n.VMHostname}}}", "value":"",
-        "pattern":"\\s[0-9a-zA-Z-]+\\s", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"}
+        "pattern":"\\s[0-9a-zA-Z]+\\s", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"}
     ],
 
     "load_javascript": [

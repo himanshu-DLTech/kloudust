@@ -56,7 +56,7 @@ module.exports.exec = async function(params) {
     }
     
     if (results.result) await dbAbstractor.addOrUpdateVMToDB(vm_name, vm.description, vm.hostname, vm.os, 
-        cores, memory, vm.disks, vm.creationcmd, vm.name_raw, vm.vmtype);
+        cores, memory, vm.disks, vm.creationcmd, vm.name_raw, vm.vmtype, vm.ips);
 
     return results;
 }

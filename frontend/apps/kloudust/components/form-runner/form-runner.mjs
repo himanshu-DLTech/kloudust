@@ -15,10 +15,17 @@ const COMPONENT_PATH = util.getModulePath(import.meta), INPUT_ELEMENTS = ["input
 async function elementConnected(host) {
     const formData = util.base64ToString(host.dataset.form);
     const expandedData = await router.expandPageData(formData);
-    let formObject = JSON.parse(expandedData);
+    let formObject = JSON.parse(expandedData); 
     if (formObject.optional_fields) formObject.showOptional = true;
     formObject = await _runOnLoadJavascript(formObject);
     form_runner.setDataByHost(host, formObject);
+}
+
+async function elementRendered(host) {
+    const formObject = form_runner.getDataByHost(host);
+    formObject._form_host_element = host;
+    formObject._form_shadowroot = form_runner.getShadowRootByHost(host);
+    await _runOnRenderedJavascript(formObject);
 }
 
 async function close(element) {
@@ -46,30 +53,37 @@ async function formSubmitted(element) {
     }
 }
 
-async function _runOnSubmitJavascript(retObject, form) {
-    if (!form.submit_javascript) return;
-    const onsubmitjs =  (Array.isArray(form.submit_javascript)?form.submit_javascript:[form.submit_javascript]).join("\n");
-
-    const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
-    const submit_js_result = await (new AsyncFunction(onsubmitjs))(retObject);
-    if (!submit_js_result) {
-        LOG.error(`Submit failed due to failed on submit javascript`);
-        return false;
-    }
-}
-
 async function _runOnLoadJavascript(form) {
-    if (!form.load_javascript) return form;
-    const onloadjs = (Array.isArray(form.load_javascript)?form.load_javascript:[form.load_javascript]).join("\n");
-
-    const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
-    const load_js_result = await (new AsyncFunction(onloadjs))(form);
+    const onloadjsFunction = _getFromPropertyJSAsFunction(form, "load_javascript");
+    if (!onloadjsFunction) return form;
+    const load_js_result = await onloadjsFunction(form);
     if (!load_js_result) {
         LOG.error(`Form load JS failed`);
         return form;
     } else return load_js_result;
 }
 
+async function _runOnRenderedJavascript(form) {
+    const renderedFunction = _getFromPropertyJSAsFunction(form, "rendered_javascript");
+    if (!renderedFunction) return;
+    const rendered_js_result = await renderedFunction(form);
+    if (!rendered_js_result) LOG.error(`Form render failed due to failed on render javascript`);
+}
+
+async function _runOnSubmitJavascript(retObject, form) {
+    const onsubmitjsFunction = _getFromPropertyJSAsFunction(form, "submit_javascript");
+    if (!onsubmitjsFunction) return;
+    const submit_js_result = await onsubmitjsFunction(retObject, form);
+    if (!submit_js_result) LOG.error(`Submit failed due to failed on submit javascript`);
+}
+
+function _getFromPropertyJSAsFunction(form, property) {
+    if (!form[property]) return null;
+    const propertyjs = (Array.isArray(form[property])?form[property]:[form[property]]).join("\n");
+    const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+    return new AsyncFunction(propertyjs);
+}
+
 const trueWebComponentMode = true;	// making this false renders the component without using Shadow DOM
-export const form_runner = {trueWebComponentMode, elementConnected, close, formSubmitted};
+export const form_runner = {trueWebComponentMode, elementConnected, elementRendered, close, formSubmitted};
 monkshu_component.register("form-runner", `${COMPONENT_PATH}/form-runner.html`, form_runner);

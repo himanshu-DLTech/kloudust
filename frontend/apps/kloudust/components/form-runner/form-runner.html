@@ -171,7 +171,8 @@ span#submit {
     {{#style}}style="{{{.}}}"{{/style}} 
     {{#validation_error}}oninvalid="this.setCustomValidity('{{.}}')"{{/validation_error}}
     {{#validation_error}}oninput="setCustomValidity('')"{{/validation_error}} 
-    {{#readonly}}readonly{{/readonly}}>
+    {{#readonly}}readonly{{/readonly}}
+    {{#list}}list="{{.}}"{{/list}}>
 </{{^inputtype}}input{{/inputtype}}{{#inputtype}}{{.}}{{/inputtype}}>
 {{/multioption}}
 
