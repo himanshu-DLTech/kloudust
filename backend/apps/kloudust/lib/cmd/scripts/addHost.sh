@@ -70,6 +70,7 @@ else
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install sshpass; then exitFailed; fi
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install net-tools iptables-persistent; then exitFailed; fi
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install qemu-system-x86 libvirt-daemon-system libvirt-clients bridge-utils virtinst libosinfo-bin guestfs-tools tuned genisoimage; then exitFailed; fi
+    if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install ufw; then exitFailed; fi
     # Remove snapd on Ububtu as it opens outgoing connections to the snap store
     snap list | egrep -v 'base$|snapd$|Notes$' | awk '{print $1}' | xargs -I{} sudo snap remove {} --purge && sudo apt purge -y snapd && rm -rf ~/snap
     apt -y autoremove && apt-mark hold snapd
@@ -101,7 +102,8 @@ if ! tuned-adm profile virtual-host; then exitFailed; fi
 
 printf "\n\nEnabling virtual networking\n"
 if [ -f "`which yum`" ]; then 
-    if ! sudo yum -y install https://repos.fedorapeople.org/repos/openstack/openstack-antelope/rdo-release-antelope-1.el9s.noarch.rpm openvswitch; then exitFailed; fi
+    if ! sudo yum -y install https://fedorapeople.org/groups/repos/openstack/archived/openstack-antelope/rdo-release-antelope-1.el9s.noarch.rpm; then exitFailed; fi
+    if ! sudo yum -y install openvswitch; then exitFailed; fi
     if ! sudo systemctl enable --now openvswitch; then exitFailed; fi
 else
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install openvswitch-switch openvswitch-common  openvswitch-switch-dpdk; then exitFailed; fi
@@ -149,7 +151,11 @@ if ! ufw default allow outgoing; then exitFailed; fi
 if ! ufw allow $NEW_SSH_PORT; then exitFailed; fi
 if ! systemctl enable ufw; then exitFailed; fi
 if ! ufw --force enable; then exitFailed; fi
-if ! systemctl restart sshd; then exitFailed; fi
+if [ -f "`which yum`" ]; then 
+    if ! systemctl restart sshd; then exitFailed; fi
+else 
+    if ! systemctl restart ssh; then exitFailed; fi
+fi
 
 printf "\n\nSystem initialization finished successfully, reboot needed\n"
 printConfig $JSONOUT_SPLITTER
