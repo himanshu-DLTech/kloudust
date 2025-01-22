@@ -113,7 +113,7 @@
     "required_label": "{{{i18n.Required}}}",
     "required_fields": [
     {"id": "vm_name", "type": "text", "placeholder": "{{{i18n.VMName}}}", "required": true, 
-        "pattern":"\\s[0-9a-zA-Z]+\\s", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+        "pattern":"\\s[0-9a-zA-Z-]+\\s", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
     {"id": "vm_description", "type": "text", "placeholder": "{{{i18n.VMDescription}}}", "required": true},
     {"id": "cores", "type": "number", "placeholder": "{{{i18n.VMCores}}}", "required": true, 
         "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
