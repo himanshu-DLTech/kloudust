@@ -85,5 +85,9 @@
     "CREATE TABLE hostipmapping(host varchar , internalip varchar ,externalip varchar UNIQUE, \
         timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
 
+    // vlanresourcemapping table
+    "CREATE TABLE vlanresourcemapping(vlanid varchar not null, resourceid varchar not null, resourcetype varchar not null, \
+        timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
+        
     "COMMIT TRANSACTION"
 ]

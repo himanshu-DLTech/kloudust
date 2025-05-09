@@ -170,6 +170,14 @@ async function createVM(params, kdResource, hostInfo, vlanDetails, vm_name, vm_d
         params.consoleHandlers.LOGERROR("DB failed");
         return { ...results, result: false };
     }
+    let vm = await dbAbstractor.getVM(vm_name);
+    if (!vm) {
+        return logAndReturnError(params, `The VM was not added successfully to the DB.`);
+    }
+    if (!(await dbAbstractor.addVlanResourceMapping(vlanDetails.id, vm.id, "vm"))) {
+        params.consoleHandlers.LOGERROR("DB failed");
+        return { ...results, result: false };
+    }
     return results;
 }
 

@@ -1190,6 +1190,34 @@ exports.getVMsForVnet = async function(vnet_id, project=KLOUD_CONSTANTS.env.prj,
 }
 
 /**
+ * Add a mapping into the vlanresourcemapping table
+ * @param {string} vlan_id The ID of the vlan as of the the vlan table
+ * @param {string} resource_id The ID of the resource attached to the vlan
+ * @param {string} resource_type The type of resource that belongs to the vlan, for example VM, docker container, router etc.
+ * @returns {boolean} true if the entry is successful else false
+ */
+exports.addVlanResourceMapping = async function(vlan_id, resource_id, resource_type) {
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}    
+
+    const query = "insert into vlanresourcemapping(vlanid, resourceid, resourcetype) values(?,?,?)";
+    const results = await _db().getQuery(query, [vlan_id, resource_id, resource_type]);
+    return results;
+}
+
+/**
+ * Get the VLAN name of a VM from it's ID
+ * @param {string} vm_id The ID of the VM
+ * @returns {string} The name of the vlan.
+ */
+exports.getVlanNameFromVMID = async function(vm_id) {
+    if (!roleman.checkAccess(roleman.ACTIONS.lookup_project_resource)) {_logUnauthorized(); return false;}
+
+    const query = "select name from vlan where id = (select vlanid from vlanresourcemapping where resourceid = ?);"
+    const results = await _db().getQuery(query, [vm_id]);
+    return results;
+}
+
+/**
  * Runs the given SQL on the DB blindly. Must be very careful. Only cloud admins can run this.
  * @param sql The SQL to run on the DB.
  * @return The results of the SQL.
