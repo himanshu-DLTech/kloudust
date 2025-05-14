@@ -47,7 +47,9 @@ fi
 sudo ip link set up dev $VLAN_NAME                                                    # Bring the VxLAN up
 sudo ip link set up dev $BR_NAME                                                      # Bring the Bridge up
 
-
+sudo ufw allow proto udp from any to any port 8472 ; sudo ufw reload                  # Update firewall
+ 
+ 
 #########################################################################################################
 # This section adds a new ethernet pair to the VLAN and attaches to the existing VM
 #########################################################################################################
