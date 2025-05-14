@@ -47,7 +47,7 @@ fi
 sudo ip link set up dev $VLAN_NAME                                                    # Bring the VxLAN up
 sudo ip link set up dev $BR_NAME                                                      # Bring the Bridge up
 
-sudo ufw allow proto udp from any to any port 8472 ; sudo ufw reload                  # Update firewall
+sudo ufw allow proto udp from any to any port 8472 ; sudo ufw reload                  # Fix firewall for VxLAN ports
  
  
 #########################################################################################################
