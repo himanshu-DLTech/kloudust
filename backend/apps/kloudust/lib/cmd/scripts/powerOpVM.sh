@@ -3,17 +3,26 @@
 # Params
 # {1} - Domain / VM name
 # {2} - The operation to perform
+# {3} - Optional WAIT time before checking state (in seconds)
 
-NAME="{1}"
+VM_NAME="{1}"
 POWER_OP="{2}"
+WAIT_TIME="${3:-10}"
 
 function exitFailed() {
     echo Failed
     exit 1
 }
 
-printf "Power operating $NAME to $POWER_OP\n"
-if ! virsh $POWER_OP $NAME; then exitFailed; fi
+function backgroundCheckAndStartIfNeeded() {
+    (
+        sleep "$WAIT_TIME"
+        STATE=$(virsh domstate "$VM_NAME" | xargs)
+        if [ "$STATE" == "shut off" ]; then virsh start "$VM_NAME"; fi
+    ) &
+}
 
-printf "\n\nPower operation $POWER_OP successful on $NAME\n"
+echo "Power operating $VM_NAME to $POWER_OP"
+if ! virsh "$POWER_OP" "$VM_NAME"; then exitFailed; fi
+if [[ "$POWER_OP" == "reboot" || "$POWER_OP" == "reset" ]]; then backgroundCheckAndStartIfNeeded; fi
 exit 0
