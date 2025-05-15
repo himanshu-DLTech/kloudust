@@ -8,6 +8,7 @@
 const roleman = require(`${KLOUD_CONSTANTS.LIBDIR}/roleenforcer.js`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
 const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
+const firewallVM = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/firewallvm.js`);
 
 /**
  * Lists the host catalog
@@ -15,20 +16,22 @@ const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
  */
 module.exports.exec = async function(params) {
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource_for_project)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
-    const [name , rules, desc] = [...params]
-    if(!rules){params.consoleHandlers.LOGERROR("enter ip adress and port"); return CMD_CONSTANTS.FALSE_RESULT("enter ip adress and port");}
-    const parseBoolean = (str) => str.toLowerCase() === "true";
-    const ruleSets =  rules.split('|').map(rule => {
-        const [direction, allow, protocol, ip, port] = rule.split(',');
-        return {
-            direction,
-            allow: parseBoolean(allow),
-            protocol,
-            ip,
-            port
-        };
-    });
-    const dbUpdateSuccess = await dbAbstractor.addOrUpdateFirewallRulesToDB(name, JSON.stringify(ruleSets), desc);
+    const [ruleset_name] = [...params]
+    if(!ruleset_name){params.consoleHandlers.LOGERROR("Please provide the ruleset name"); return CMD_CONSTANTS.FALSE_RESULT("Please provide the ruleset name");}
+   
+    const firewallResources = await dbAbstractor.getFirewallResources(ruleset_name);
+
+    for (const resource of firewallResources) {
+        if(resource.resourcetype === "vm"){
+            const vm_name = await dbAbstractor.getVMNameFromID(resource.resourceid);
+            const locparams = ["remove",vm_name,ruleset_name];
+            locparams.consoleHandlers = params.consoleHandlers;
+            await firewallVM.exec(locparams);  
+        }
+    }
+
+    const dbUpdateSuccess = await dbAbstractor.deleteFirewallRules(ruleset_name);
+    
     if (dbUpdateSuccess) return { result: true };
 
     params.consoleHandlers.LOGERROR("DB failed");

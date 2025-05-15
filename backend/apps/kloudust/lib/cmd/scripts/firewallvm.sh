@@ -3,6 +3,7 @@
 RULES_JSON="{1}"  
 PUBLIC_IP="{2}"  
 PVT_IP="{3}"
+OP="{4}"
 
 function exitFailed() {
     echo "Failed"
@@ -14,6 +15,11 @@ if ! command -v jq &> /dev/null; then
     sudo apt update && sudo apt install -y jq || exitFailed
 fi
 
+if [[ $OP == "remove" ]]; then
+    ACTION="-D";
+else
+    ACTION="-I";
+fi
 
 echo "$RULES_JSON" | jq -c '.[]' | while read -r rule; do
     DIRECTION=$(echo "$rule" | jq -r '.direction')
@@ -42,20 +48,29 @@ echo "$RULES_JSON" | jq -c '.[]' | while read -r rule; do
     if [[ "$DIRECTION" == "in" ]]; then
         FROM_IP="$IP"
         TO_IP="$PUBLIC_IP"
-        RULE="iptables -t raw -I PREROUTING -p $PROTOCOL -s $FROM_IP -d $TO_IP $PORT_OPTION -j $TARGET"
-        CHECK_RULE="iptables -t raw -C PREROUTING -p $PROTOCOL -s $FROM_IP -d $TO_IP $PORT_OPTION -j $TARGET"
+        
     else
         FROM_IP="$PVT_IP"
         TO_IP="$IP"
-        RULE="iptables -t raw -I PREROUTING -p $PROTOCOL -s $FROM_IP -d $TO_IP $PORT_OPTION -j $TARGET"
-        CHECK_RULE="iptables -C OUTPUT -p $PROTOCOL -s $FROM_IP -d $TO_IP $PORT_OPTION -j $TARGET"
+        # RULE="iptables -t raw $ACTION PREROUTING -p $PROTOCOL -s $FROM_IP -d $TO_IP $PORT_OPTION -j $TARGET"
+        # CHECK_RULE="iptables -C OUTPUT -p $PROTOCOL -s $FROM_IP -d $TO_IP $PORT_OPTION -j $TARGET"
     fi
 
+    RULE="iptables -t raw $ACTION PREROUTING -p $PROTOCOL -s $FROM_IP -d $TO_IP $PORT_OPTION -j $TARGET"
+    CHECK_RULE="iptables -t raw -C PREROUTING -p $PROTOCOL -s $FROM_IP -d $TO_IP $PORT_OPTION -j $TARGET"
+
     if $CHECK_RULE 2>/dev/null; then
-        echo "Rule already exists"
+        if [[ $OP == "remove" ]]; then
+            eval "$RULE" || exitFailed
+        else
+            echo "Rule already exists"
+        fi
     else
-        echo "Applying rule"
-        eval "$RULE" || exitFailed
+        if [[ $OP == "apply" ]]; then
+            eval "$RULE" || exitFailed
+        else
+            echo "Rule doesn't exist"
+        fi
     fi
 done
 

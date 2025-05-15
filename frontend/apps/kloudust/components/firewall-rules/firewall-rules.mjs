@@ -20,12 +20,19 @@ function elementRendered(host) {
 	_addFirstFirewallRuleRow(shadowRoot);
 }
 
-function addRow(callingRow) {
+function addRow(callingRow,passedData) {
 	const shadowRoot = firewall_rules.getShadowRootByContainedElement(callingRow);
 	const templateRow = shadowRoot.querySelector("template#rulesrowtemplate");
 	const nodesToInject = templateRow.content.cloneNode(true);
 	if (callingRow.nextSibling) callingRow.parentNode.insertBefore(nodesToInject, callingRow.nextSibling);
 	else callingRow.parentNode.appendChild(nodesToInject);
+	if(passedData){
+		callingRow.querySelector('[name="direction"]').value = passedData.direction;
+		callingRow.querySelector('[name="allow"]').value = passedData.allow;
+		callingRow.querySelector('[name="protocol"]').value = passedData.protocol;
+		callingRow.querySelector('#ip').value = passedData.ip;
+		callingRow.querySelector('#port').value = passedData.port;
+	}
 	console.debug(JSON.stringify(_getValue(firewall_rules.getHostElementByContainedElement(callingRow))));
 	data = _getValue(firewall_rules.getHostElementByContainedElement(callingRow));
 	console.log(data);
@@ -78,5 +85,9 @@ function values(){
 	return rules ;
 }
 
-export const firewall_rules = {trueWebComponentMode: true, elementConnected,values, elementRendered,_getValue, addRow, removeRow}
+function updateRow(callingRow) {
+	data = _getValue(firewall_rules.getHostElementByContainedElement(callingRow));
+}
+
+export const firewall_rules = {trueWebComponentMode: true, elementConnected,values, elementRendered,_getValue, addRow, removeRow, updateRow}
 monkshu_component.register("firewall-rules", `${COMPONENT_PATH}/firewall-rules.html`, firewall_rules);

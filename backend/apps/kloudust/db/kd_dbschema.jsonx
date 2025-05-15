@@ -69,7 +69,7 @@
         timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
 
     // firewallrulesets table
-    "CREATE TABLE firewallrulesets(id varchar not null primary key, name varchar, \
+    "CREATE TABLE firewallrulesets(id varchar not null primary key, name varchar, description varchar, \
         projectid varchar,rules varchar not null, \
         timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
 
@@ -88,6 +88,10 @@
     // vlanresourcemapping table
     "CREATE TABLE vlanresourcemapping(vlanid varchar not null, resourceid varchar not null, resourcetype varchar not null, \
         timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
-        
+    
+    // firewallresourcemapping table
+    "CREATE TABLE firewallresourcemapping(rulesetid varchar not null, resourceid varchar not null, resourcetype varchar not null, \
+        timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
+
     "COMMIT TRANSACTION"
 ]

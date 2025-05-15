@@ -15,6 +15,7 @@ const unassignIPToVM = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/unassignIPToVM.js`
 const {xforge} = require(`${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/xforge`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
 const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
+const firewallVM = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/firewallvm.js`);
 
 /**
  * Deletes the given VM
@@ -26,7 +27,15 @@ module.exports.exec = async function(params) {
 
     const vm = await dbAbstractor.getVM(vm_name);
     if (!vm) {params.consoleHandlers.LOGERROR("Bad VM name or VM not found"); return CMD_CONSTANTS.FALSE_RESULT();}
+    
+    const VMFirewalls = await dbAbstractor.getVMFirewalls(vm.id);
 
+    for (const firewall of VMFirewalls) {
+        const locparams = ["remove",vm.name_raw,firewall.name];
+        locparams.consoleHandlers = params.consoleHandlers;
+        await firewallVM.exec(locparams);  
+    }
+    
     if(vm.publicip){
     const unassignIpParam = [...params];
     unassignIpParam.push(vm.publicip);

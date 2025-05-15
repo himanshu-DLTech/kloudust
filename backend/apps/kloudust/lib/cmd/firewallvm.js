@@ -18,7 +18,7 @@ module.exports.exec = async function (params) {
         return CMD_CONSTANTS.FALSE_RESULT();
     }
 
-    const [rawVmName, ruleSetName] = [...params];
+    const [firewallOp, rawVmName, ruleSetName] = [...params];
     const vmName = exports.resolveVMName(rawVmName);
     const vmDetails = await dbAbstractor.getVM(vmName);
 
@@ -40,7 +40,7 @@ module.exports.exec = async function (params) {
     if (!hostDetails) {
         params.consoleHandlers.LOGERROR("Host of assigned ip not found"); return CMD_CONSTANTS.FALSE_RESULT()
     }
-    const rules =firewallRules.replace(/"/g, '\\"');
+    const rules = JSON.stringify(JSON.parse(firewallRules.rules).reverse()).replace(/"/g, '\\"');
 
     const xforgeArgs = {
         colors: KLOUD_CONSTANTS.COLORED_OUT,
@@ -48,10 +48,14 @@ module.exports.exec = async function (params) {
         console: params.consoleHandlers,
         other: [
             hostDetails.hostaddress, hostDetails.rootid, hostDetails.rootpw, hostDetails.hostkey, hostDetails.port,
-            `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/firewallvm.sh`, rules,vmDetails.publicip,vmDetails.ips
+            `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/firewallvm.sh`, rules,vmDetails.publicip,vmDetails.ips,firewallOp
         ]
     };
-
+    if(firewallOp=="remove"){
+        await dbAbstractor.deleteFirewallResourceMapping(firewallRules.id,vmDetails.id,'vm');
+    }else{
+        await dbAbstractor.addFirewallResourceMapping(firewallRules.id,vmDetails.id,'vm');
+    }
     return await xforge(xforgeArgs);
 };
 
