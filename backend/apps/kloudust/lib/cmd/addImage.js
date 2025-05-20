@@ -1,17 +1,19 @@
 /** 
  * addImage.js - Adds the given image to the host catalog
  * 
- * Params - 0 - name - The resource identifying name 
+ * Params - 
+ * 0 - name - The resource identifying name 
  *      should use format osname_major_minor_architecture
  *      eg ubuntu-server_22_04_amd64
- *  1 - URI - usually the download URL, 2 - processor
- *  architecture eg amd64, 3 - longer description, 
+ *  1 - URI - usually the download URL, 
+ *  2 - processor architecture eg amd64, 
+ *  3 - longer description, 
  *  4 - extra information usually this is the image type, 
  *      eg centos8:img where centos8 is KVM OS variant and img
  *      implies it is a cloud image not an ISO
- *  5 - run as a job - if true then runs the operation as
- *  async job in the backend, 6 - retry automatically on 
- *  failure if this is set to true
+ *  5 - run as a job - if true then runs the operation as async 
+ *      job in the backend,
+ *  6 - retry automatically on failure if this is set to true
  * 
  * The command will update the database and the hosts local
  * catalog. The hosts' local catalog is not supposed to be 

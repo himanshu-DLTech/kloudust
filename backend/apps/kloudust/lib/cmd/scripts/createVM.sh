@@ -121,6 +121,7 @@ else
     DISK="$DISK",size=$DISK_SIZE
     BOOTCMD="--cdrom /kloudust/catalog/$INSTALL_DISK"
     CLOUD_INIT=""
+    ISO_VNC_ARGS="--graphics vnc,listen=0.0.0.0"
 fi
 
 
@@ -139,7 +140,7 @@ if [[ "$OS_VARIANT" = win* ]]; then
         if ! printf "#cloud-config\n\n$CLOUDINIT_USERDATA" > "$DISKIMAGEPATH"/user-data; then exitFailed; fi
         if ! printf "instance-id: windows-$ORG-$PROJECT-$RANDOMSTR\n" > "$DISKIMAGEPATH"/meta-data; then exitFailed; fi
         genisoimage -output $DISKPATH -V cidata -r -J "$DISKIMAGEPATH"/user-data "$DISKIMAGEPATH"/meta-data
-        CLOUD_INIT="--disk path=$DISKPATH,device=cdrom"
+        CLOUD_INIT="--disk path=$DISKPATH,device=cdrom --install no_install=yes"
     else
         echo !WARNING! $NAME is being initialized using a non-cloud ready image. Manual install will be required.
         CLOUD_INIT=""
@@ -169,6 +170,7 @@ if ! virt-install --name $NAME --metadata name=$NAME --metadata title="$DESCRIPT
     --noautoconsole \
     --virt-type kvm \
     --video model=qxl,heads=1 \
+    $ISO_VNC_ARGS \
     $VIRT_INSTALL_PARAMS \
     $QEMU_GUEST_AGENT \
     $WIN_KVM_ARGS \
@@ -191,6 +193,7 @@ INSTALL="virt-install --name $NAME --metadata name=$NAME --metadata title=\"$DES
     --noautoconsole \
     --virt-type kvm \
     --video model=qxl,heads=1 \
+    $ISO_VNC_ARGS \
     $VIRT_INSTALL_PARAMS \
     $QEMU_GUEST_AGENT \
     $WIN_KVM_ARGS \

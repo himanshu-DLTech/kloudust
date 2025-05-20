@@ -56,7 +56,7 @@ module.exports.exec = async function(params) {
         ostype = "linux2018";
     }
 
-    const fromCloudImg = imgtype?.toLowerCase().endsWith(".iso") ? "false": "true";  // only ISOs are installable disks
+    const fromCloudImg = imgtype?.toLowerCase().endsWith("iso") ? "false": "true";  // only ISOs are installable disks
     if (!fromCloudImg) params.consoleHandlers.LOGWARN("Not a cloud capable image, VM will probably not work");
 
     const xforgeArgs = {
