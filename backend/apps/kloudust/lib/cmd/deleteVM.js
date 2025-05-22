@@ -11,9 +11,11 @@
 
 const roleman = require(`${KLOUD_CONSTANTS.LIBDIR}/roleenforcer.js`);
 const createVM = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/createVM.js`);
+const unassignIPToVM = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/unassignIPToVM.js`)
 const {xforge} = require(`${KLOUD_CONSTANTS.LIBDIR}/3p/xforge/xforge`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
 const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
+const firewallVM = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/firewallvm.js`);
 
 /**
  * Deletes the given VM
@@ -25,14 +27,33 @@ module.exports.exec = async function(params) {
 
     const vm = await dbAbstractor.getVM(vm_name);
     if (!vm) {params.consoleHandlers.LOGERROR("Bad VM name or VM not found"); return CMD_CONSTANTS.FALSE_RESULT();}
+    
+    const VMFirewalls = await dbAbstractor.getVMFirewalls(vm.id);
 
+    for (const firewall of VMFirewalls) {
+        const locparams = ["remove",vm.name_raw,firewall.name];
+        locparams.consoleHandlers = params.consoleHandlers;
+        await firewallVM.exec(locparams);  
+    }
+    
+    if(vm.publicip){
+    const unassignIpParam = [...params];
+    unassignIpParam.push(vm.publicip);
+    unassignIpParam.consoleHandlers = params.consoleHandlers
+    const isIpUnassigned = await unassignIPToVM.exec(unassignIpParam);;
+    if(!isIpUnassigned.result){params.consoleHandlers.LOGERROR("IP unassigment Failed"); return CMD_CONSTANTS.FALSE_RESULT();}
+    }
     const hostInfo = await dbAbstractor.getHostEntry(vm.hostname); 
     if (!hostInfo) {params.consoleHandlers.LOGERROR("Bad hostname for the VM or host not found"); return CMD_CONSTANTS.FALSE_RESULT();}
 
     const results = await exports.deleteVMFromHost(vm_name, hostInfo, params.consoleHandlers);
     
     if (results.result) {
-        if (await dbAbstractor.deleteVM(vm_name)) return results;
+        if (await dbAbstractor.deleteVM(vm_name)) {
+            if(!await dbAbstractor.deleteVlanResourceMapping(vm.id)) return {...results, result: false};
+            if(vm.vmtype === "loadbalanceraas" && !await dbAbstractor.deleteLB(vm.id)) return {...results, result: false}
+            return results;
+        }
         else {params.consoleHandlers.LOGERROR("DB failed"); return {...results, result: false};}
     } else return results;
 }
