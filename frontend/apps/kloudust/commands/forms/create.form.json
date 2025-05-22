@@ -17,7 +17,8 @@
     {"id": "createobjectstorage", "label": "{{{i18n.CreateObjectStorage}}}", "logo": "img/createobjectstorage.svg"},
     {"id": "createcloudfunction", "label": "{{{i18n.CreateContainer}}}", "logo": "img/createcontainer.svg"},
     {"id": "createmariadbm", "label": "{{{i18n.CreateMariaManagedDB}}}", "logo": "img/createmariadb.svg"},
-    {"id": "createwindowsvdi", "label": "{{{i18n.CreateWindowsVDI}}}", "logo": "img/createwindowsvdi.svg"}
+    {"id": "createwindowsvdi", "label": "{{{i18n.CreateWindowsVDI}}}", "logo": "img/createwindowsvdi.svg"},
+    {"id": "createloadbalancer", "label": "{{{i18n.CreateLoadbalancer}}}", "logo": "img/createloadbalancer.svg"}
 
 ]
 },
@@ -34,7 +35,8 @@
     "CreateMariaManagedDB": "Create serverless MariaDB",
     "CreateFunction": "Create cloud function",
     "CreateObjectStorage": "Create object storage",
-    "CreateWindowsVDI": "Create Windows VDI"
+    "CreateWindowsVDI": "Create Windows VDI",
+    "CreateLoadbalancer":"Create Load Balancer"
 },
 
 "hi": {

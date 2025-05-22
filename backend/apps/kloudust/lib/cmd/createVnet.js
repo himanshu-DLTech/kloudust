@@ -49,7 +49,7 @@ module.exports.exec = async function (params) {
 
 module.exports.createAnotherVlan = async function (vlan_name, vlan_description, vlan_id, hostInfo, params) {
     const vlanDetails = await dbAbstractor.getVlan(vlan_name);
-    const vlanGateway = getNextVlanIp(vlanDetails.vlangateway, await dbAbstractor.getVmIps(exports.VM_TYPE_VM));
+    const vlanGateway = getNextVlanIp(vlanDetails.vlangateway, await dbAbstractor.getVmIps());
     const vlanSubnet = vlanGateway.split('.').slice(0, 3).concat("0").join('.');
     return await executeVlanCreation(vlan_name, vlan_description, vlan_id, vlanGateway, vlanSubnet, hostInfo, params);
 

@@ -1,0 +1,15 @@
+<svg width="85" height="78" viewBox="0 0 85 78" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Smaller Green Plus Sign (scaled down and repositioned slightly) -->
+  <g transform="scale(0.6) translate(50, -5)">
+    <path d="M80 13.75H71.25V5C71.25 4.31 70.69 3.75 70 3.75C69.31 3.75 68.75 4.31 68.75 5V13.75H60C59.31 13.75 58.75 14.31 58.75 15C58.75 15.69 59.31 16.25 60 16.25H68.75V25C68.75 25.69 69.31 26.25 70 26.25C70.69 26.25 71.25 25.69 71.25 25V16.25H80C80.69 16.25 81.25 15.69 81.25 15C81.25 14.31 80.69 13.75 80 13.75Z" fill="#00C24E"/>
+  </g>
+
+  <!-- Bigger Load Balancer Icon (scaled and centered) -->
+  <g transform="translate(10, 10) scale(1.4)" fill="#688b9c" stroke="#688b9c">
+    <path d="M8,30H2V24H8ZM4,28H6V26H4Z"></path>
+    <path d="M19,30H13V24h6Zm-4-2h2V26H15Z"></path>
+    <path d="M30,30H24V24h6Zm-4-2h2V26H26Z"></path>
+    <path d="M16,10a4,4,0,1,1,4-4A4.0045,4.0045,0,0,1,16,10Zm0-6a2,2,0,1,0,2,2A2.002,2.002,0,0,0,16,4Z"></path>
+    <path d="M26,16H21a4.0045,4.0045,0,0,1-4-4H15a4.0045,4.0045,0,0,1-4,4H6a2.0023,2.0023,0,0,0-2,2v4H6V18h5A5.9694,5.9694,0,0,0,15,16.46V22h2V16.46A5.9694,5.9694,0,0,0,21,18h5v4h2V18A2.0023,2.0023,0,0,0,26,16Z"></path>
+  </g>
+</svg>

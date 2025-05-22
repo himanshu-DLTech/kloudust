@@ -92,6 +92,9 @@
     // firewallresourcemapping table
     "CREATE TABLE firewallresourcemapping(rulesetid varchar not null, resourceid varchar not null, resourcetype varchar not null, \
         timestamp integer default (cast(strftime('%s','now') || substr(strftime('%f','now'),4) as integer)))",
-
+    
+    // loadbalancers table
+    "CREATE TABLE loadbalancers(vm varchar,servers varchar,creds varchar)",
+    
     "COMMIT TRANSACTION"
 ]

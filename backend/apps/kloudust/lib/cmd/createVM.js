@@ -59,7 +59,7 @@ module.exports.exec = async function (params) {
     const vlanDetails = await dbAbstractor.getVlanFromHostname(vlan || 'default',vmHostname);
     if (!vlanDetails) return CMD_CONSTANTS.FALSE_RESULT("Failed to retrieve VLAN data");
 
-    const vm_ip = await getNextVmIp(vlanDetails.vlangateway, await dbAbstractor.getVmIps(exports.VM_TYPE_VM));
+    const vm_ip = await getNextVmIp(vlanDetails.vlangateway, await dbAbstractor.getVmIps());
     const isVxlanSetup = await setupVxlanIfNeeded(params,vmHostname, await dbAbstractor.getVlan(vlan || 'default'));
     if (!isVxlanSetup) {
         params.consoleHandlers.LOGERROR(`VXLAN setup failed, Check if the host IP is assigned; if not, add an internal IP. If the internal IP is already added, ensure that the IPs are correct,check the ips of ${vmHostname} or ${vlanDetails.hostname}`);

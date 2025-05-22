@@ -49,7 +49,11 @@ module.exports.exec = async function(params) {
     const results = await exports.deleteVMFromHost(vm_name, hostInfo, params.consoleHandlers);
     
     if (results.result) {
-        if (await dbAbstractor.deleteVM(vm_name)) return results;
+        if (await dbAbstractor.deleteVM(vm_name)) {
+            if(!await dbAbstractor.deleteVlanResourceMapping(vm.id)) return {...results, result: false};
+            if(vm.vmtype === "loadbalanceraas" && !await dbAbstractor.deleteLB(vm.id)) return {...results, result: false}
+            return results;
+        }
         else {params.consoleHandlers.LOGERROR("DB failed"); return {...results, result: false};}
     } else return results;
 }

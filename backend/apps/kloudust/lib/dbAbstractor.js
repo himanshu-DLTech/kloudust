@@ -240,6 +240,66 @@ exports.addOrUpdateVMToDB = async (name, description, hostname, os, cpus, memory
     return await _db().runCmd(query, [id, name, description, hostname, org, _getProjectID(), os, cpus, memory, JSON.stringify(disks), creation_cmd, name_raw, vmtype, ips,publicip]);
 }
 
+/**
+ * Adds the given VM to the catalog.
+ * @param {string} name The VM name
+ * @param {string} description The VM description
+ * @param {string} hostname The hostname
+ * @param {string} os The OS
+ */
+exports.addOrUpdateLBToDB = async (vm, servers, creds) => {
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}
+    creds.pass = crypt.encrypt(creds.pass);
+    const query = "replace into loadbalancers (vm, servers, creds) values (?,?,?)";
+    return await _db().runCmd(query, [vm, servers, JSON.stringify(creds)]);
+}
+
+/**
+ * Adds the given VM to the catalog.
+ * @param {string} name The VM name
+ * @param {string} description The VM description
+ * @param {string} hostname The hostname
+ * @param {string} os The OS
+ */
+exports.deleteLB = async (vm) => {
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}
+    const query = "delete from loadbalancers where vm = ?";
+    return await _db().runCmd(query, [vm]);
+}
+
+/**
+ * Adds the given VM to the catalog.
+ * @param {string} name The VM name
+ * @param {string} description The VM description
+ * @param {string} hostname The hostname
+ * @param {string} os The OS
+ */
+exports.updateLBServers = async (vm, servers) => {
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}
+
+    const query = "update loadbalancers set servers = ? where vm = ?";
+    return await _db().runCmd(query, [servers, vm]);
+}
+
+/**
+ * Adds the given VM to the catalog.
+ * @param {string} name The VM name
+ * @param {string} description The VM description
+ * @param {string} hostname The hostname
+ * @param {string} os The OS
+ */
+exports.getLB = async (vm) => {
+    if (!roleman.checkAccess(roleman.ACTIONS.lookup_cloud_resource_for_project)) {_logUnauthorized(); return false;}
+    const query = "select * from loadbalancers where vm = ?";
+    let results = await _db().getQuery(query, [vm]);
+    if ((!results) || (!results.length)) return null;
+    results = results[0];
+    let parsed_creds = JSON.parse(results.creds);
+    parsed_creds.pass = crypt.decrypt(parsed_creds.pass);
+    results.creds = JSON.stringify(parsed_creds);
+    return results;
+}
+
 exports.addOrUpdateFirewallRulesToDB = async (name, rules, desc, project = KLOUD_CONSTANTS.env.prj, org = KLOUD_CONSTANTS.env.org) => {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) { _logUnauthorized(); return false; }
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
@@ -372,11 +432,11 @@ exports.getVmsForHost = async (hostname, project = KLOUD_CONSTANTS.env.prj, org 
     return results;
 }
 
-exports.getVmIps = async (vmtype, project = KLOUD_CONSTANTS.env.prj, org = KLOUD_CONSTANTS.env.org) => {
+exports.getVmIps = async (project = KLOUD_CONSTANTS.env.prj, org = KLOUD_CONSTANTS.env.org) => {
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_project_resource)) { _logUnauthorized(); return false; }
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
 
-    results = await _db().getQuery("select ips from vms where vmtype = ? collate nocase", [vmtype]);
+    results = await _db().getQuery("select ips from vms",);
     if (!results.length) return [];
     return results.map(obj => obj.ips);
 }
@@ -582,6 +642,19 @@ exports.updateVMHost = async (vmid, newHostname) => {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {_logUnauthorized(); return false;}
 
     const updateResult = await _db().runCmd("update vms set hostname = ? where id = ? collate nocase", [newHostname, vmid]);
+    return updateResult;
+}
+
+
+/**
+ * Changes hostname hosting the given VM. Only cloud admins can run this.
+ * @param {string} name VM ID (getVM returns this)
+ * @param {string} newHostname New hostname
+ * @returns true on success or false otherwise
+ */
+exports.updateVMType = async (vmid, type) => {
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {_logUnauthorized(); return false;}
+    const updateResult = await _db().runCmd("update vms set vmtype = ? where id = ? collate nocase", [type, vmid]);
     return updateResult;
 }
 
@@ -1265,6 +1338,21 @@ exports.addVlanResourceMapping = async function(vlan_id, resource_id, resource_t
  * @param {string} resource_type The type of resource that belongs to the vlan, for example VM, docker container, router etc.
  * @returns {boolean} true if the entry is successful else false
  */
+exports.deleteVlanResourceMapping = async function(resource_id) {
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}    
+
+    const query = "delete from vlanresourcemapping where resourceid = ?";
+    const results = await _db().getQuery(query, [resource_id]);
+    return results;
+}
+
+/**
+ * Add a mapping into the firewall table
+ * @param {string} vlan_id The ID of the vlan as of the the vlan table
+ * @param {string} resource_id The ID of the resource attached to the vlan
+ * @param {string} resource_type The type of resource that belongs to the vlan, for example VM, docker container, router etc.
+ * @returns {boolean} true if the entry is successful else false
+ */
 exports.getFirewallResources = async function(name,project=KLOUD_CONSTANTS.env.prj, org=KLOUD_CONSTANTS.env.org) {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}    
     const id = `${org}_${project}_${name}`;
@@ -1274,7 +1362,7 @@ exports.getFirewallResources = async function(name,project=KLOUD_CONSTANTS.env.p
 }
 
 /**
- * Add a mapping into the vlanresourcemapping table
+ * Add a mapping into the firewall table
  * @param {string} vlan_id The ID of the vlan as of the the vlan table
  * @param {string} resource_id The ID of the resource attached to the vlan
  * @param {string} resource_type The type of resource that belongs to the vlan, for example VM, docker container, router etc.
@@ -1288,7 +1376,7 @@ exports.getVMFirewalls = async function(resource_id,project=KLOUD_CONSTANTS.env.
 }
 
 /**
- * Add a mapping into the vlanresourcemapping table
+ * Add a mapping into the firewall table
  * @param {string} vlan_id The ID of the vlan as of the the vlan table
  * @param {string} resource_id The ID of the resource attached to the vlan
  * @param {string} resource_type The type of resource that belongs to the vlan, for example VM, docker container, router etc.
@@ -1302,7 +1390,7 @@ exports.addFirewallResourceMapping = async function(ruleset_id, resource_id, res
     return results;
 }
 /**
- * Add a mapping into the vlanresourcemapping table
+ * Add a mapping into the firewall table
  * @param {string} vlan_id The ID of the vlan as of the the vlan table
  * @param {string} resource_id The ID of the resource attached to the vlan
  * @param {string} resource_type The type of resource that belongs to the vlan, for example VM, docker container, router etc.

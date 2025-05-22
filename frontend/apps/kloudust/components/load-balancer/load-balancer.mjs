@@ -12,43 +12,39 @@ function elementConnected(host) {
 		set: value=>_setValue(JSON.parse(value), host)});
 	const style = host.getAttribute("style")||"";
 	const data = {style_start: "<style>", style_end: "</style>", style};
-	firewall_rules.setDataByHost(host, data);
+	load_balancer.setDataByHost(host, data);
 }
 
 function elementRendered(host) {
-	const shadowRoot = firewall_rules.getShadowRootByHost(host);
+	const shadowRoot = load_balancer.getShadowRootByHost(host);
 	_addFirstFirewallRuleRow(shadowRoot);
 }
 
 function addRow(callingRow,passedData) {
-	const shadowRoot = firewall_rules.getShadowRootByContainedElement(callingRow);
+	const shadowRoot = load_balancer.getShadowRootByContainedElement(callingRow);
 	const templateRow = shadowRoot.querySelector("template#rulesrowtemplate");
 	const nodesToInject = templateRow.content.cloneNode(true);
 	if (callingRow.nextSibling) callingRow.parentNode.insertBefore(nodesToInject, callingRow.nextSibling);
 	else callingRow.parentNode.appendChild(nodesToInject);
 	if(passedData){
-		callingRow.querySelector('[name="direction"]').value = passedData.direction;
-		callingRow.querySelector('[name="allow"]').value = passedData.allow;
-		callingRow.querySelector('[name="protocol"]').value = passedData.protocol;
 		callingRow.querySelector('#ip').value = passedData.ip;
 		callingRow.querySelector('#port').value = passedData.port;
 	}
-	console.debug(JSON.stringify(_getValue(firewall_rules.getHostElementByContainedElement(callingRow))));
-	data = _getValue(firewall_rules.getHostElementByContainedElement(callingRow));
-	console.log(data);
+	console.debug(JSON.stringify(_getValue(load_balancer.getHostElementByContainedElement(callingRow))));
+	data = _getValue(load_balancer.getHostElementByContainedElement(callingRow));
 }
 
 function removeRow(callingRow) {
-	const shadowRoot = firewall_rules.getShadowRootByContainedElement(callingRow);
+	const shadowRoot = load_balancer.getShadowRootByContainedElement(callingRow);
 	const rulesContainer = shadowRoot.querySelector("div#rulecontainer");
 	callingRow.remove();
 	const allRows = rulesContainer.querySelectorAll("span#rulesrow");
 	if (!allRows.length) _addFirstFirewallRuleRow(shadowRoot);
-	data = _getValue(firewall_rules.getHostElementByContainedElement(callingRow));
+	data = _getValue(load_balancer.getHostElementByContainedElement(callingRow));
 }
 
 function _getValue(host) {
-	const shadowRoot = firewall_rules.getShadowRootByHost(host);
+	const shadowRoot = load_balancer.getShadowRootByHost(host);
 	const rulesContainer = shadowRoot.querySelector("div#rulecontainer");
 	const allRows = rulesContainer.querySelectorAll("span#rulesrow");
 	const rules = []; for (const row of allRows) {
@@ -64,7 +60,7 @@ function _getValue(host) {
 }
 
 function _setValue(rules, host) {
-	const shadowRoot = firewall_rules.getShadowRootByHost(host);
+	const shadowRoot = load_balancer.getShadowRootByHost(host);
 	const templateRow = shadowRoot.querySelector("template#rulesrowtemplate");
 	const rulesContainer = shadowRoot.querySelector("div#rulecontainer");
 	for (const rule of rules) {
@@ -87,8 +83,8 @@ function values(){
 }
 
 function updateRow(callingRow) {
-	data = _getValue(firewall_rules.getHostElementByContainedElement(callingRow));
+	data = _getValue(load_balancer.getHostElementByContainedElement(callingRow));
 }
 
-export const firewall_rules = {trueWebComponentMode: true, elementConnected,values, elementRendered,_getValue, addRow, removeRow, updateRow}
-monkshu_component.register("firewall-rules", `${COMPONENT_PATH}/firewall-rules.html`, firewall_rules);
+export const load_balancer = {trueWebComponentMode: true, elementConnected,values, elementRendered,_getValue, addRow, removeRow, updateRow}
+monkshu_component.register("load-balancer", `${COMPONENT_PATH}/load-balancer.html`, load_balancer);
