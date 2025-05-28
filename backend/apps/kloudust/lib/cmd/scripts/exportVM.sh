@@ -22,7 +22,7 @@ function exitFailed() {
 }
 
 if [ -z "$VM_NAME" ] || [ -z "$SFTP_USER" ] || [ -z "$SFTP_PASS" ] || [ -z "$SFTP_HOST" ] || [ -z "$DEST_DIR" ] || [ -z "$SFTP_PORT"]; then
-    echo "Usage: $0 <vm-name> <sftp-user> <sftp-password> <sftp-host> <remote-dir> <sftp-port>"
+    echo "Usage: $0 <vm-name> <sftp-user> <sftp-host> <sftp-password> <remote-dir> <sftp-port>"
     exit 1
 fi
 

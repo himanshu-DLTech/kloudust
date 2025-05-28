@@ -1,0 +1,91 @@
+{
+"id": "importvm",
+"command": "importVM",
+"type": "kloudust_cmdline",
+"kloudust_cmdline_params": ["vm_name", "sftp_user", "sftp_host", "sftp_pass", "destination_dir", "sftp_port", "override_host"],
+
+"title": "{{{i18n.VMImportTitle}}}",
+
+"i18n": {
+    "en": {
+        "VMImportTitle": "Import Virtual Machine from SFTP",
+        "VMImportDescription": "Import a Kloudust exported virtual machine in the cloud from and external SFTP. Complete the required tab then submit (Review advanced tab for additonal options)",
+        "VMName": "Virtual machine name",
+        "SFTPUser": "SFTP user name",
+        "SFTPHost": "SFTP host name",
+        "SFTPPassword": "SFTP password",
+        "SourceDir": "Source directory",
+        "SFTPPort": "SFTP port",
+        "FieldValidationErrorGeneric": "Validation error",
+        "ImportVMSubmitLabel": "Import",
+        "VMHostname": "Override host name",
+        "VMAdvanced": "Advanced options"
+    },
+    "hi": {
+        "VMImportTitle": "Import Virtual Machine from SFTP",
+        "VMImportDescription": "Import a Kloudust exported virtual machine in the cloud from and external SFTP. Complete the required tab then submit (Review advanced tab for additonal options)",
+        "VMName": "Virtual machine name",
+        "SFTPUser": "SFTP user name",
+        "SFTPHost": "SFTP host name",
+        "SFTPPassword": "SFTP password",
+        "SourceDir": "Source directory",
+        "SFTPPort": "SFTP port",
+        "FieldValidationErrorGeneric": "Validation error",
+        "ImportVMSubmitLabel": "Import",
+        "VMHostname": "Override host name",
+        "VMAdvanced": "Advanced options"
+    },
+    "ja": {
+        "VMImportTitle": "Import Virtual Machine from SFTP",
+        "VMImportDescription": "Import a Kloudust exported virtual machine in the cloud from and external SFTP. Complete the required tab then submit (Review advanced tab for additonal options)",
+        "VMName": "Virtual machine name",
+        "SFTPUser": "SFTP user name",
+        "SFTPHost": "SFTP host name",
+        "SFTPPassword": "SFTP password",
+        "SourceDir": "Source directory",
+        "SFTPPort": "SFTP port",
+        "FieldValidationErrorGeneric": "Validation error",
+        "ImportVMSubmitLabel": "Import",
+        "VMHostname": "Override host name",
+        "VMAdvanced": "Advanced options"
+    },
+    "zh": {
+        "VMImportTitle": "Import Virtual Machine from SFTP",
+        "VMImportDescription": "Import a Kloudust exported virtual machine in the cloud from and external SFTP. Complete the required tab then submit (Review advanced tab for additonal options)",
+        "VMName": "Virtual machine name",
+        "SFTPUser": "SFTP user name",
+        "SFTPHost": "SFTP host name",
+        "SFTPPassword": "SFTP password",
+        "SourceDir": "Source directory",
+        "SFTPPort": "SFTP port",
+        "FieldValidationErrorGeneric": "Validation error",
+        "ImportVMSubmitLabel": "Import",
+        "VMHostname": "Override host name",
+        "VMAdvanced": "Advanced options"
+    }
+},
+
+"form": {
+    "description": "{{{i18n.VMImportDescription}}}",
+
+    "required_label": "{{{i18n.Required}}}",
+    "required_fields": [
+        {"id": "vm_name", "type": "text", "placeholder": "{{{i18n.VMName}}}", "required": true, 
+        "pattern":"\\s*\\w+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+    {"id": "sftp_user", "type": "text", "placeholder": "{{{i18n.SFTPUser}}}", "required": true, "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+    {"id": "sftp_host", "type": "text", "placeholder": "{{{i18n.SFTPHost}}}", "required": true, "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+    {"id": "sftp_pass", "type": "text", "placeholder": "{{{i18n.SFTPPassword}}}", "required": true, "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+    {"id": "destination_dir", "type": "text", "placeholder": "{{{i18n.SourceDir}}}", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+    {"id": "sftp_port", "type": "text", "placeholder": "{{{i18n.SFTPPort}}}", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"}
+    ],
+    
+    "optional_label": "{{{i18n.VMAdvanced}}}",
+    "optional_fields": [
+    {"id": "override_host", "type": "text", "placeholder": "{{{i18n.VMHostname}}}", "value":"",
+        "pattern":"\\s[0-9a-zA-Z]+\\s", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"}
+    ],
+
+    "submitlabel": "{{{i18n.ImportVMSubmitLabel}}}"
+}
+
+}
