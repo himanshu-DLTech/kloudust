@@ -653,7 +653,7 @@ exports.updateVMHost = async (vmid, newHostname) => {
  * @returns true on success or false otherwise
  */
 exports.updateVMType = async (vmid, type) => {
-    if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {_logUnauthorized(); return false;}
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {_logUnauthorized(); return false;}
     const updateResult = await _db().runCmd("update vms set vmtype = ? where id = ? collate nocase", [type, vmid]);
     return updateResult;
 }
