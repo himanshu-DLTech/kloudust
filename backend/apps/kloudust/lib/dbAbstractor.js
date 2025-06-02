@@ -529,9 +529,10 @@ exports.getVlanFromHostname =  async (name,hostname, project = KLOUD_CONSTANTS.e
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_project_resource)) { _logUnauthorized(); return false; }
     project = roleman.getNormalizedProject(project); org = roleman.getNormalizedOrg(org);
 
-        results = await _db().getQuery("select * from vlan where hostname = ? and name = ? collate nocase", [hostname,name]);
+    const id = `${org}_${project}_${name}`;
+    const results = await _db().getQuery("select * from vlan where hostname = ? and id = ? collate nocase", [hostname, id]);
     if ((!results) || (!results.length)) return null;
-
+    
     const vlan = results[0];
     return vlan;
 }
