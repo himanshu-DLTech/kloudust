@@ -65,14 +65,20 @@ rm -rf "$TMPDIR"
 echo "IP address updated to $NEW_IP"
 
 printf "\n\nGenerating metadata\n"
-cat <<EOF > /kloudust/metadata/{2}.metadata
-NAME={2}
+cat <<EOF > "/kloudust/metadata/${CLONE_VM_NAME}.metadata"
+NAME="$CLONE_VM_NAME"
 EOF
-cat /kloudust/metadata/{1}.metadata | grep -v NAME >> /kloudust/metadata/{2}.metadata
-if ! virsh dumpxml {2} > /kloudust/metadata/{2}.xml; then exitFailed; fi
+cat "/kloudust/metadata/${VM_NAME}.metadata" | grep -v NAME >> "/kloudust/metadata/${CLONE_VM_NAME}.metadata"
+cat "/kloudust/vm_vlans/${VM_NAME}.vlan" | grep -v NAME >> "/kloudust/vm_vlans/${CLONE_VM_NAME}.vlan"
+
+if ! virsh dumpxml "$CLONE_VM_NAME" > "/kloudust/metadata/${CLONE_VM_NAME}.xml"; then exitFailed; fi
 
 printf "Enabling autostart"
-if ! virsh autostart {2}; then exitFailed; fi
+if ! virsh autostart "$CLONE_VM_NAME"; then exitFailed; fi
+
+printf "start VMs"
+if ! virsh start "$CLONE_VM_NAME"; then exitFailed; fi
+if ! virsh start "$VM_NAME"; then exitFailed; fi
 
 printf "\n\nClone successful\n"
 exit 0
