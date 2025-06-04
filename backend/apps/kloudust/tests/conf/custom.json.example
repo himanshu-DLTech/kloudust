@@ -1,0 +1,35 @@
+[
+    {
+        "commandName": "addProject",
+        "description": "Add a new project to the Kloudust platform",
+        "params": ["<new project name>", "<user's org>"]
+    },
+    {
+        "commandName": "addUserToProject",
+        "description": "Add a new user to an existing project",
+        "params": ["<new user name>", "<user's org>"]
+    },
+    {
+        "commandName": "addHost",
+        "description": "Add a new host to the Kloudust platform",
+        "params": ["<host name>", "<host ip>", "<os type>", "<admin id>", "<admin pass>", "<host sshkey>", "<ssh port>", 
+            "[cores]", "[memory]", "[disk]", "[net speed]", "[processor]", "[processor architecture]", 
+            "[sockets]", "[no change password]"]
+    },
+    {
+        "commandName": "addImage",
+        "description": "Add a new cloudinit image to the Kloudust platform",
+        "params": ["<image name>", "<image uri>", "<processor architecture>", "<description>", "<extrainfo>"]
+    },
+    {
+        "commandName": "createVM",
+        "description": "Create a new virtual machine",
+        "params": ["<vm name>", "<vm description>", "<cores>", "<memory>", "<disk>", "<creation image name>", 
+            "<cloudinit data>", "[......]", "[hostname]"]
+    },
+    {
+        "commandName": "getUserProjects",
+        "description": "Get all projects for a user",
+        "params": []
+    }
+]
