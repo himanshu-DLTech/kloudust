@@ -1,9 +1,9 @@
 {
 "id": "createobjectstorage",
-"command": "createobjectstorage",
+"command": "createVM",
 "type": "kloudust_cmdline",
-"kloudust_cmdline_params": ["vm_name", "vm_description", "cores", "memory", "disk", "vlan", "creation_image_name", "adminid", "adminpass", "storageAdminID", "storageAdminPassword", 
-    "force_overwrite", "host_overwrite", "ssl", "sslKey", "sslCert"],
+"kloudust_cmdline_params": ["vm_name", "vm_description", "cores", "memory", "disk", "vlan", "creation_image_name", "cloudinit_data", 
+    "force_overwrite", "cores", "memory", "additional_params" , "vmtype", "no_qemu_agent", "host_overwrite"],
 
 "title": "{{{i18n.VMCreateTitle}}}",
 
@@ -25,9 +25,8 @@
         "StorageAdminID": "Storage Admin ID",
         "StorageAdminPassword": "Storage Admin Password",
         "SSL": "Select as Yes if you want to enable SSL",
-        "SslKeyPlaceholder": "Paste the SSL Key here (required if SSL is enabled)",
-        "SslCertPlaceholder": "Paste the SSL Certificate here (required if SSL is enabled)",
-        "VLAN": "Choose VLAN"
+        "SSL_Key": "Paste the SSL Key here (required if SSL is enabled)",
+        "SSL_Cert": "Paste the Certificate here (required if SSL is enabled)"
     },
     "hi": {
         "VMCreateTitle": "Create Object storage",
@@ -46,9 +45,8 @@
         "StorageAdminID": "Storage Admin ID",
         "StorageAdminPassword": "Storage Admin Password",
         "SSL": "Select as Yes if you want to enable SSL",
-        "SslKeyPlaceholder": "Paste the SSL Key here (required if SSL is enabled)",
-        "SslCertPlaceholder": "Paste the SSL Certificate here (required if SSL is enabled)",
-        "VLAN": "Choose VLAN"
+        "SSL_Key": "Paste the SSL Key here (required if SSL is enabled)",
+        "SSL_Cert": "Paste the Certificate here (required if SSL is enabled)"
     },
     "ja": {
         "VMCreateTitle": "Create Object storage",
@@ -67,9 +65,8 @@
         "StorageAdminID": "Storage Admin ID",
         "StorageAdminPassword": "Storage Admin Password",
         "SSL": "Select as Yes if you want to enable SSL",
-        "SslKeyPlaceholder": "Paste the SSL Key here (required if SSL is enabled)",
-        "SslCertPlaceholder": "Paste the SSL Certificate here (required if SSL is enabled)",
-        "VLAN": "Choose VLAN"
+        "SSL_Key": "Paste the SSL Key here (required if SSL is enabled)",
+        "SSL_Cert": "Paste the Certificate here (required if SSL is enabled)"
     },
     "zh": {
         "VMCreateTitle": "Create Object storage",
@@ -88,9 +85,8 @@
         "StorageAdminID": "Storage Admin ID",
         "StorageAdminPassword": "Storage Admin Password",
         "SSL": "Select as Yes if you want to enable SSL",
-        "SslKeyPlaceholder": "Paste the SSL Key here (required if SSL is enabled)",
-        "SslCertPlaceholder": "Paste the SSL Certificate here (required if SSL is enabled)",
-        "VLAN": "Choose VLAN"
+        "SSL_Key": "Paste the SSL Key here (required if SSL is enabled)",
+        "SSL_Cert": "Paste the Certificate here (required if SSL is enabled)"
     }
 },
 
@@ -111,7 +107,7 @@
     {"id": "adminpass", "type": "hidden", "value": "8166faae1cac0f8fb18a3c1b5ee7561102b71d006768a1199dde6cbe407d35f561e2d2a6"},
     {"id": "creation_image_name", "type": "hidden", "value": "kd_object_storage_service"},
 
-    {"id": "vlan", "multioption": true, "type": "select", "label": "{{{i18n.VLAN}}}", "options":[]},
+    {"id": "vlan", "multioption": true, "type": "select", "label": "{{{i18n.vlan}}}", "options":[]},
     {"id": "storageAdminID", "type": "text", "required": true, "placeholder": "{{{i18n.StorageAdminID}}}", 
         "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
     {"id": "storageAdminPassword", "type": "text", "required": true, "placeholder": "{{{i18n.StorageAdminPassword}}}", 
@@ -120,14 +116,16 @@
 
     "optional_label": "{{{i18n.VMAdvanced}}}",
     "optional_fields": [
+    {"id": "additional_params", "type": "hidden", "value": ""},
+    {"id": "no_qemu_agent", "type": "hidden", "value": "false"},
     {"id": "force_overwrite", "multioption": true, "type": "select", "label": "{{{i18n.VMOverwriteForce}}}", 
         "options":[{"value":"false", "label":"{{{i18n.VMNo}}}"}, {"value":"true", "label":"{{{i18n.VMYes}}}"}]},
     {"id": "host_overwrite", "type": "text", "placeholder": "{{{i18n.VMOverwriteHostname}}}", "value":"",
         "pattern":"\\s[0-9a-zA-Z]+\\s", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
     {"id": "ssl", "multioption": true, "type": "select", "label": "{{{i18n.SSL}}}", 
         "options":[{"value":"false", "label":"{{{i18n.VMNo}}}"}, {"value":"true", "label":"{{{i18n.VMYes}}}"}]},
-    {"id": "sslKey", "type": "text", "inputtype": "textarea", "placeholder": "{{{i18n.SslKeyPlaceholder}}}", "validation_error": "{{{i18nFieldValidationErrorGeneric}}}"},
-    {"id": "sslCert", "type": "text", "inputtype": "textarea", "placeholder": "{{{i18n.SslCertPlaceholder}}}", "validation_error": "{{{i18nFieldValidationErrorGeneric}}}"}
+    {"id": "sslKey", "inputtype": "textarea", "type": "text", "placeholder": "{{{i18n.SSL_Key}}}", "validation_error": "{{{i18nFieldValidationErrorGeneric}}}"},
+    {"id": "sslCrt", "inputtype": "textarea", "type": "text", "placeholder": "{{{i18n.SSL_Cert}}}", "validation_error": "{{{i18nFieldValidationErrorGeneric}}}"}
     ],
 
     "load_javascript": [
@@ -144,8 +142,22 @@
 
     "submit_javascript": [
         "const retObject = arguments[0]||{};",
-        "retObject.sslKey = retObject.sslKey.replace(/\\n/g, '__NEWLINE__');",
-        "retObject.sslCert = retObject.sslCert.replace(/\\n/g, '__NEWLINE__');",
+        "let cloudinitTemplate = '';",
+        "if (retObject.ssl == 'true') {",
+        "    retObject.sslCrt = retObject.sslCrt.replace('\\n', '__NEWLINE__');",
+        "    retObject.sslKey = retObject.sslKey.replace('\\n', '__NEWLINE__');",
+        "    if(retObject.sslCrt.endsWith('__NEWLINE__') retObject.sslCrt = retObject.sslCrt + '__NEWLINE__';",
+        "    if(retObject.sslKey.endsWith('__NEWLINE__') retObject.sslKey = retObject.sslCrt + '__NEWLINE__';",
+        "    cloudinitTemplate = \"{system_info: {default_user: {name: \\u{007B}\\u{007B}\\u{007B}adminid\\u{007D}\\u{007D}\\u{007D}, home: /home/\\u{007B}\\u{007B}\\u{007B}adminid\\u{007D}\\u{007D}\\u{007D}, sudo: 'ALL=(ALL) NOPASSWD:ALL'}}, password: \\u{007B}\\u{007B}\\u{007B}adminpass\\u{007D}\\u{007D}\\u{007D}, chpasswd: {expire: false}, hostname: \\u{007B}\\u{007B}\\u{007B}vm_name\\u{007D}\\u{007D}\\u{007D}, ssh_pwauth: true, package_upgrade: true, packages: [net-tools], runcmd: [['mkdir', '-p', '/etc/minio/certs'], ['curl', '-X', 'POST', 'http://165.232.187.123:8080/save', '-H', 'Content-Type: text/plain', '--data', 'private.key__CONTENT__\\u{007B}\\u{007B}\\u{007B}sslKey\\u{007D}\\u{007D}\\u{007D}'], ['wget', '-O', '/etc/minio/certs/private.key', 'http://165.232.187.123:8080/download/private.key'], ['curl', '-X', 'POST', 'http://165.232.187.123:8080/save', '-H', 'Content-Type: text/plain', '--data', 'public.crt__CONTENT__\\u{007B}\\u{007B}\\u{007B}sslCrt\\u{007D}\\u{007D}\\u{007D}'], ['wget', '-O', '/etc/minio/certs/public.crt', 'http://165.232.187.123:8080/download/public.crt'], ['curl', '-X', 'POST', 'http://165.232.187.123:8080/save', '-H', 'Content-Type: text/plain', '--data', 'minio__CONTENT__MINIO_ROOT_USER=test__NEWLINE__MINIO_ROOT_PASSWORD=test__NEWLINE__MINIO_VOLUMES=__QUOTE__/kdstorage__QUOTE____NEWLINE__MINIO_OPTS=__QUOTE__--console-address :9001 --certs-dir /etc/minio/certs__QUOTE__'], ['wget', '-O', '/etc/default/minio', 'http://165.232.187.123:8080/download/minio'], ['systemctl','start','kdstorage.service']]}\"",
+        "}",
+        "else cloudinitTemplate = \"{system_info: {default_user: {name: \\u{007B}\\u{007B}\\u{007B}adminid\\u{007D}\\u{007D}\\u{007D}, home: /home/\\u{007B}\\u{007B}\\u{007B}adminid\\u{007D}\\u{007D}\\u{007D}, sudo: 'ALL=(ALL) NOPASSWD:ALL'}}, password: \\u{007B}\\u{007B}\\u{007B}adminpass\\u{007D}\\u{007D}\\u{007D}, chpasswd: {expire: false}, hostname: \\u{007B}\\u{007B}\\u{007B}vm_name\\u{007D}\\u{007D}\\u{007D}, ssh_pwauth: true, package_upgrade: true, packages: [net-tools], runcmd: [['sed','-i','s/^MINIO_ROOT_USER=.*/MINIO_ROOT_USER=\\u{007B}\\u{007B}\\u{007B}storageAdminID\\u{007D}\\u{007D}\\u{007D}/','/etc/default/minio'],['sed','-i','s/^MINIO_ROOT_PASSWORD=.*/MINIO_ROOT_PASSWORD=\\u{007B}\\u{007B}\\u{007B}storageAdminPassword\\u{007D}\\u{007D}\\u{007D}/','/etc/default/minio'],['systemctl','start','kdstorage.service']]}\";",
+        "const router = (await import(\"/framework/js/router.mjs\")).router;",
+        "const mustache = await router.getMustache();",
+        "const cloudInit = mustache.render(cloudinitTemplate, retObject);",
+        "LOG.info(`Generated cloudinit is: ${cloudInit}`);",
+        "retObject.cloudinit_data = cloudInit;",
+        "retObject.vmtype = APP_CONSTANTS.VM_TYPE_OBJECT_STORAGE || 'storage3';",
+        "if (retObject.override_host && retObject.override_host.trim() == '') delete retObject.override_host;",
         "return true;"
     ]
 }
