@@ -1,0 +1,6 @@
+{
+    "DEFAULT_PROJECT": "default",
+    "API_ENDPOINT": "apps/kloudust/kloudustcmd",
+    "X_API_KEY": "<monkshu's x api key>",
+    "AUTH_TOKEN": "<access_token>"
+}
