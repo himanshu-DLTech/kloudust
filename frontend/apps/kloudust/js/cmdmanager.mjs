@@ -59,8 +59,8 @@ async function formSubmitted(id, values) {
     if (form.type == AUTOMATION_CMDLINE) {
         const automationModule = (await import(`${APP_CONSTANTS.AUTOMATIONS_PATH}/${form.command}.mjs`))[form.command];
         const valueArray = []; for (const key of form.kloudust_cmdline_params) valueArray.push(values[key]);
-        automationModule.exec(valueArray, async (command, project)=>_kdcmd(RAW_COMMANDLINE_COMMAND, ["command"], {command}, project));
-    } else if (form.type == KLOUDUST_CMDLINE) await _kdcmd(form.command, form.kloudust_cmdline_params, values);
+        automationModule.exec(valueArray, async (command, project)=>kdcmd(RAW_COMMANDLINE_COMMAND, ["command"], {command}, project));
+    } else if (form.type == KLOUDUST_CMDLINE) await kdcmd(form.command, form.kloudust_cmdline_params, values);
 }
 
 function addAlert(id, text, isError) {
@@ -79,7 +79,7 @@ function getAlerts() {
 
 const clearAlerts = _ => $$.libsession.set(ALERT_OBJECT_KEY, {});
 
-async function _kdcmd(formCommand, formKloudust_cmdline_params, values, projectOverride) {
+async function kdcmd(formCommand, formKloudust_cmdline_params, values, projectOverride, disableAlertsAndSSE) {
     if (values._override_form_command) formCommand = values._override_form_command;
     let command = formCommand == RAW_COMMANDLINE_COMMAND?"":formCommand;
     const cmdLineMap = formKloudust_cmdline_params;
@@ -89,16 +89,16 @@ async function _kdcmd(formCommand, formKloudust_cmdline_params, values, projectO
     
     const project = projectOverride || $$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT, APP_CONSTANTS.DEFAULT_PROJECT);
     const alertID = Date.now();
-    _processCommandOutput(alertID, `Running command for project ${project} - ${command}`, false);
-    const cmdResult = await apiman.rest({url: APP_CONSTANTS.API_KLOUDUSTCMD, 
-        type: "POST", req: {cmd: command, project}, sendToken: true, sseURL: APP_CONSTANTS.API_SSE});
-    if (cmdResult?.result) {
-        _processCommandOutput(alertID, `Success. Command output follows.`);
-        if ((cmdResult.out||"").trim() != "") _processCommandOutput(alertID, cmdResult.out); 
-        if ((cmdResult.err||"").trim() != "") _processCommandOutput(alertID, cmdResult.err); 
-        _processCommandOutput(alertID, `Exit code: ${cmdResult.exitcode}`);
-    } else _processCommandOutput(alertID, `Command Failed for project ${project} - ${command}${cmdResult?.err?". Error was\n"+cmdResult.err:""}`, true);
-    return cmdResult;
+    if (!disableAlertsAndSSE) _processCommandOutput(alertID, `Running command for project ${project} - ${command}`, false);
+    const cmdResult = await apiman.rest({url: APP_CONSTANTS.API_KLOUDUSTCMD, type: "POST", 
+        req: {cmd: command, project}, sendToken: true, sseURL: disableAlertsAndSSE? null : APP_CONSTANTS.API_SSE});
+    if (!disableAlertsAndSSE) { if (cmdResult?.result) {
+            _processCommandOutput(alertID, `Success. Command output follows.`);
+            if ((cmdResult.out||"").trim() != "") _processCommandOutput(alertID, cmdResult.out); 
+            if ((cmdResult.err||"").trim() != "") _processCommandOutput(alertID, cmdResult.err); 
+            _processCommandOutput(alertID, `Exit code: ${cmdResult.exitcode}`);
+        } else _processCommandOutput(alertID, `Command Failed for project ${project} - ${command}${cmdResult?.err?". Error was\n"+cmdResult.err:""}`, true);
+    } return cmdResult;
 }
 
 function _processCommandOutput(id, text, isError=false) {
@@ -135,4 +135,4 @@ async function _getFormHTML(formJSON) {
 }
 
 export const cmdmanager = {registerCommand, cmdClicked, formSubmitted, closeForm, addAlert, getAlerts, clearAlerts,
-    reloadForm, isCloudAdminLoggedIn: roleman.isCloudAdminLoggedIn, ALERT_ERROR, ALERT_INFO};
+    reloadForm, isCloudAdminLoggedIn: roleman.isCloudAdminLoggedIn, ALERT_ERROR, ALERT_INFO, kdcmd};
