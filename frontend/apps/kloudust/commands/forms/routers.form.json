@@ -82,9 +82,8 @@
     ],
 
     "load_javascript": [
-        "const routers = await $$.libapimanager.rest(APP_CONSTANTS.API_KLOUDUSTCMD, 'POST', {",
-            "cmd: `listRouters \"${$$.libsession.get(APP_CONSTANTS.USERORG)}\" \"${$$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT)}\"`, ",
-            "project: $$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT)}, true);",
+        "const { cmdmanager } = await import(`${APP_CONSTANTS.LIB_PATH}/cmdmanager.mjs`);",
+        "const routers = await cmdmanager.kdcmd('listRouters', ['org', 'project'], {org: $$.libsession.get(APP_CONSTANTS.USERORG), project: $$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT)}, $$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT), true);",
         "for (const router of routers.routers||[]) {",
         "   router.datetime = new Date(router.timestamp).toLocaleDateString();",
         "   router.ips = router.vnet_ips.length === 0 ? 'No IPs Assigned' : router.vnet_ips.map(vi=>vi.ip).join(','); ",

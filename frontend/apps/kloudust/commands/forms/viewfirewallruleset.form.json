@@ -65,9 +65,9 @@
     ],
 
     "load_javascript": [
+        "const { cmdmanager } = await import(`${APP_CONSTANTS.LIB_PATH}/cmdmanager.mjs`);",
         "const ruleset_name = APP_CONSTANTS.ENV._firewallruleset_form_data.name",
-        "const firewallRuleset = await $$.libapimanager.rest(APP_CONSTANTS.API_KLOUDUSTCMD, 'POST', {",
-        "cmd: `getFirewallRuleset ${ruleset_name}`, ", "project: $$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT)}, true);",
+        "const firewallRuleset = await cmdmanager.kdcmd('getFirewallRuleset', ['ruleset'], {ruleset: ruleset_name}, $$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT), true);",
         "for(const ruleset of firewallRuleset.ruleset||[]) {ruleset.allow = ruleset.allow==='true'?'Allow':'Deny';}",
         "return {keys: ['direction','allow','protocol','ip','port'], table: firewallRuleset.ruleset||[]};"
     ]

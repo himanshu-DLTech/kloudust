@@ -69,13 +69,12 @@
     ],
     
     "load_javascript": [
+        "const { cmdmanager } = await import(`${APP_CONSTANTS.LIB_PATH}/cmdmanager.mjs`);",
         "const form = arguments[0] || {};",
-        "let vnets = await $$.libapimanager.rest(APP_CONSTANTS.API_KLOUDUSTCMD, 'POST', {",
-        "cmd: `listVnets`, ", "project: $$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT)}, true);",
+        "let vnets = await cmdmanager.kdcmd('listVnets', [], {}, $$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT), true);",
         "vnets = vnets.resources.map(v=>v.raw_name).filter(v=>!v.includes('backbone'));",
         "const router_name = APP_CONSTANTS.ENV._routers_form_data.name_raw;",
-        "const router = await $$.libapimanager.rest(APP_CONSTANTS.API_KLOUDUSTCMD, 'POST', {",
-        "cmd: `getRouter ${router_name}`, ", "project: $$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT)}, true);",
+        "const router = await cmdmanager.kdcmd('getRouter', ['router'], {router: router_name}, $$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT), true);",
         "const vnet_ips = (router?.router?.vnet_ips||[]).map(routerEntry => ({ip: routerEntry.ip,",
         "vnets: vnets.map(vnet => ({name: vnet,selected: vnet === routerEntry.vnet ? 'selected' : ''}))}));",
         "form.required_fields[4].value = JSON.stringify({vnets, vnet_ips})",

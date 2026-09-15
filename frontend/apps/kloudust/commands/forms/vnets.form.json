@@ -63,8 +63,8 @@
     ],
 
     "load_javascript": [
-        "const vnets = await $$.libapimanager.rest(APP_CONSTANTS.API_KLOUDUSTCMD, 'POST', {",
-            "cmd: `listVnets`, ", "project: $$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT)}, true);",
+        "const { cmdmanager } = await import(`${APP_CONSTANTS.LIB_PATH}/cmdmanager.mjs`);",
+        "const vnets = await cmdmanager.kdcmd('listVnets', [], {}, $$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT), true);",
         "const modIconList = await import(`${APP_CONSTANTS.FORM_MODULES_PATH}/iconlist.mjs`), tabledef = arguments[0];",
         "const html = await modIconList.iconlist.getHTML(tabledef.popupform, monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager);",
         "tabledef.onclickrow_html.push(html);",

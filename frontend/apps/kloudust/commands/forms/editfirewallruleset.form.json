@@ -55,10 +55,10 @@
 
     "submitlabel": "{{{i18n.FirewallSubmitLabel}}}",
     "load_javascript": [
+        "const { cmdmanager } = await import(`${APP_CONSTANTS.LIB_PATH}/cmdmanager.mjs`);",
         "const form = arguments[0] || {};",
         "const ruleset_name = APP_CONSTANTS.ENV._firewallruleset_form_data.name;",
-        "const firewallRuleset = await $$.libapimanager.rest(APP_CONSTANTS.API_KLOUDUSTCMD, 'POST', {",
-        "cmd: `getFirewallRuleset ${ruleset_name}`, ", "project: $$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT)}, true);",
+        "const firewallRuleset = await cmdmanager.kdcmd('getFirewallRuleset', ['ruleset'], {ruleset: ruleset_name}, $$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT), true);",
         "const transformedRules = (firewallRuleset.ruleset || []).map(rule => ({",
         "    ...rule,",
         "    direction_in: rule.direction === 'in',",
