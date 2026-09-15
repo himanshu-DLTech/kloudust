@@ -23,10 +23,19 @@ const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
  * @param {array} params The incoming params, see above for params
  */
 module.exports.exec = async function(params) {
-    if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT(); }
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource) && !roleman.checkAccess(roleman.ACTIONS.edit_org_data)) {
+        params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT(); }
 
-    const imgname = params[0], resource = await dbAbstractor.getHostResource(imgname);
-
+    const imgname = params[0]; 
+    if(roleman.isOrgAdminLoggedIn()) {  // if org admin then just delete the image from the org data, no need to update hosts
+        const deleteImgFromOrgData = await dbAbstractor.deleteOrgData(roleman.getCurrentOrg(), imgname);
+        if (!deleteImgFromOrgData) {
+            params.consoleHandlers.LOGERROR(`Error deleting image ${imgname} from org data.`);
+            return CMD_CONSTANTS.FALSE_RESULT();
+        } return CMD_CONSTANTS.TRUE_RESULT();
+    }
+    
+    const resource = await dbAbstractor.getHostResource(imgname);
     if (!resource) {
         const warning = `No image named ${imgname} was found, treating the deletion as success.`;
         params.consoleHandlers.LOGWARN(warning);
