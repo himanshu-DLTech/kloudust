@@ -72,8 +72,8 @@
     ],
 
     "load_javascript": [
-        "let snapshots = await $$.libapimanager.rest(APP_CONSTANTS.API_KLOUDUSTCMD, 'POST', {",
-            "cmd: `listSnapshots`, ", "project: $$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT)}, true);",
+        "const { cmdmanager } = await import(`${APP_CONSTANTS.LIB_PATH}/cmdmanager.mjs`);",
+        "let snapshots = await cmdmanager.kdcmd('listSnapshots', [], {}, $$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT), true);",
         "snapshots = (snapshots.snapshots||[]).map(snapshotObj => ({ ...snapshotObj, localtime: new Date(snapshotObj.timestamp).toLocaleString() }));",        
         "const modIconList = await import(`${APP_CONSTANTS.FORM_MODULES_PATH}/iconlist.mjs`), tabledef = arguments[0];",
         "const html = await modIconList.iconlist.getHTML(tabledef.popupform, monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager);",

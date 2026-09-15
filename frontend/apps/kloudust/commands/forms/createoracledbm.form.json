@@ -136,9 +136,9 @@
     ],
 
     "load_javascript": [
+        "const { cmdmanager } = await import(`${APP_CONSTANTS.LIB_PATH}/cmdmanager.mjs`);",
         "const form = arguments[0]||{};",
-        "const vmResult = await window.monkshu_env.frameworklibs.apimanager.rest(APP_CONSTANTS.API_KLOUDUSTCMD, ",
-        "   'POST', {cmd: 'listVMImages oracledbaas'}, true);",
+        "const vmResult = await cmdmanager.kdcmd('listVMImages', ['type'], {type: 'oracledbaas'}, undefined, true);",
         "if (vmResult.result) for (const vm of vmResult.resources) { ",
         "   const creationImageNameObject = form.required_fields[form.required_fields.length-1];",
         "   creationImageNameObject.options.push({value: vm.name, label: vm.description});",

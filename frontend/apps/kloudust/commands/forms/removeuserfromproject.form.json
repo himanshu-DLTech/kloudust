@@ -59,6 +59,7 @@
             "required": true, "pattern":"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\/.[A-Za-z]{2,}$", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"}
         ],
         "load_javascript": [
+            "const { cmdmanager } = await import(`${APP_CONSTANTS.LIB_PATH}/cmdmanager.mjs`);",
             "const form = arguments[0]||{};",
             "if(APP_CONSTANTS.ENV._projects_form_data) {",
             "   form.required_fields[form.required_fields.length-2].label = '';",
@@ -66,8 +67,7 @@
 
             "} else {",
             "   form.required_fields[form.required_fields.length-3].type = 'hidden';",
-            "   const projects = await $$.libapimanager.rest(APP_CONSTANTS.API_KLOUDUSTCMD, 'POST', {",
-            "   cmd: `getUserProjects`}, true);",
+            "   const projects = await cmdmanager.kdcmd('getUserProjects', [], {}, undefined, true);",
             "   if(projects.result){",
             "       for(const project of projects.projects) {",
             "           const projectlist = form.required_fields[form.required_fields.length-2];",

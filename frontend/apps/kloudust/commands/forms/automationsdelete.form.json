@@ -50,9 +50,9 @@
     ],
 
     "load_javascript": [
+    "const { cmdmanager } = await import(`${APP_CONSTANTS.LIB_PATH}/cmdmanager.mjs`);",
     "const form = arguments[0]||{};",
-    "const automationsResult = await $$.libapimanager.rest(APP_CONSTANTS.API_KLOUDUSTCMD, 'POST', {",
-    "    cmd: 'listAutomations'}, true);",
+    "const automationsResult = await cmdmanager.kdcmd('listAutomations', [], {}, undefined, true);",
     "const selectBox = form.required_fields[0];",
     "if (automationsResult && automationsResult.result && automationsResult.automations.length) {",
     "    for (const automation of automationsResult.automations)",
