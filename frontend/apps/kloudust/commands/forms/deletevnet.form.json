@@ -42,7 +42,7 @@
 
     "required_label": "{{{i18n.Required}}}",
     "required_fields": [
-    {"id": "vnet_name", "multioption": true, "type": "select", "label": "{{{i18n.VnetName}}}",  "options":[]}
+    {"id": "vnet_name", "multioption": true, "type": "select", "label": "{{{i18n.VnetName}}}", "required": true, "options":[]}
     ],
 
     "load_javascript": [
