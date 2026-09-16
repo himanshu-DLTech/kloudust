@@ -79,7 +79,7 @@
     "required_label": "{{{i18n.Required}}}",
     "required_fields": [
     {"id": "vnet_name", "type": "text", "placeholder": "{{{i18n.VnetName}}}", "required": true, 
-        "pattern":"\\s*\\w+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+        "pattern":"\\s*[A-Za-z0-9]+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
     {"id": "vnet_description", "type": "text", "placeholder": "{{{i18n.VnetDescription}}}"}
     ],
 

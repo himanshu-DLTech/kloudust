@@ -141,7 +141,8 @@
         "pattern":"\\s*[A-Za-z0-9]+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
     {"id": "adminpass", "type": "password", "placeholder": "{{{i18n.VMAdministratorPassword}}}", "required": true, 
        "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
-    {"id": "vnet", "type": "text", "placeholder": "{{{i18n.VMVNet}}}"},
+    {"id": "vnet", "type": "text", "placeholder": "{{{i18n.VMVNet}}}",
+        "pattern":"\\s*[A-Za-z0-9]+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
     {"id": "vmtype", "type": "hidden", "value": "vm"},
     {"id": "creation_image_name", "multioption": true, "type": "select", "label": "{{{i18n.VMImage}}}", 
         "options":[]}
