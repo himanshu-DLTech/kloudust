@@ -39,6 +39,16 @@ module.exports.exec = async function(params) {
         no_qemu_agent = no_qemu_agent_raw?.toLowerCase() == "true" ? "true" : "false", vmtype = vmtype_raw||exports.VM_TYPE_VM,
         kvm_network_name = roleman.isCloudAdminLoggedIn() ? network_name_raw||vnet.KD_DEFAULT_HOST_NETWORK:vnet.KD_DEFAULT_HOST_NETWORK;
 
+    if (memory < 1024) {
+        const error = "VM memory must be at least 1024 MB."; 
+        params.consoleHandlers.LOGERROR(error); return CMD_CONSTANTS.FALSE_RESULT(error);
+    }
+
+    if (diskgb < 5){
+        const error = "VM disk size must be at least 5 GB.";
+        params.consoleHandlers.LOGERROR(error); return CMD_CONSTANTS.FALSE_RESULT(error);
+    }
+
     if (await dbAbstractor.getVM(vm_name)) {  // VM exists
         const error = `VM with the name ${vm_name_raw} exists already for this project`;
         params.consoleHandlers.LOGERROR(error); return CMD_CONSTANTS.FALSE_RESULT(error);
