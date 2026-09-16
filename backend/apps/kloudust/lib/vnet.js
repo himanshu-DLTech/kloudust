@@ -23,11 +23,11 @@ exports.KD_DEFAULT_HOST_NETWORK = "kddefault";
 exports.createVnet = async function(vnet_name, vnet_description, consoleHandlers) {
     const vnetExists = await dbAbstractor.getVnet(vnet_name) != null;
     if (vnetExists) { // don't allow adding same vnet twice
-        const err = `Vnet with ID ${vnet_name_raw} already exists`; KLOUD_CONSTANTS.LOGERROR(err); 
+        const err = `Vnet with ID ${vnet_name} already exists`; KLOUD_CONSTANTS.LOGERROR(err); 
         return {...CMD_CONSTANTS.FALSE_RESULT(), out: "", err, stdout: "", stderr: err};
     } else {
         if (!(await dbAbstractor.addOrUpdateVnet(vnet_name, vnet_description))) {
-            consoleHandlers.LOGERROR(`Vnet ${vnet_id} creation failed.`); return CMD_CONSTANTS.FALSE_RESULT();
+            consoleHandlers.LOGERROR(`Vnet ${vnet_name} creation failed.`); return CMD_CONSTANTS.FALSE_RESULT();
         }
         const out = stdout = `Virtual network ${vnet_name} created.`;
         return {...CMD_CONSTANTS.TRUE_RESULT(), out, err: "", stdout: out, stderr: ""};
