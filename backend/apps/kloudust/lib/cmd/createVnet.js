@@ -20,6 +20,11 @@ module.exports.exec = async function(params) {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
 
     const [vnet_name_raw, vnet_description] = [...params]; 
+    if (typeof vnet_name_raw !== "string" || !/^[A-Za-z0-9]+$/.test(vnet_name_raw)) {
+        const error = "Vnet name may contain only letters and numbers.";
+        params.consoleHandlers.LOGERROR(error);
+        return CMD_CONSTANTS.FALSE_RESULT(error);
+    }
     const vnet_name = exports.resolveVnetName(vnet_name_raw)
 
     return await vnet.createVnet(vnet_name, vnet_description, params.consoleHandlers);

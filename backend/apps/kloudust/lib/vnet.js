@@ -46,7 +46,7 @@ exports.deleteVnet = async function(vnet_name, consoleHandlers) {
     const checkVnet = await dbAbstractor.getVnet(vnet_name);
     if (!checkVnet) {
         const err = `Vnet with ID ${vnet_name} doesn't exist.`; consoleHandlers.LOGWARN(err); 
-        return {...CMD_CONSTANTS.TRUE_RESULT(), out: "", err, stdout: "", stderr: err}; // already doesn't exist so result is true anyways
+        return {...CMD_CONSTANTS.FALSE_RESULT(), out: "", err, stdout: "", stderr: err};
     }
 
     const hostsForVnet = await dbAbstractor.getResourcesForVnet(vnet_name, VNET_HOST_RELATION);
