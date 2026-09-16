@@ -1586,7 +1586,7 @@ exports.addOrUpdateRelationship = async function(pk1, pk2, type, pk1pk2typeUniqu
     if (pk1pk2typeUniqueConstraint) {
         const checkCmd = "select * from relationships where pk1=? and pk2=?", params =  [pk1, pk2];
         const result = await _db().getQuery(checkCmd, params), relationshipExists = result && result.length;
-        if (relationshipExists && (result[0].type == type)) return;   // same relationship exists already
+        if (relationshipExists && (result[0].type == type)) return true;   // same relationship exists already
         if (relationshipExists) cmd = "update relationships set type=? where pk1=? and pk2=?)";
     }
     const cmdResult = await _db().runCmd(cmd, [type, pk1, pk2]);
