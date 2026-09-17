@@ -20,7 +20,7 @@ const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
 module.exports.exec = async function(params) {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
     const vnet_name_raw = params[0];
-    if (typeof vnet_name_raw !== "string" || !/^[A-Za-z0-9]+$/.test(vnet_name_raw)) {
+    if (!createVnet.isValidVnetName(vnet_name_raw)) {
         const error = "A valid Vnet name is required.";
         params.consoleHandlers.LOGERROR(error);
         return CMD_CONSTANTS.FALSE_RESULT(error);
