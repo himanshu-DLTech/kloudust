@@ -20,7 +20,7 @@ module.exports.exec = async function(params) {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_project_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
 
     const [vnet_name_raw, vnet_description] = [...params]; 
-    if (typeof vnet_name_raw !== "string" || !/^[A-Za-z0-9]+$/.test(vnet_name_raw)) {
+    if (!exports.isValidVnetName(vnet_name_raw)) {
         const error = "Vnet name may contain only letters and numbers.";
         params.consoleHandlers.LOGERROR(error);
         return CMD_CONSTANTS.FALSE_RESULT(error);
@@ -37,3 +37,7 @@ exports.resolveVnetName = vnet_name_raw => vnet_name_raw ? vnet.resolveVnetName(
 exports.unresolveVnetName = vnet_name => vnet_name ? vnet.unresolveVnetName(vnet_name) : null;
 
 exports.getInternetBackboneVnet = _ => `${KLOUD_CONSTANTS.env.org()}-${KLOUD_CONSTANTS.env.prj()}-Internet-Backbone`;
+
+/** @return true if raw Vnet name is letters/numbers only, or is the auto generated Internet backbone Vnet */
+exports.isValidVnetName = vnet_name_raw => typeof vnet_name_raw === "string" &&
+    (vnet_name_raw === exports.getInternetBackboneVnet() || /^[A-Za-z0-9]+$/.test(vnet_name_raw));
