@@ -6,6 +6,8 @@
 # {3} The new SSH port, defaults to 22 if not provided
 # {4} The agent port, defaults to 24 if not provided
 # {5} The default host network, defaults to kddefault if not provided
+# {6} Encrypt inter-host VxLAN traffic, false by default
+# {7} The shared VxLAN IPsec PSK when encryption is enabled
 
 NEW_PASSWORD="{1}"
 JSONOUT_SPLITTER="{2}"
@@ -16,6 +18,9 @@ AGENT_PORT=${INCOMING_AGENT_PORT:-24}
 DEFAULT_KD_NET_IN={5}
 DEFAULT_KD_NET=${DEFAULT_KD_NET_IN:-kddefault}
 DEFAULT_KD_NET_BRIDGE="${DEFAULT_KD_NET}_br"
+ENCRYPT_INTER_HOST_TRAFFIC={6}
+ENCRYPT_INTER_HOST_TRAFFIC=${ENCRYPT_INTER_HOST_TRAFFIC:-false}
+VXLAN_IPSEC_PSK="{7}"
 
 function exitFailed() {
     echo Failed
@@ -75,12 +80,14 @@ if [ -f "`which yum`" ]; then
     if ! sudo systemctl disable firewalld; then exitFailed; fi
     if ! sudo systemctl mask firewalld; then exitFailed; fi
     if ! sudo yum -y install iptables-services; then exitFailed; fi
+    if [ "$ENCRYPT_INTER_HOST_TRAFFIC" == "true" ] && ! sudo yum -y install strongswan; then exitFailed; fi
 else
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install fail2ban; then exitFailed; fi
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install sshpass; then exitFailed; fi
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install jq; then exitFailed; fi
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install net-tools iptables-persistent; then exitFailed; fi
     if ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install qemu-system-x86 libvirt-daemon-system libvirt-clients bridge-utils virtinst libosinfo-bin guestfs-tools tuned genisoimage; then exitFailed; fi
+    if [ "$ENCRYPT_INTER_HOST_TRAFFIC" == "true" ] && ! yes | sudo DEBIAN_FRONTEND=noninteractive apt -qq -y install strongswan; then exitFailed; fi
     # Remove snapd on Ububtu as it opens outgoing connections to the snap store
     # Also remove ufw as we will use nftables directly 
     snap list 2>/dev/null | egrep -v 'base$|snapd$|Notes$' | awk '{print $1}' | xargs -I{} sudo snap remove {} --purge 2>/dev/null || true
@@ -88,6 +95,24 @@ else
     rm -rf ~/snap
     sudo apt purge -y ufw
     sudo apt -y autoremove && sudo apt-mark hold snapd ufw
+fi
+
+if [ "$ENCRYPT_INTER_HOST_TRAFFIC" == "true" ]; then
+    printf "\n\nConfiguring StrongSwan for encrypted VxLAN traffic\n"
+    if [ -z "$VXLAN_IPSEC_PSK" ]; then echo "Missing VxLAN IPsec PSK"; exitFailed; fi
+    if ! sudo tee /etc/ipsec.secrets > /dev/null <<EOF
+# Managed by Kloudust. All encrypted hosts must use this same PSK.
+: PSK "$VXLAN_IPSEC_PSK"
+EOF
+    then exitFailed; fi
+    if ! sudo chmod 600 /etc/ipsec.secrets; then exitFailed; fi
+    if ! sudo mkdir -p /etc/ipsec.d /etc/kloudust; then exitFailed; fi
+    if ! sudo grep -qxF 'include /etc/ipsec.d/*.conf' /etc/ipsec.conf; then
+        if ! echo 'include /etc/ipsec.d/*.conf' | sudo tee -a /etc/ipsec.conf > /dev/null; then exitFailed; fi
+    fi
+    if ! sudo touch /etc/kloudust/vxlan-ipsec.enabled; then exitFailed; fi
+    if ! sudo chmod 600 /etc/kloudust/vxlan-ipsec.enabled; then exitFailed; fi
+    if ! sudo ipsec restart; then exitFailed; fi
 fi
 
 
@@ -276,6 +301,11 @@ if ! sudo nft add rule inet kdhostfirewall input ct state established,related ac
 if ! sudo nft add rule inet kdhostfirewall input tcp dport $NEW_SSH_PORT accept; then exitFailed; fi
 if ! sudo nft add rule inet kdhostfirewall input tcp dport $AGENT_PORT accept; then exitFailed; fi          #Agent port
 if ! sudo nft add rule inet kdhostfirewall input udp dport 8472 accept; then exitFailed; fi   # VxLAN port
+if [ "$ENCRYPT_INTER_HOST_TRAFFIC" == "true" ]; then
+    if ! sudo nft add rule inet kdhostfirewall input udp dport 500 accept; then exitFailed; fi
+    if ! sudo nft add rule inet kdhostfirewall input udp dport 4500 accept; then exitFailed; fi
+    if ! sudo nft add rule inet kdhostfirewall input ip protocol esp accept; then exitFailed; fi
+fi
 if ! sudo nft add rule inet kdhostfirewall input tcp dport 49152-49215 accept; then exitFailed; fi  # Migration port range
 if ! sudo nft add chain inet kdhostfirewall input { policy drop\; }; then exitFailed; fi
 

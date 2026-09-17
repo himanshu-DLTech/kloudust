@@ -10,6 +10,7 @@
  *  speed in bytes per second, 11 - processor in Vendor:ProcessorFamily:Model format, 
  *  12 - processor architecture,  14 - number of sockets, 
  *  14 - optional - if set to nochange the host password is not changed
+ *  15 - optional - encrypt inter-host VxLAN traffic (false by default)
  * 
  * (C) 2020 TekMonks. All rights reserved.
  * License: See enclosed LICENSE file.
@@ -31,9 +32,15 @@ module.exports.exec = async function(params) {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {params.consoleHandlers.LOGUNAUTH(); return CMD_CONSTANTS.FALSE_RESULT();}
 
     const [hostname, hostip, ostype, adminid, adminpass, hostsshkey, oldsshport_raw, cores, memory, disk, netspeed, 
-        processor, processorarchitecture, sockets, nochangepassword] = [...params];
+        processor, processorarchitecture, sockets, nochangepassword, encrypt_inter_host_traffic="false"] = [...params];
     const oldsshport = oldsshport_raw && oldsshport_raw.trim() != "" ? oldsshport_raw : 22;
     const newsshport = Math.floor(Math.random() * (KLOUD_CONSTANTS.CONF.SSH_RANGE.MAX - KLOUD_CONSTANTS.CONF.SSH_RANGE.MIN + 1) + KLOUD_CONSTANTS.CONF.SSH_RANGE.MIN);
+    const encryptInterHostTraffic = encrypt_inter_host_traffic.toLowerCase()==="true";
+
+    if (encryptInterHostTraffic && (!KLOUD_CONSTANTS.CONF.VXLAN_IPSEC_PSK || !/^[A-Za-z0-9+/=]+$/.test(KLOUD_CONSTANTS.CONF.VXLAN_IPSEC_PSK))) {
+        params.consoleHandlers.LOGERROR("A base64 VXLAN_IPSEC_PSK must be configured before enabling inter-host traffic encryption.");
+        return CMD_CONSTANTS.FALSE_RESULT();
+    }
 
     if ((!KLOUD_CONSTANTS.CONF.HOST_TYPES.includes(ostype.toLowerCase()))) {
         params.consoleHandlers.LOGERROR(`Only ${KLOUD_CONSTANTS.CONF.HOST_TYPES.join(", ")} are supported.`); return CMD_CONSTANTS.FALSE_RESULT();}
@@ -52,7 +59,8 @@ module.exports.exec = async function(params) {
         other: [
             hostip, adminid, adminpass, hostsshkey, oldsshport,
             `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/addHost.sh`,
-            newPassword, CMD_CONSTANTS.SCRIPT_JSONOUT_SPLITTER, newsshport, agentconfig.port, vnet.KD_DEFAULT_HOST_NETWORK
+            newPassword, CMD_CONSTANTS.SCRIPT_JSONOUT_SPLITTER, newsshport, agentconfig.port, vnet.KD_DEFAULT_HOST_NETWORK,
+            encryptInterHostTraffic, KLOUD_CONSTANTS.CONF.VXLAN_IPSEC_PSK
         ],
         agent_config: agentconfig
     }

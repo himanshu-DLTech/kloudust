@@ -15,6 +15,29 @@
 VLAN_NAME=kd{2}
 PEER_HOSTS={3}
 
+configureIPSecPeers() {
+    [ -f /etc/kloudust/vxlan-ipsec.enabled ] || return 0
+    for PEER_HOST in $PEER_HOSTS; do
+        LOCAL_IP=$(ip route get "$PEER_HOST" | awk '/src/ {for (i=1; i<=NF; i++) if ($i == "src") {print $(i+1); exit}}')
+        [ -n "$LOCAL_IP" ] || exitFailed "Could not determine local VTEP address for $PEER_HOST"
+        PEER_NAME=${PEER_HOST//[^a-zA-Z0-9]/_}
+        cat > "/etc/ipsec.d/kloudust-vxlan-$PEER_NAME.conf" <<EOF
+conn vxlan-encrypt-$PEER_NAME
+    type=transport
+    keyexchange=ikev2
+    authby=psk
+    left=$LOCAL_IP
+    right=$PEER_HOST
+    leftprotoport=udp/8472
+    rightprotoport=udp/8472
+    auto=start
+    ike=aes256-sha256-modp2048
+    esp=aes256-sha256
+EOF
+    done
+    ipsec restart || exitFailed "Unable to apply StrongSwan VxLAN configuration"
+}
+
 echoerr() { echo "$@" 1>&2; }
 
 function exitFailed() {
@@ -33,3 +56,5 @@ if [ -n "$PEER_HOSTS" ]; then
         echo Added VTeP peering $DEFAULT_ETH '->' $PEER_HOST for VxLAN $VLAN_NAME
     done 
 fi
+
+configureIPSecPeers
