@@ -33,7 +33,7 @@ function printConfig() {
     PROCESSORARCH=`lscpu | grep 'Architecture:' | tr -s " " | cut -d":" -f2 | xargs`
     if [ "$PROCESSORARCH" == "x86_64" ]; then PROCESSORARCH=amd64; fi
     MEMORY=`free -b | grep "Mem:" | tr -s " " | cut -d" " -f2`
-    ROOTDISKTOTAL=`df -B1  / | tail -n+2 | tr -s " " | cut -d" " -f2`
+    ROOTDISKTOTAL=`df -B1 /kloudust | tail -n+2 | tr -s " " | cut -d" " -f2`
     NETSPEED=$((1073741824*$(networkctl status `networkctl | grep routable | grep ether | head -n1 | xargs | cut -d" " -f2` | grep -i speed | xargs | cut -d" " -f2 | cut -d"G" -f1)))
     OSRELEASE=$(printf "$(cat /etc/issue)" | head -n1 | xargs)
 
