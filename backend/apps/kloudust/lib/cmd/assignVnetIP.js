@@ -79,7 +79,7 @@ module.exports.exec = async function(params) {
     
     if (results.result) {
         let insertResult = await dbAbstractor.addVMVnetIP(vm.name, vnetRecord.name, ip);
-        if(!insertResult) { params.consoleHandlers.LOGERRO(`DB insert failed!`); CMD_CONSTANTS.FALSE_RESULT_RESULT(); }
+        if(!insertResult) { params.consoleHandlers.LOGERROR(`DB insert failed!`); return CMD_CONSTANTS.FALSE_RESULT(); }
         params.consoleHandlers.LOGINFO(`IP ${ip} was allocated to VM ${vm_name_raw} and internal VM command to configure the network card succeeded.`)
         return {...results, ...(CMD_CONSTANTS.TRUE_RESULT())};
     } else {

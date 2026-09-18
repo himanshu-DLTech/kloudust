@@ -52,7 +52,7 @@ module.exports.exec = async function(params) {
     
     if (results.result) {
         let deleteResult = await dbAbstractor.removeVMVnetIP(vm.name, vnetRecord.name, ip);
-        if(!deleteResult) { params.consoleHandlers.LOGERRO(`DB deletion failed!`); CMD_CONSTANTS.FALSE_RESULT_RESULT(); }
+        if(!deleteResult) { params.consoleHandlers.LOGERROR(`DB deletion failed!`); return CMD_CONSTANTS.FALSE_RESULT(); }
         params.consoleHandlers.LOGINFO(`IP ${ip} was removed from the VM ${vm_name_raw} and internal VM command to configure the network card succeeded.`)
         return {...results, ...(CMD_CONSTANTS.TRUE_RESULT())};
     } else {

@@ -44,7 +44,7 @@ module.exports.exec = async function(params) {
     if(vm.ips.trim().split(",").length === 1){
         const paramsDeleteVMVnet = [vm_name_raw, vnet_name_raw, true]; paramsDeleteVMVnet.consoleHandlers = params.consoleHandlers;
         if (!(await deleteVMVnet.exec(paramsDeleteVMVnet)).result) { // this expands the IP Vnet to the VM host and also connects the VM to it
-            params.consoleHandlers.LOGERROR(`Unable to delete the VM ${vn_name} from VNet ${vnet_name}`); return CMD_CONSTANTS.FALSE_RESULT();
+            params.consoleHandlers.LOGERROR(`Unable to delete the VM ${vm_name} from VNet ${vnet_name}`); return CMD_CONSTANTS.FALSE_RESULT();
         }
     } 
 
