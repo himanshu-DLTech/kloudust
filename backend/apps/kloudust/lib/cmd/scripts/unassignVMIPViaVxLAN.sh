@@ -33,8 +33,9 @@ function exitFailed() {
 IP_ADDRESS_UNDERSCORES="${IP_ADDRESS//./_}"
 
 # Linux guest script (Netplan)
-LINUX_NETPLAN_SCRIPT='
+LINUX_SCRIPT='
 NETPLAN_FILE="/etc/netplan/99-kd-ip-'${IP_ADDRESS_UNDERSCORES}'.yaml"
+NMCONNECTION_FILE="/etc/NetworkManager/system-connections/kd-ip-'${IP_ADDRESS_UNDERSCORES}'.nmconnection"
 
 if [ -f "$NETPLAN_FILE" ]; then
     rm -f "$NETPLAN_FILE"
@@ -43,9 +44,15 @@ if [ -f "$NETPLAN_FILE" ]; then
         echo "Removed Netplan config and unassigned IP '${IP_ADDRESS}'"
     else
         echo "Failed to reapply Netplan after removing IP '${IP_ADDRESS}'"
+        exit 1
     fi
+elif [ -f "$NMCONNECTION_FILE" ]; then
+    nmcli con down "kd-ip-'${IP_ADDRESS_UNDERSCORES}'" >/dev/null 2>&1        # drops the IP, no-op if not up
+    rm -f "$NMCONNECTION_FILE"
+    nmcli con reload || exit 1        # forgets the deleted keyfile
+    echo "Removed NetworkManager connection and unassigned IP '${IP_ADDRESS}'"
 else
-    echo "Netplan file not found for IP '${IP_ADDRESS}', nothing to do."
+    echo "Network config not found for IP '${IP_ADDRESS}', nothing to do."
 fi
 '
 
@@ -64,7 +71,7 @@ if (\$ipEntry) {
 "
 
 # Build JSON payloads
-JSON_PAYLOAD_LINUX=$(jq -n --arg script "$LINUX_NETPLAN_SCRIPT" \
+JSON_PAYLOAD_LINUX=$(jq -n --arg script "$LINUX_SCRIPT" \
     '{execute: "guest-exec", arguments: {path: "/bin/bash", arg: ["-c", $script], "capture-output": true}}')
 
 JSON_PAYLOAD_WINDOWS=$(jq -n --arg script "$WINDOWS_PS_SCRIPT" \
@@ -72,7 +79,7 @@ JSON_PAYLOAD_WINDOWS=$(jq -n --arg script "$WINDOWS_PS_SCRIPT" \
 
 # Execute inside guest
 if [ -z "$IS_WINDOWS" ]; then
-    echo "Using Netplan cleanup script for Linux VM"
+    echo "Using cleanup script for Linux VM"
     if ! PID=$(virsh qemu-agent-command "$VM_NAME" "$JSON_PAYLOAD_LINUX" | jq -r '.return.pid'); then
         exitFailed
     fi
