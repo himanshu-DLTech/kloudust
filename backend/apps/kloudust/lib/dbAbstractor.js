@@ -129,6 +129,81 @@ exports.addHostResource = async (name, uri, processor_architecture, description,
 }
 
 /**
+ * Adds the given Org data to the tracking DB
+ * @param {string} org  org name
+ * @param {string} data org data
+ * @param {string} type data type - eg: orgresource, orgsettings, etc
+ * @returns true on success or false otherwise
+ */
+exports.addOrgData = async (org, data, type) => {
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_org_data)) {_logUnauthorized(); return false; }
+
+    const query = "insert into orgdata(org, data, type) values (?,?,?)";
+    return await _db().runCmd(query, [org, data, type]);
+}
+
+/**
+ * Adds the given resource to the tracking DB
+ * @param {string} org org name
+ * @param {string} name Unique name
+ * @param {string} uri Download URL usually
+ * @param {string} processor_architecture The processor architecture eg amd64
+ * @param {string} description Description 
+ * @param {string} extra Extra information 
+ * @param {string} type Type of image
+ * @returns true on success or false otherwise
+ */
+exports.addOrgResource = async (org, name, uri, processorarchitecture, description, extrainfo, type) => {
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_org_data)) {_logUnauthorized(); return false; }
+
+    const data = JSON.stringify({name, uri, processorarchitecture, description, extrainfo, type});
+    const query = "insert into orgdata(org, data, type) values (?,?,?)";
+    return await _db().runCmd(query, [org, data, 'orgresource']);
+}
+
+/**
+ * Deletes the given resource from the tracking DB
+ * @param {string} org  org name
+ * @param {string} name resource name
+ * @returns true on success or false otherwise
+ */
+exports.deleteOrgResourceForProject = async (org, name) => {
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_org_data)) {_logUnauthorized(); return false; }
+
+    const query = "delete from orgdata where org=? and type='orgresource' and data ->> '$.name'=?;";
+    return await _db().runCmd(query, [org, name]);
+}
+
+/**
+ * Returns the given Org resources for org/cloud admin
+ * @param {string} org org name
+ * @return org resources array on success or null otherwise
+ */
+exports.getOrgResources = async org => {
+    if (!roleman.checkAccess(roleman.ACTIONS.lookup_org_data)) {_logUnauthorized(); return false; }
+
+    const query = "select json_group_array(json(data)) from orgdata where org=? and type='orgresource';";
+    const rows = await _db().getQuery(query, [org]);
+    if (!rows) return null;
+    return rows[0] ? JSON.parse(rows[0]["json_group_array(json(data))"]) : null;
+}
+
+/**
+ * Returns the given Org resource for the specified org and image name
+ * @param {string} org org name
+ * @param {string} name resource name
+ * @returns org resource object on success or null otherwise
+ */
+exports.getOrgResourceForProject = async (org, name) => {
+    if (!roleman.checkAccess(roleman.ACTIONS.lookup_org_data)) {_logUnauthorized(); return false; }
+    
+    const query = "select data from orgdata where org=? and type='orgresource' and data ->> '$.name'=?;";
+    const rows =  await _db().getQuery(query, [org, name]);
+    if (!rows) return null;
+    return rows[0] ? JSON.parse(rows[0]["data"]) : null;
+}
+
+/**
  * Returns the given host resource for cloud admin
  * @param {string} name The resource name
  * @return host resource object on success or null otherwise
