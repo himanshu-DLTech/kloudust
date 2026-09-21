@@ -19,7 +19,7 @@ const createVnet = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/createVnet.js`);
 const {xforge} = require(`${KLOUD_CONSTANTS.THIRD_PARTY_DIR}/xforge/xforge`);
 const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 
-const DEFAULT_VM_MTU = 1200, WILDCARD_IP_VTEP_HOSTNAME = "*", DNS1_DEFAULT="8.8.8.8", DNS2_DEFAULT="4.4.4.4";
+const DEFAULT_VM_MTU = 1200, WILDCARD_IP_VTEP_HOSTNAME = "*", DNS1_DEFAULT="8.8.8.8", DNS2_DEFAULT="8.8.4.4";
 
 /**
  * Assign IP to the given VM
