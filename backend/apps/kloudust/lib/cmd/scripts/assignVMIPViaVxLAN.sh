@@ -120,7 +120,7 @@ else
 fi
 '
 
-WINDOWS_PS_SCRIPT="\$mac='$MAC_ADDRESS'; \$adapter = Get-NetAdapter | Where-Object {\$_.MacAddress -eq \$mac}; New-NetIPAddress -InterfaceIndex \$adapter.InterfaceIndex -IPAddress '$IP_ADDRESS' -PrefixLength 24; Set-NetAdapterAdvancedProperty -Name \$adapter.Name -DisplayName 'Jumbo Packet' -DisplayValue '$MTU' -ErrorAction SilentlyContinue; netsh interface ipv4 set subinterface \$adapter.InterfaceIndex mtu=$MTU store=persistent"
+WINDOWS_PS_SCRIPT="\$mac=('$MAC_ADDRESS' -replace ':','-').ToUpper(); \$adapter = Get-NetAdapter | Where-Object {\$_.MacAddress -eq \$mac}; if (\$null -eq \$adapter) { throw \"No network adapter found with MAC \$mac\" }; New-NetIPAddress -InterfaceIndex \$adapter.InterfaceIndex -IPAddress '$IP_ADDRESS' -PrefixLength 24; Remove-NetRoute -InterfaceIndex \$adapter.InterfaceIndex -DestinationPrefix '0.0.0.0/0' -Confirm:\$false -ErrorAction SilentlyContinue; New-NetRoute -InterfaceIndex \$adapter.InterfaceIndex -DestinationPrefix '0.0.0.0/0' -NextHop 0.0.0.0 -RouteMetric 5 | Out-Null; Set-NetIPInterface -InterfaceIndex \$adapter.InterfaceIndex -AddressFamily IPv4 -InterfaceMetric 1; Set-NetAdapterAdvancedProperty -Name \$adapter.Name -DisplayName 'Jumbo Packet' -DisplayValue '$MTU' -ErrorAction SilentlyContinue; netsh interface ipv4 set subinterface \$(\$adapter.InterfaceIndex) mtu=$MTU store=persistent"
 
 # Use jq to properly escape and build the JSON
 JSON_PAYLOAD_LINUX=$(jq -n --arg script "$LINUX_SCRIPT" \
@@ -130,14 +130,14 @@ JSON_PAYLOAD_WINDOWS=$(jq -n --arg script "$WINDOWS_PS_SCRIPT" \
         '{execute: "guest-exec", arguments: {path: "powershell", arg: ["-Command", $script], "capture-output": true}}')
 
 
-if [ -z "$IS_WINDOWS_VM" ]; then
+if [ -z "$IS_WINDOWS" ]; then
     # This is for Linux, uses netplan or nmcli
     echo Using this script for Linux VM: $LINUX_SCRIPT
     if ! PID=$(virsh qemu-agent-command $VM_NAME "$JSON_PAYLOAD_LINUX" | jq -r '.return.pid'); then exitFailed; fi
 else
     # This is for Windows VMs
     echo Using this Powershell script for Windows VM: $WINDOWS_PS_SCRIPT
-    if ! PID=$(virsh qemu-agent-command $VM_NAME $JSON_PAYLOAD_WINDOWS | jq -r '.return.pid'); then exitFailed; fi
+    if ! PID=$(virsh qemu-agent-command "$VM_NAME" "$JSON_PAYLOAD_WINDOWS" | jq -r '.return.pid'); then exitFailed; fi
 fi
 
 sleep 2

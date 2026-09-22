@@ -62,6 +62,7 @@ WINDOWS_PS_SCRIPT="
 
 if (\$ipEntry) {
     foreach (\$ip in \$ipEntry) {
+        Remove-NetRoute -InterfaceIndex \$ip.InterfaceIndex -DestinationPrefix '0.0.0.0/0' -Confirm:\$false -ErrorAction SilentlyContinue
         Remove-NetIPAddress -InterfaceIndex \$ip.InterfaceIndex -IPAddress '$IP_ADDRESS' -Confirm:\$false
         Write-Output \"Removed IP '$IP_ADDRESS' from interface index \$($ip.InterfaceIndex)\"
     }
