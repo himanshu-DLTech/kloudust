@@ -127,6 +127,8 @@ fi
 if [[ "$OS_VARIANT" = win* ]]; then 
     if [ "$CLOUD_IMAGE" != "true" ]; then
         WIN_DISK_ARGS="--disk /kloudust/drivers/virtio-win.iso,device=cdrom"
+    else    
+        DISK="$DISK",bus=scsi
     fi
     WIN_KVM_ARGS="--features smm.state=on,kvm_hidden=on,hyperv_relaxed=on,hyperv_vapic=on,hyperv_spinlocks=on,hyperv_spinlocks_retries=8191 --clock hypervclock_present=yes"
     
