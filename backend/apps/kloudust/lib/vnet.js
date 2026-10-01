@@ -151,7 +151,7 @@ exports.deleteVnetFromHost = async function (vnetNameOrRecord, hostInfo, console
         return true;  // already not on this host
     } else consoleHandlers.LOGINFO(`Vnet ${vnetName} being removed from the host ${hostInfo.hostname}`);
 
-    if (!nodbupdate) if (!(await dbAbstractor.deleteVnetResource(vnetName, hostInfo.hostname, exports.VNET_HOST_TYPE))) {
+    if (!nodbupdate) if (!(await dbAbstractor.deleteVnetResource(vnetName, hostInfo.hostname, VNET_HOST_RELATION))) {
         consoleHandlers.LOGERROR(`Database relationship error removing host ${hostInfo.hostname} to Vnet ${vnetName}.`);
         return false;
     }
