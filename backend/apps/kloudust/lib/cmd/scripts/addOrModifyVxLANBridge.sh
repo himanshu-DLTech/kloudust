@@ -30,7 +30,7 @@ echoerr() { echo "$@" 1>&2; }
 
 function exitFailed() {
     echo Failed.
-    rm $VXLAN_BOOT_SCRIPT
+    rm -f "$VXLAN_BOOT_SCRIPT"
     exit 1
 }
 
