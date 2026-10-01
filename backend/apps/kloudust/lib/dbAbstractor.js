@@ -1743,7 +1743,11 @@ async function _initMonkshuGlobalAndGetDBModuleAsync() {
     const monkshuDBWrapped = await monkshubridge.initMonkshuGlobalAndGetModuleAsync("db");
     const dbDriverMonkshu = await monkshuDBWrapped.getDBDriver("sqlite", KLOUDUST_MAIN_DBFILE, dbschema);
     const monkshuDBDriverWrapped = kdutils.wrapObjectInNewContext(dbDriverMonkshu, {CONSTANTS, LOG});
-    const db = monkshuDBDriverWrapped; await db.init(); return db;
+    const db = monkshuDBDriverWrapped; await db.init();
+    const hostColumns = await db.getQuery("pragma table_info(hosts)");
+    if (!hostColumns.some(column => column.name == "encryptinterhosttraffic"))
+        await db.runCmd("alter table hosts add column encryptinterhosttraffic integer default 0");
+    return db;
 }
 
 const _db = _ => KLOUD_CONSTANTS.env.db;
