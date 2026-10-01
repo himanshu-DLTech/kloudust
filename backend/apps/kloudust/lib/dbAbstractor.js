@@ -1221,13 +1221,14 @@ exports.addVnetResource = async (vnet_id, pk2, type, project=KLOUD_CONSTANTS.env
 /**
  * Deletes Vnet resource mapping.
  * @param {string} vnet_id The Vnet ID
+ * @param {string} pk2 The resource
  * @param {string} type Mapping type - for VMs it is 'vnetvm', for hosts it is 'vnethost'
  * @param {string} project The project, if skipped is auto picked from the environment
  * @param {string} org The org, if skipped is auto picked from the environment
  * @returns true on success and false on failure
  */
-exports.deleteVnetResource = async (vnet_id, type, project=KLOUD_CONSTANTS.env.prj(), org=KLOUD_CONSTANTS.env.org()) => 
-    exports.deleteRelationship(`${org}_${project}_${vnet_id}`, type)
+exports.deleteVnetResource = async (vnet_id, pk2, type, project=KLOUD_CONSTANTS.env.prj(), org=KLOUD_CONSTANTS.env.org()) => 
+    _db().runCmd("delete from relationships where pk1=? and pk2=? and type=?", [`${org}_${project}_${vnet_id}`, pk2, type]);
 
 /**
  * Returns the rulesets for an org and project.
