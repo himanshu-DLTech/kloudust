@@ -64,13 +64,13 @@ exports.getHosts = async _ => {
  * @return true on success or false otherwise
  */
 exports.addHostToDB = async (hostname, hostaddress, type, rootid, rootpw, hostkey, port, cores, memory, disk, networkspeed, 
-        processor, processor_architecture, sockets) => {
+        processor, processor_architecture, sockets, encrypt_inter_host_traffic=false) => {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {_logUnauthorized(); return false;}
 
     const rootpw_encrypted = crypt.encrypt(rootpw);
-    const query = "replace into hosts(hostname, hostaddress, type, rootid, rootpw, hostkey, port, cores, memory, disk, networkspeed, processor, processorarchitecture, sockets) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    const query = "replace into hosts(hostname, hostaddress, type, rootid, rootpw, hostkey, port, cores, memory, disk, networkspeed, processor, processorarchitecture, sockets, encryptinterhosttraffic) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     return await _db().runCmd(query, [hostname, hostaddress, type, rootid, rootpw_encrypted, hostkey, port, cores, memory, 
-        disk, networkspeed, processor, processor_architecture, sockets]);
+        disk, networkspeed, processor, processor_architecture, sockets, encrypt_inter_host_traffic ? 1 : 0]);
 }
 
 /**
