@@ -114,14 +114,14 @@ exports.expandVnetToHost = async function (vnetName, hostInfoOrHostname, console
     if (results.result) {
         if (!(await dbAbstractor.addVnetResource(vnetName, hostInfo.hostname, VNET_HOST_RELATION))) {
             consoleHandlers.LOGERROR(`Database relationship error adding host ${hostInfo.hostname} to Vnet ${vnetName}.`);
-            exports.deleteVnetFromHost(vnetNameOrRecord, hostInfo, consoleHandlers, true);  // no need to await as this is cleanup
+            exports.deleteVnetFromHost(vnetName, hostInfo, consoleHandlers, true);  // no need to await as this is cleanup
             return false;
         }
 
         for (const peerHostInfo of peerHostInfos.filter(peerHostInfoThis => hostInfo.hostname != peerHostInfoThis.hostname)) {
             if (!await exports.runAddVxLANPeers(vnetName, vnetRecord.vnetnum, [hostInfo.hostaddress], peerHostInfo, consoleHandlers)) {
                 consoleHandlers.LOGERROR(`Vnet peer modification error for host ${peerHostInfo.hostname} for Vnet ${vnetName}.`);
-                exports.deleteVnetFromHost(vnetNameOrRecord, hostInfo, consoleHandlers, true);  // no need to await as this is cleanup
+                exports.deleteVnetFromHost(vnetName, hostInfo, consoleHandlers, true);  // no need to await as this is cleanup
                 return false;
             }
         }
