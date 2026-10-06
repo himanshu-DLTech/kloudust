@@ -45,8 +45,8 @@ function windowsMemoryConfig() {
     local MAX=`virsh dumpxml --inactive $NAME | grep -oP "<(maxMemory|memory)[^>]*>\K[0-9]+" | sort -n | tail -1`
     if [ $(($MEMORY*1024)) -gt $MAX ]; then exitFailed "Memory can't exceed the maximum of $(($MAX/1024)) MB."; fi
     virt-xml $NAME --remove-device --memdev all > /dev/null 2>&1
-    if ! virt-xml $NAME --edit --cpu cell0.cpus=0-$((`virsh vcpucount $NAME --maximum --config`-1)),cell0.memory=$(($MEMORY*1024)); then exitFailed "memory increased failed."; fi
-    if ! virt-xml $NAME --edit --memory maxMemory=$(($MAX/1024)),maxMemory.slots=16; then exitFailed "memory increased failed."; fi
+    if ! virt-xml $NAME --edit --cpu cell0.cpus=0-$((`virsh vcpucount $NAME --maximum --config`-1)),cell0.memory=$(($MEMORY*1024)) > /dev/null; then exitFailed "memory increased failed."; fi
+    if ! virt-xml $NAME --edit --memory maxMemory=$(($MAX/1024)),maxMemory.slots=16 > /dev/null; then exitFailed "memory increased failed."; fi
     if ! virsh setmem $NAME "$MEMORY"MiB --config; then exitFailed "memory increased failed."; fi
 }
 
@@ -64,7 +64,7 @@ if [ $CORES ]; then
     echo Increasing vCPUS to $CORES
     if ! virsh setvcpus $NAME $CORES --config; then exitFailed "vCPU increased failed."; fi
     if [ "$IS_WINDOWS" == "true" ] && [ "`virsh domstate $NAME`" == "running" ] && [ $CORES -lt `virsh vcpucount $NAME --live --active` ]; then
-        echo "vCPUs: Windows VM - change saved to config, applies after the VM is stopped and started."
+        :
     elif ! virsh setvcpus $NAME $CORES --current; then exitFailed "vCPU increased failed."; fi
     echo "vCPUs: resized to $CORES cores for the Virtual Machine $NAME."
 fi
@@ -76,11 +76,10 @@ if [ $MEMORY ]; then
         STATE=`virsh domstate $NAME`
         CUR_MEMORY=$((`virsh dumpxml $NAME | grep -oP "<memory unit='KiB'>\K[0-9]+"`/1024))
         DIMM="<memory model='dimm'><target><size unit='MiB'>$(($MEMORY-$CUR_MEMORY))</size><node>0</node></target></memory>"
-        if [ "$STATE" == "running" ] && [ $MEMORY -gt $CUR_MEMORY ] && virsh attach-device $NAME <(echo "$DIMM") --live --config; then
+        if [ "$STATE" == "running" ] && [ $MEMORY -gt $CUR_MEMORY ] && virsh attach-device $NAME <(echo "$DIMM") --live --config > /dev/null; then
             if ! virsh setmem $NAME "$MEMORY"MiB --config; then exitFailed "memory increased failed."; fi
         else
             windowsMemoryConfig
-            if [ "$STATE" == "running" ]; then echo "Memory: Windows VM - change saved to config, applies after the VM is stopped and started."; fi
         fi
     else
         if ! virsh setmem $NAME "$MEMORY"MiB --config; then exitFailed "memory increased failed."; fi
@@ -153,14 +152,13 @@ fi
 
 
 if [ "$RESTART" == "true" ]; then
-    if [ "$IS_WINDOWS" == "true" ] && [ "`virsh domstate $NAME`" == "running" ]; then 
-        echo Stopping and starting $NAME
-        virsh shutdown $NAME
+    echo Restaring $NAME
+    if [ "$IS_WINDOWS" == "true" ] && [ "`virsh domstate $NAME`" == "running" ]; then
+        virsh shutdown $NAME > /dev/null
         for i in $(seq 1 18); do [ "`virsh domstate $NAME`" == "shut off" ] && break; sleep 5; done
-        if [ "`virsh domstate $NAME`" != "shut off" ]; then echo "Graceful shutdown timed out, forcing off."; virsh destroy $NAME; fi
-        if ! virsh start $NAME; then exitFailed "Start of $NAME failed."; fi
+        if [ "`virsh domstate $NAME`" != "shut off" ]; then virsh destroy $NAME > /dev/null; fi
+        if ! virsh start $NAME > /dev/null; then exitFailed "Start of $NAME failed."; fi
     else
-        echo Restaring $NAME
         virsh reboot $NAME
     fi
 fi
