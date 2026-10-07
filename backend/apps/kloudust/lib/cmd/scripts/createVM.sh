@@ -124,7 +124,10 @@ else
 fi
 
 
-if [[ "$OS_VARIANT" = win* ]]; then 
+if [[ "$OS_VARIANT" = win* ]]; then
+    MAX_MEMORY=$(( MAX_MEMORY > MEMORY ? MAX_MEMORY : MEMORY ))
+    MEMORY_ARGS="$MEMORY,maxMemory=$MAX_MEMORY,maxMemory.slots=16"
+    CPU_MODEL_ARG="${CPU_MODEL_ARG:---cpu host-model},cell0.cpus=0-$(($MAX_VCPUS-1)),cell0.memory=$(($MEMORY*1024))"
     if [ "$CLOUD_IMAGE" != "true" ]; then
         WIN_DISK_ARGS="--disk /kloudust/drivers/virtio-win.iso,device=cdrom"
     else    
@@ -149,6 +152,7 @@ if [[ "$OS_VARIANT" = win* ]]; then
 else
     WIN_DISK_ARGS=""
     WIN_KVM_ARGS=""
+    MEMORY_ARGS="currentMemory=$MEMORY,maxmemory=$MAX_MEMORY"
 fi;
 
 QEMU_GUEST_AGENT="--channel unix,target_type=virtio,name=org.qemu.guest_agent.0"
@@ -168,7 +172,7 @@ fi
 if ! virt-install --name $NAME --metadata name=$NAME --metadata title="$DESCRIPTION" \
     --metadata description=$BASE64_METADATA \
     --vcpus $VCPUS,maxvcpus=$MAX_VCPUS \
-    --memory currentMemory=$MEMORY,maxmemory=$MAX_MEMORY \
+    --memory $MEMORY_ARGS \
     --disk $DISK \
     --os-variant $OS_VARIANT \
     --controller type=scsi,model=virtio-scsi \
@@ -192,7 +196,7 @@ cat <<EOF > /kloudust/metadata/$NAME.metadata
 INSTALL="virt-install --name $NAME --metadata name=$NAME --metadata title=\"$DESCRIPTION\" \
     --metadata description=$BASE64_METADATA \
     --vcpus $VCPUS,maxvcpus=$MAX_VCPUS \
-    --memory currentMemory=$MEMORY,maxmemory=$MAX_MEMORY \
+    --memory $MEMORY_ARGS \
     --disk $DISK \
     --os-variant $OS_VARIANT \
     --controller type=scsi,model=virtio-scsi \

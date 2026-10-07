@@ -41,25 +41,50 @@ function nextFreeDevice() {
     for L in {a..z}; do grep -qx "$PREFIX$L" <<< "$USED" || { echo "$PREFIX$L"; return; }; done
 }
 
+function windowsMemoryConfig() {
+    local MAX=`virsh dumpxml --inactive $NAME | grep -oP "<(maxMemory|memory)[^>]*>\K[0-9]+" | sort -n | tail -1`
+    if [ $(($MEMORY*1024)) -gt $MAX ]; then exitFailed "Memory can't exceed the maximum of $(($MAX/1024)) MB."; fi
+    virt-xml $NAME --remove-device --memdev all > /dev/null 2>&1
+    if ! virt-xml $NAME --edit --cpu cell0.cpus=0-$((`virsh vcpucount $NAME --maximum --config`-1)),cell0.memory=$(($MEMORY*1024)) > /dev/null; then exitFailed "memory increased failed."; fi
+    if ! virt-xml $NAME --edit --memory maxMemory=$(($MAX/1024)),maxMemory.slots=16 > /dev/null; then exitFailed "memory increased failed."; fi
+    if ! virsh setmem $NAME "$MEMORY"MiB --config; then exitFailed "memory increased failed."; fi
+}
+
 SPACE_PATTERN=" |'"
 if [[ $NAME =~ $SPACE_PATTERN ]]; then 
     exitFailed "VM name $NAME can't have spaces.\n"
 fi
+
+IS_WINDOWS=false 
+if virsh dumpxml $NAME | grep -q "microsoft.com/win/"; then IS_WINDOWS=true; fi
 
 echo Resizing for VM $NAME started to $CORES cores, $MEMORY MB memory and $ADDITIONAL_DISK GB additional disk
 
 if [ $CORES ]; then
     echo Increasing vCPUS to $CORES
     if ! virsh setvcpus $NAME $CORES --config; then exitFailed "vCPU increased failed."; fi
-    if ! virsh setvcpus $NAME $CORES --current; then exitFailed "vCPU increased failed."; fi
+    if [ "$IS_WINDOWS" == "true" ] && [ "`virsh domstate $NAME`" == "running" ] && [ $CORES -lt `virsh vcpucount $NAME --live --active` ]; then
+        :
+    elif ! virsh setvcpus $NAME $CORES --current; then exitFailed "vCPU increased failed."; fi
     echo "vCPUs: resized to $CORES cores for the Virtual Machine $NAME."
 fi
 
 
 if [ $MEMORY ]; then
     echo Increasing memory to $MEMORY MB
-    if ! virsh setmem $NAME "$MEMORY"MB --config; then exitFailed "memory increased failed."; fi
-    if ! virsh setmem $NAME "$MEMORY"MB --current; then exitFailed "memory increased failed."; fi
+    if [ "$IS_WINDOWS" == "true" ]; then
+        STATE=`virsh domstate $NAME`
+        CUR_MEMORY=$((`virsh dumpxml $NAME | grep -oP "<memory unit='KiB'>\K[0-9]+"`/1024))
+        DIMM="<memory model='dimm'><target><size unit='MiB'>$(($MEMORY-$CUR_MEMORY))</size><node>0</node></target></memory>"
+        if [ "$STATE" == "running" ] && [ $MEMORY -gt $CUR_MEMORY ] && virsh attach-device $NAME <(echo "$DIMM") --live --config > /dev/null; then
+            if ! virsh setmem $NAME "$MEMORY"MiB --config; then exitFailed "memory increased failed."; fi
+        else
+            windowsMemoryConfig
+        fi
+    else
+        if ! virsh setmem $NAME "$MEMORY"MiB --config; then exitFailed "memory increased failed."; fi
+        if ! virsh setmem $NAME "$MEMORY"MiB --current; then exitFailed "memory increased failed."; fi
+    fi
     echo "Memory: resized to $MEMORY MB for the Virtual Machine $NAME."
 fi
 
@@ -73,7 +98,7 @@ if [ $ADDITIONAL_DISK ] && [ "$INPLACE_DISK_RESIZE" != "true" ]; then
         exitFailed Disk allocation failed for $NAME for size $ADDITIONAL_DISK GB
     fi
     FS=ext4
-    if virsh dumpxml $NAME | grep -q "microsoft.com/win/"; then FS=ntfs; fi   # virt-install records the OS variant, e.g. microsoft.com/win/10
+    if [ "$IS_WINDOWS" == "true" ]; then FS=ntfs; fi
     if ! virt-format -a $DISK_FILE --filesystem=$FS; then exitFailed "Disk initialization failed."; fi
     if ! virsh attach-disk $NAME $DISK_FILE $NEXT_DRIVE_NAME --persistent --config --subdriver qcow2; then 
         exitFailed Attachment of the new disk at $DISK_FILE to $NAME failed.
@@ -128,7 +153,14 @@ fi
 
 if [ "$RESTART" == "true" ]; then
     echo Restaring $NAME
-    virsh reboot $NAME
+    if [ "$IS_WINDOWS" == "true" ] && [ "`virsh domstate $NAME`" == "running" ]; then
+        virsh shutdown $NAME > /dev/null
+        for i in $(seq 1 18); do [ "`virsh domstate $NAME`" == "shut off" ] && break; sleep 5; done
+        if [ "`virsh domstate $NAME`" != "shut off" ]; then virsh destroy $NAME > /dev/null; fi
+        if ! virsh start $NAME > /dev/null; then exitFailed "Start of $NAME failed."; fi
+    else
+        virsh reboot $NAME
+    fi
 fi
 
 printf "\n\nResize of $NAME completed successfully.\n"
