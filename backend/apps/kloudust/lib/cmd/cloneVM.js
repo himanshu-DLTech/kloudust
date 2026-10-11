@@ -67,7 +67,7 @@ async function _cloneVMReal(vm, clone_vm_name, hostInfo, hosting_project, clone_
         other: [
             hostInfo.hostaddress, hostInfo.rootid, hostInfo.rootpw, hostInfo.hostkey, hostInfo.port,
             `${KLOUD_CONSTANTS.LIBDIR}/cmd/scripts/cloneVM.sh`,
-            vm.name, clone_vm_name
+            vm.name, clone_vm_name, clone_vm_name_raw
         ]
     }
 
