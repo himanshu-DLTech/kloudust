@@ -5,7 +5,15 @@
  * License: See enclosed license.txt file.
  */
 
+import {blackboard} from "/framework/js/blackboard.mjs";
 const RESOURCES_PATH = $$.libutil.getModulePath(import.meta)+"/resources";
+
+const STACK_TOGGLE = `
+        const containerThis = this.nextElementSibling;
+        containerThis.classList.toggle('visible');
+        if (containerThis.classList.contains('visible')) this.innerText = this.innerText.replace('>','⌄');
+        else this.innerText = this.innerText.replace('⌄','>');
+    `;
 
 const HTML_TEMPLATE = `
 <style>
@@ -125,18 +133,13 @@ span#alerticon img {height: 100%;}
 <div id="close" onclick='event.stopPropagation(); monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager.closeForm(this)'>X</div>
 </span>
 
-<div id="main">
+<div id="main" data-kd-alerts>
 {{^alert_stacks}}
-<div id="alertdiv"><span id="alerticon"><img src="{{{info_icon}}}"></span><span id="alertmessage">No alerts.</span></div>
+<div id="alertdiv" data-kd-noalerts><span id="alerticon"><img src="{{{info_icon}}}"></span><span id="alertmessage">No alerts.</span></div>
 {{/alert_stacks}}
 {{#alert_stacks}}
-    <span id="alertpartition" onclick="
-        const containerThis = this.nextElementSibling;
-        containerThis.classList.toggle('visible');
-        if (containerThis.classList.contains('visible')) this.innerText = this.innerText.replace('>','⌄');
-        else this.innerText = this.innerText.replace('⌄','>');
-    ">&gt;&nbsp;{{{heading}}}</span>
-    <div id="alertcontainer">
+    <span id="alertpartition" onclick="${STACK_TOGGLE}">&gt;&nbsp;{{{heading}}}</span>
+    <div id="alertcontainer" data-alertid="{{{id}}}">
     {{#alerts}}
     <div id="alertdiv"><span id="alerticon"><img src="{{{alerticon}}}"></span><span id="alertmessage">{{{message}}}</span></div>
     {{/alerts}}
@@ -151,7 +154,7 @@ async function getHTML(_formJSON, cmdmanager) {
     const alertsObject = cmdmanager.getAlerts();
     const alertIDsSorted = Object.keys(alertsObject).sort((a, b) => a - b);
     let alertStackObjects; for (const alertID of alertIDsSorted) {
-        const alertStackObject = {heading: $$.libutil.encodeHTMLEntities(alertsObject[alertID][0].message), alerts: []};
+        const alertStackObject = {id: alertID, heading: $$.libutil.encodeHTMLEntities(alertsObject[alertID][0].message), alerts: []};
         for (const alert of alertsObject[alertID]) {
             if (alert.type == cmdmanager.ALERT_ERROR) alert.error = true;
             alert.alerticon = alert.error?`${RESOURCES_PATH}/alerts_error.svg`:`${RESOURCES_PATH}/alerts_info.svg`;
@@ -164,5 +167,15 @@ async function getHTML(_formJSON, cmdmanager) {
         clear_icon: `${RESOURCES_PATH}/alerts_clear.svg`, info_icon: `${RESOURCES_PATH}/alerts_info.svg`});
     return html;
 }
+
+const _alertRowHTML = alert => `<div id="alertdiv"><span id="alerticon"><img src="${RESOURCES_PATH}/alerts_${alert.type == "error"?"error":"info"}.svg"></span><span id="alertmessage">${$$.libutil.encodeHTMLEntities(alert.message).replaceAll(/\r?\n/g, "<br/>")}</span></div>`;
+
+blackboard.registerListener("kd-alert", ({id, alert}) => {
+    const main = document.querySelector("#maincontent [data-kd-alerts]"); if (!main) return;
+    main.querySelector("[data-kd-noalerts]")?.remove();
+    const container = main.querySelector(`[data-alertid="${id}"]`);
+    if (container) container.insertAdjacentHTML("beforeend", _alertRowHTML(alert));
+    else main.insertAdjacentHTML("beforeend", `<span id="alertpartition" onclick="${STACK_TOGGLE}">&gt;&nbsp;${$$.libutil.encodeHTMLEntities(alert.message)}</span><div id="alertcontainer" data-alertid="${id}">${_alertRowHTML(alert)}</div>`);
+});
 
 export const alerts = {getHTML};

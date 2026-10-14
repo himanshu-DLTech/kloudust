@@ -6,6 +6,7 @@
  */
 
 import {rolemanager as roleman} from "./rolemanager.mjs";
+import {blackboard} from "/framework/js/blackboard.mjs";
 
 const REGISTERED_COMMANDS = {}, KLOUDUST_CMDLINE = "kloudust_cmdline", AUTOMATION_CMDLINE = "automation_cmdline", 
     FRONTEND_MODULE = "frontend_module", ALERT_OBJECT_KEY = "__com_tekmonks_kloudust_frontend_alerts", 
@@ -70,6 +71,7 @@ function addAlert(id, text, isError) {
     thisAlertStack.push(formattedAlert);
     alertObject[id] = thisAlertStack;
     $$.libsession.set(ALERT_OBJECT_KEY, alertObject);
+    try {blackboard.broadcastMessage("kd-alert", {id, alert: formattedAlert});} catch (err) {LOG.error(`Alert listener failed: ${err}`);}
 }
 
 function getAlerts() {
