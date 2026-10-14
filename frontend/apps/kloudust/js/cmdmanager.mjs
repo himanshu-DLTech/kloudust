@@ -6,6 +6,7 @@
  */
 
 import {rolemanager as roleman} from "./rolemanager.mjs";
+import {blackboard} from "/framework/js/blackboard.mjs";
 
 const REGISTERED_COMMANDS = {}, KLOUDUST_CMDLINE = "kloudust_cmdline", AUTOMATION_CMDLINE = "automation_cmdline", 
     FRONTEND_MODULE = "frontend_module", ALERT_OBJECT_KEY = "__com_tekmonks_kloudust_frontend_alerts", 
@@ -59,7 +60,7 @@ async function formSubmitted(id, values) {
     if (form.type == AUTOMATION_CMDLINE) {
         const automationModule = (await import(`${APP_CONSTANTS.AUTOMATIONS_PATH}/${form.command}.mjs`))[form.command];
         const valueArray = []; for (const key of form.kloudust_cmdline_params) valueArray.push(values[key]);
-        automationModule.exec(valueArray, async (command, project)=>kdcmd(RAW_COMMANDLINE_COMMAND, ["command"], {command}, project));
+        await automationModule.exec(valueArray, async (command, project)=>kdcmd(RAW_COMMANDLINE_COMMAND, ["command"], {command}, project));
     } else if (form.type == KLOUDUST_CMDLINE) await kdcmd(form.command, form.kloudust_cmdline_params, values);
 }
 
@@ -70,6 +71,7 @@ function addAlert(id, text, isError) {
     thisAlertStack.push(formattedAlert);
     alertObject[id] = thisAlertStack;
     $$.libsession.set(ALERT_OBJECT_KEY, alertObject);
+    try {blackboard.broadcastMessage("kd-alert", {id, alert: formattedAlert});} catch (err) {LOG.error(`Alert listener failed: ${err}`);}
 }
 
 function getAlerts() {
