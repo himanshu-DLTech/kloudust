@@ -59,7 +59,7 @@ async function formSubmitted(id, values) {
     if (form.type == AUTOMATION_CMDLINE) {
         const automationModule = (await import(`${APP_CONSTANTS.AUTOMATIONS_PATH}/${form.command}.mjs`))[form.command];
         const valueArray = []; for (const key of form.kloudust_cmdline_params) valueArray.push(values[key]);
-        automationModule.exec(valueArray, async (command, project)=>kdcmd(RAW_COMMANDLINE_COMMAND, ["command"], {command}, project));
+        await automationModule.exec(valueArray, async (command, project)=>kdcmd(RAW_COMMANDLINE_COMMAND, ["command"], {command}, project));
     } else if (form.type == KLOUDUST_CMDLINE) await kdcmd(form.command, form.kloudust_cmdline_params, values);
 }
 
