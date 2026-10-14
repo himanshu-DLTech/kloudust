@@ -15,7 +15,7 @@ const monkshubridge = require(`${KLOUD_CONSTANTS.LIBDIR}/monkshubridge.js`);
 const jsonxparser = require(`${KLOUD_CONSTANTS.MONKSHU_BACKEND_LIBDIR}/jsonx.js`);
 const dbschema = jsonxparser.parseFileSync(`${KLOUD_CONSTANTS.DBDIR}/kd_dbschema.jsonx`);
 
-const KLOUDUST_MAIN_DBFILE = path.resolve(`${KLOUD_CONSTANTS.ROOTDIR}/db/kloudust.db`);
+const KLOUDUST_MAIN_DBFILE = KLOUD_CONSTANTS.CONF.DB_CONNECT_INFO || path.resolve(`${KLOUD_CONSTANTS.ROOTDIR}/db/kloudust.db`);
 
 /** Inits the module */
 exports.initAsync = async function() { KLOUD_CONSTANTS.env.db = await _initMonkshuGlobalAndGetDBModuleAsync(); }
