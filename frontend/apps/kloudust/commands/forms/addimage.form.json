@@ -71,7 +71,7 @@
     {"id": "processorarch", "multioption": true, "type": "select", "label": "{{{i18n.ProcessorArch}}}", 
         "options":[{"value":"amd64", "label":"x86_64"}]},
     {"id": "os_variant", "type": "text", "placeholder": "{{{i18n.OSVariant}}}", "required": true,
-        "pattern":"\\s*[A-Za-z0-9.]+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
+        "pattern":"\\s*[A-Za-z0-9.\\-]+\\s*", "validation_error": "{{{i18n.FieldValidationErrorGeneric}}}"},
     {"id": "image_type", "multioption": true, "type": "select", "label": "{{{i18n.ImgType}}}", 
         "options":[{"value":"img", "label":"IMG"}, {"value":"iso", "label":"ISO"}]},
 
