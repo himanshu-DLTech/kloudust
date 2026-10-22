@@ -177,7 +177,7 @@
         "const activeProject = $$.libsession.get(APP_CONSTANTS.ACTIVE_PROJECT);",
         "const vms = await cmdmanager.kdcmd('listVMsForOrgOrProject', ['org', 'project', 'types'], {org: $$.libsession.get(APP_CONSTANTS.USERORG), project: activeProject, types: APP_CONSTANTS.VM_TYPE_VM}, activeProject, true);",
         "for (const vm of vms.vms||[]) {",
-        "   vm.datetime = new Date(vm.timestamp).toLocaleDateString(); vm.disk = parseInt(vm.disk)/1073741824; vm.memory=parseInt(vm.memory)/1048576;",
+        "   vm.datetime = new Date(vm.timestamp).toLocaleDateString(); vm.disk = (vm.disks||[]).filter(d => d.attached !== false).reduce((s, d) => s + d.size, 0)/1073741824; vm.memory=parseInt(vm.memory)/1048576;",
         "   vm.ips = vm.ips.trim()===''?'Not Assigned':vm.ips; vm.vnets = vm.vnets.length === 0 ?'No Vnets Found':vm.vnets.join(',');",
         "   vm.privateips = vm.private_ips.length === 0 ? 'No IPs Assigned' : vm.private_ips.join(','); ",
         "   vm.rulesets = vm.rulesets.length === 0 ? 'No Rulesets Applied' : vm.rulesets.join(',');",
