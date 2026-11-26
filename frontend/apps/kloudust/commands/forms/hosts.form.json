@@ -1,0 +1,54 @@
+{
+"id": "hosts",
+"command": "tablelist",
+"type": "table_display",
+"i18n": {"en": {
+    "HOSTS_hostname": "Host", "HOSTS_hostaddress": "Address", "HOSTS_cores": "CPU (Cores)", "HOSTS_memory": "Memory (GB)", "HOSTS_disk": "Disk (GB)", "HOSTS_processorarchitecture": "Processor Architecture", "HOSTS_maintenance_label": "Maintenance",
+    "HOSTSConsole": "Console", "HOSTSVMs": "VMs", "HOSTSMigrateVM": "Migrate VMs", "HOSTSReboot": "Reboot"
+}, "hi": {
+    "HOSTS_hostname": "Host", "HOSTS_hostaddress": "Address", "HOSTS_cores": "CPU (Cores)", "HOSTS_memory": "Memory (GB)", "HOSTS_disk": "Disk (GB)", "HOSTS_processorarchitecture": "Processor Architecture", "HOSTS_maintenance_label": "Maintenance",
+    "HOSTSConsole": "Console", "HOSTSVMs": "VMs", "HOSTSMigrateVM": "Migrate VMs", "HOSTSReboot": "Reboot"
+}, "ja": {
+    "HOSTS_hostname": "Host", "HOSTS_hostaddress": "Address", "HOSTS_cores": "CPU (Cores)", "HOSTS_memory": "Memory (GB)", "HOSTS_disk": "Disk (GB)", "HOSTS_processorarchitecture": "Processor Architecture", "HOSTS_maintenance_label": "Maintenance",
+    "HOSTSConsole": "Console", "HOSTSVMs": "VMs", "HOSTSMigrateVM": "Migrate VMs", "HOSTSReboot": "Reboot"
+}, "zh": {
+    "HOSTS_hostname": "Host", "HOSTS_hostaddress": "Address", "HOSTS_cores": "CPU (Cores)", "HOSTS_memory": "Memory (GB)", "HOSTS_disk": "Disk (GB)", "HOSTS_processorarchitecture": "Processor Architecture", "HOSTS_maintenance_label": "Maintenance",
+    "HOSTSConsole": "Console", "HOSTSVMs": "VMs", "HOSTSMigrateVM": "Migrate VMs", "HOSTSReboot": "Reboot"
+}},
+"tabledef": {
+    "popupform": {
+        "rolelist": {
+            "*": [
+                {"id": "hostvms", "label": "{{{i18n.HOSTSVMs}}}", "logo": "img/hostvms.svg"},
+                {"id": "hostcommand", "label": "{{{i18n.HOSTSConsole}}}", "logo": "img/console.svg"},
+                {"id": "livemigrate", "label": "{{{i18n.HOSTSMigrateVM}}}", "logo": "img/migratehostvm.svg"},
+                {"id": "reboothost", "label": "{{{i18n.HOSTSReboot}}}", "logo": "img/poweropvm.svg"}
+            ]
+        }
+    },
+    "i18nPrefix": "HOSTS",
+    "style": "div#tablebottombar{display:none;}",
+    "onclickrow_html": [
+        "<style>div#onclick_html{height:fit-content} div#onclick_html div#body{background:#f8f8f8!important} div#close{display:none!important} div#buttons{margin:0!important;align-items:flex-start!important;height:100%!important} div#button{height:unset!important;max-height:100%!important;margin:0!important;color:#bc5205!important;width:6em!important;font-size:.8em!important;box-sizing:border-box!important;border:1px solid transparent;border-radius:.5em;padding:.5em} div#button img{width:3em!important;height:3em!important} div#button span{font-size:smaller!important;height:-webkit-fill-available} div#button:hover{border:1px dashed #bc5205!important}</style>"
+    ],
+    "clickrow_javascript": ["APP_CONSTANTS.ENV._hosts_form_data = arguments[0];"],
+    "load_javascript": [
+        "const {cmdmanager} = await import(`${APP_CONSTANTS.LIB_PATH}/cmdmanager.mjs`);",
+        "const tabledef = arguments[0];",
+        "const hostsResult = await cmdmanager.kdcmd('listHosts', [], {}, undefined, true);",
+        "const selected = () => APP_CONSTANTS.ENV._hosts_form_data;",
+        "APP_CONSTANTS.ENV._hostsConsole = () => { APP_CONSTANTS.ENV._hostcommand_hostname = selected().hostname; monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager.cmdClicked('hostcommand'); };",
+        "APP_CONSTANTS.ENV._hostsListVMs = () => { APP_CONSTANTS.ENV._hostvms_hostname = selected().hostname; monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager.cmdClicked('hostvms'); };",
+        "APP_CONSTANTS.ENV._hostsMigrateVM = () => { APP_CONSTANTS.ENV._livemigrate_source_host = selected().hostname; monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager.cmdClicked('livemigrate'); };",
+        "APP_CONSTANTS.ENV._hostsReboot = () => { APP_CONSTANTS.ENV._reboothost_hostname = selected().hostname; monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager.cmdClicked('reboothost'); };",
+        "const modIconList = await import(`${APP_CONSTANTS.FORM_MODULES_PATH}/iconlist.mjs`);",
+        "const html = (await modIconList.iconlist.getHTML(tabledef.popupform, monkshu_env.apps[APP_CONSTANTS.APP_NAME].cmdmanager))",
+        "   .replace(\"window.monkshu_env.apps[APP_CONSTANTS.APP_NAME].iconlist.cmdClicked('hostcommand')\", 'APP_CONSTANTS.ENV._hostsConsole()')",
+        "   .replace(\"window.monkshu_env.apps[APP_CONSTANTS.APP_NAME].iconlist.cmdClicked('hostvms')\", 'APP_CONSTANTS.ENV._hostsListVMs()')",
+        "   .replace(\"window.monkshu_env.apps[APP_CONSTANTS.APP_NAME].iconlist.cmdClicked('livemigrate')\", 'APP_CONSTANTS.ENV._hostsMigrateVM()')",
+        "   .replace(\"window.monkshu_env.apps[APP_CONSTANTS.APP_NAME].iconlist.cmdClicked('reboothost')\", 'APP_CONSTANTS.ENV._hostsReboot()');",
+        "tabledef.onclickrow_html.push(html);",
+        "for (const host of hostsResult.resources||[]) { host.maintenance_label = host.maintenance ? 'Enabled' : 'Off'; host.memory = Math.round(Number(host.memory||0)/1073741824); host.disk = Math.round(Number(host.disk||0)/1073741824); }",
+        "return {keys:['hostname','hostaddress','cores','memory','disk','processorarchitecture','maintenance_label'], table:hostsResult.resources||[]};"
+    ]
+}}

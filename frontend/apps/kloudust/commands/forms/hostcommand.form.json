@@ -1,0 +1,28 @@
+{
+"id": "hostcommand",
+"command": "customCmd",
+"type": "kloudust_cmdline",
+"kloudust_cmdline_params": ["sql", "hostname", "hostcommand"],
+"title": "Host console",
+"form": {
+    "description": "Run a command on the selected physical host.",
+    "required_label": "Required",
+    "required_fields": [
+        {"id": "sql", "inputtype": "hidden", "type": "text", "value": ""},
+        {"id": "hostname", "inputtype": "hidden", "type": "text", "value": ""},
+        {"id": "hostcommand", "inputtype": "textarea", "type": "text", "required": true, "placeholder": "For example: date", "style": "height:35vh;font-family:monospace;font-size:larger;background-color:#212121;"}
+    ],
+    "load_javascript": [
+        "const form = arguments[0]||{};",
+        "form.required_fields.find(field => field.id == 'sql').value = '';",
+        "form.hostcommand_hostname = APP_CONSTANTS.ENV._hostcommand_hostname||''; delete APP_CONSTANTS.ENV._hostcommand_hostname;",
+        "form.required_fields.find(field => field.id == 'hostname').value = form.hostcommand_hostname;",
+        "return form;"
+    ],
+    "submit_javascript": [
+        "const values = arguments[0], form = arguments[1];",
+        "values.sql = ''; values.hostname = form.hostcommand_hostname||values.hostname||'';",
+        "return true;"
+    ],
+    "submitlabel": "Run"
+}}

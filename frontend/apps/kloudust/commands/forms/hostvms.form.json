@@ -1,0 +1,24 @@
+{
+"id": "hostvms",
+"command": "tablelist",
+"type": "table_display",
+"i18n": {"en": {
+    "HOSTVMS_name_raw": "Name", "HOSTVMS_os": "Type", "HOSTVMS_cpus": "Cores", "HOSTVMS_memory": "Memory (MB)"
+}, "hi": {
+    "HOSTVMS_name_raw": "Name", "HOSTVMS_os": "Type", "HOSTVMS_cpus": "Cores", "HOSTVMS_memory": "Memory (MB)"
+}, "ja": {
+    "HOSTVMS_name_raw": "Name", "HOSTVMS_os": "Type", "HOSTVMS_cpus": "Cores", "HOSTVMS_memory": "Memory (MB)"
+}, "zh": {
+    "HOSTVMS_name_raw": "Name", "HOSTVMS_os": "Type", "HOSTVMS_cpus": "Cores", "HOSTVMS_memory": "Memory (MB)"
+}},
+"tabledef": {
+    "i18nPrefix": "HOSTVMS",
+    "style": "div#tablebottombar{display:none;}",
+    "load_javascript": [
+        "const {cmdmanager} = await import(`${APP_CONSTANTS.LIB_PATH}/cmdmanager.mjs`);",
+        "const hostname = APP_CONSTANTS.ENV._hostvms_hostname||''; delete APP_CONSTANTS.ENV._hostvms_hostname;",
+        "const result = await cmdmanager.kdcmd('listVMsForHost', ['hostname'], {hostname}, undefined, true);",
+        "for (const vm of result.vms||[]) vm.memory = Math.round(Number(vm.memory||0)/1048576);",
+        "return {keys:['name_raw','os','cpus','memory'], table:result.vms||[]};"
+    ]
+}}

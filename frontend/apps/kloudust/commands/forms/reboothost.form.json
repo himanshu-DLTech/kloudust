@@ -1,0 +1,59 @@
+{
+"id": "reboothost",
+"command": "rebootHost",
+"type": "kloudust_cmdline",
+"kloudust_cmdline_params": ["hostname"],
+
+"title": "{{{i18n.RebootHostTitle}}}",
+
+"i18n": {
+    "en": {
+        "Required": "Required",
+        "RebootHostTitle": "Reboot Host",
+        "RebootHostDescription": "Reboot the selected physical host. The host will be placed in maintenance mode while it restarts.",
+        "HostName": "Host name",
+        "RebootHostSubmitLabel": "Reboot"
+    },
+    "hi": {
+        "Required": "Required",
+        "RebootHostTitle": "Reboot Host",
+        "RebootHostDescription": "Reboot the selected physical host. The host will be placed in maintenance mode while it restarts.",
+        "HostName": "Host name",
+        "RebootHostSubmitLabel": "Reboot"
+    },
+    "ja": {
+        "Required": "Required",
+        "RebootHostTitle": "Reboot Host",
+        "RebootHostDescription": "Reboot the selected physical host. The host will be placed in maintenance mode while it restarts.",
+        "HostName": "Host name",
+        "RebootHostSubmitLabel": "Reboot"
+    },
+    "zh": {
+        "Required": "Required",
+        "RebootHostTitle": "Reboot Host",
+        "RebootHostDescription": "Reboot the selected physical host. The host will be placed in maintenance mode while it restarts.",
+        "HostName": "Host name",
+        "RebootHostSubmitLabel": "Reboot"
+    }
+},
+
+"form": {
+    "description": "{{{i18n.RebootHostDescription}}}",
+    "required_label": "{{{i18n.Required}}}",
+    "required_fields": [
+        {"id": "hostname", "type": "text", "placeholder": "{{{i18n.HostName}}}", "required": true, "readonly": true}
+    ],
+    "load_javascript": [
+        "const form = arguments[0]||{};",
+        "form.reboothost_hostname = APP_CONSTANTS.ENV._reboothost_hostname||''; delete APP_CONSTANTS.ENV._reboothost_hostname;",
+        "form.required_fields.find(field => field.id == 'hostname').value = form.reboothost_hostname;",
+        "return form;"
+    ],
+    "submit_javascript": [
+        "const values = arguments[0], form = arguments[1];",
+        "values.hostname = form.reboothost_hostname||values.hostname||'';",
+        "return true;"
+    ],
+    "submitlabel": "{{{i18n.RebootHostSubmitLabel}}}"
+}
+}
