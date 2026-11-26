@@ -485,6 +485,22 @@ exports.getVM = async (name, project=KLOUD_CONSTANTS.env.prj(), org=KLOUD_CONSTA
 }
 
 /**
+ * Returns the VM for the cloud admin given its raw name. This is a special function for cloud admin to lookup any VM in the DB.
+ * @param {string} vm_name_raw The VM Name raw
+ * @return VM object or null
+ */
+exports.getVMForCloudAdmin = async (vm_name_raw) => {
+    if(!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {_logUnauthorized(); return false;}
+    const results = await _db().getQuery("select * from vms where name_raw = ? collate nocase", [vm_name_raw]);
+    if ((!results) || (!results.length)) return null;
+
+    const vm = results[0]; try {vm.disks = JSON.parse(vm.disksjson);} catch (err) {
+        KLOUD_CONSTANTS.LOGERROR(`Unable to parse disks for VM ${vm.name}`); vm.disks = [];
+    };
+    return vm;
+}
+
+/**
  * Returns the router for the current user, org and project given its name. 
  * @param {string} name The router Name
  * @param {string} project The project, if skipped is auto picked from the environment
