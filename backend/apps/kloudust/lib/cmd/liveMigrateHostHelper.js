@@ -6,12 +6,14 @@
  * License: See enclosed LICENSE file.
  */
 
+const roleman = require(`${KLOUD_CONSTANTS.LIBDIR}/roleenforcer.js`);
 const createVM = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/createVM.js`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
 
 exports.getCompatibleHostsForLiveMigration = async function(vm_name_raw) {
-    const vm_name = createVM.resolveVMName(vm_name_raw);
-    const vm = await dbAbstractor.getVM(vm_name);
+    let vm; if (roleman.isCloudAdminLoggedIn()) vm = await dbAbstractor.getVMForCloudAdmin(vm_name_raw);
+    else vm = await dbAbstractor.getVM(createVM.resolveVMName(vm_name_raw));
+
     if (!vm) return {result: false, error: "Bad VM name or VM not found"};
 
     const sourceHost = await dbAbstractor.getHostEntry(vm.hostname);
