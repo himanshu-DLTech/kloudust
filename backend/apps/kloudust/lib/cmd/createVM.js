@@ -66,6 +66,10 @@ module.exports.exec = async function(params) {
             {cpu_factor: KLOUD_CONSTANTS.CONF.VCPU_TO_PHYSICAL_CPU_FACTOR, 
                 mem_factor: KLOUD_CONSTANTS.CONF.VMEM_TO_PHYSICAL_MEM_FACTOR}); 
     if (!hostInfo) {params.consoleHandlers.LOGERROR("Unable to find a suitable host."); return CMD_CONSTANTS.FALSE_RESULT();}
+    if (hostInfo.maintenance) {
+        params.consoleHandlers.LOGERROR(`Host ${hostInfo.hostname} is in maintenance and cannot accept new VMs.`);
+        return CMD_CONSTANTS.FALSE_RESULT();
+    }
 
     const extrainfoSplits = kdResource.extrainfo?kdResource.extrainfo.split(":"):[null,null];
     let ostype = extrainfoSplits[0], imgtype = extrainfoSplits[1];

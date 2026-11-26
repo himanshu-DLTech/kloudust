@@ -348,6 +348,7 @@ exports.getAvailableHosts = async (vcpu, ram, disk, arch, factors) => {
             LEFT JOIN vms v ON v.hostname = h.hostname
             WHERE h.processorarchitecture = ?
             AND h.org = ? COLLATE NOCASE
+            AND IFNULL(h.maintenance, 0) = 0
             GROUP BY h.hostname
         ),
         host_free AS (
