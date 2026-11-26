@@ -36,7 +36,7 @@ module.exports.exec = async function(params) {
     let out = "VM information from the database follows.";
     for (const vm of vms_ret) out += "\n"+JSON.stringify(vm);
 
-    if (hostInfo && verifyhost.trim().toLowerCase() == "verifyhost") {
+    if (hostInfo && verifyhost && verifyhost.trim().toLowerCase() == "verifyhost") {
         out += "\n"+"VM information from the specific host follows.";
         const xforgeArgs = {
             colors: KLOUD_CONSTANTS.COLORED_OUT, 
