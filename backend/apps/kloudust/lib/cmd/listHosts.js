@@ -22,8 +22,9 @@ module.exports.exec = async function(params) {
     if (!hosts) {const err = "No registered hosts found"; params.consoleHandlers.LOGERROR(err); 
         return CMD_CONSTANTS.FALSE_RESULT(err); }
 
-    const out = `Host information follows\n${JSON.stringify(hosts)}`; 
+    const publicHosts = hosts.map(({rootpw, hostkey, ...host}) => host);
+    const out = `Host information follows\n${JSON.stringify(publicHosts)}`; 
 
     params.consoleHandlers.LOGINFO(out);
-    return {result: true, stderr: "", err: "", out, stdout: out, resources: hosts};
+    return {result: true, stderr: "", err: "", out, stdout: out, resources: publicHosts};
 }
