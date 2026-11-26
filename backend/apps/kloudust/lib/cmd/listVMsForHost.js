@@ -29,6 +29,7 @@ module.exports.exec = async function(params) {
     const hostInfo = hostname?await dbAbstractor.getHostEntry(hostname):null; 
     if (hostname && (!hostInfo)) { const error = "Bad hostname or host not found"; 
         params.consoleHandlers.LOGERROR(error); return CMD_CONSTANTS.FALSE_RESULT(error); }
+    if (hostname) await dbAbstractor.auditHostAction(hostname, "list_vms", KLOUD_CONSTANTS.env.userid());
     const vms = await dbAbstractor.listVMsForCloudAdmin(vmtypes, hostname);
     const vms_ret = []; if (vms) for (const vm of vms) vms_ret.push(getVMReadiness.addPowerStateInfo({...vm, creationcmd: undefined}));
 

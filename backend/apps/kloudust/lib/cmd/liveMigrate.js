@@ -28,6 +28,7 @@ module.exports.exec = async function(params) {
 
     const vm = await dbAbstractor.getVM(vm_name);
     if (!vm) {params.consoleHandlers.LOGERROR("Bad VM name or VM not found"); return CMD_CONSTANTS.FALSE_RESULT();}
+    await dbAbstractor.auditHostAction(vm.hostname, "live_migrate", KLOUD_CONSTANTS.env.userid(), `${vm_name_raw} -> ${hostToName}`);
 
     const hostInfo = await dbAbstractor.getHostEntry(vm.hostname); 
     if (!hostInfo) {params.consoleHandlers.LOGERROR("Bad hostname for the VM or host not found"); return CMD_CONSTANTS.FALSE_RESULT();}

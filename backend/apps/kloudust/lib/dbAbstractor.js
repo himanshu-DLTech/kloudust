@@ -98,6 +98,16 @@ exports.updateHostSynctime = async(hostname, timestamp) => {
     return await _db().runCmd(query, [timestamp, hostname]);
 }
 
+/** Marks a host unavailable/available for new VM placement. */
+exports.setHostMaintenance = async(hostname, maintenance) => {
+    if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {_logUnauthorized(); return false; }
+    return await _db().runCmd("update hosts set maintenance = ? where hostname = ? collate nocase", [maintenance ? 1 : 0, hostname]);
+}
+
+/** Records an auditable physical-host action. */
+exports.auditHostAction = async(hostname, action, userid, details="") =>
+    await _db().runCmd("insert into host_action_audit(hostname, action, userid, details) values (?,?,?,?)", [hostname, action, userid, details]);
+
 /**
  * Returns all hosts matching the given processor architecture.
  * @param {string} processor_architecture The processor architecutre, eg amd64

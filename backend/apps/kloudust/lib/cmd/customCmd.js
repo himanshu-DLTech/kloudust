@@ -38,6 +38,7 @@ module.exports.exec = async function(params) {
     if (hostname && cmd) {
         const hostInfo = await dbAbstractor.getHostEntry(hostname); 
         if (!hostInfo) {const err = "Bad hostname or host not found"; params.consoleHandlers.LOGERROR(err); return CMD_CONSTANTS.FALSE_RESULT(err);}
+        await dbAbstractor.auditHostAction(hostname, "command", KLOUD_CONSTANTS.env.userid(), cmd);
 
         const tmpFile = path.resolve(os.tmpdir()+"/"+(Math.random().toString(36)+'00000000000000000').slice(2, 11));
         try {await fspromises.writeFile(tmpFile, cmd, "utf8")} catch (err) {

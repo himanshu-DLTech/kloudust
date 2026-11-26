@@ -21,6 +21,11 @@ module.exports.exec = async function(params) {
     
     const hostname = params[0], hostInfo = await dbAbstractor.getHostEntry(hostname); 
     if (!hostInfo) {params.consoleHandlers.LOGERROR("Bad hostname or host not found"); return CMD_CONSTANTS.FALSE_RESULT();}
+    // Prevent any new placement while the host is unavailable during reboot.
+    if (!await dbAbstractor.setHostMaintenance(hostname, true)) {
+        params.consoleHandlers.LOGERROR("Unable to place host in maintenance before reboot"); return CMD_CONSTANTS.FALSE_RESULT();
+    }
+    await dbAbstractor.auditHostAction(hostname, "reboot", KLOUD_CONSTANTS.env.userid());
 
     const xforgeArgs = {
         colors: KLOUD_CONSTANTS.COLORED_OUT, 
