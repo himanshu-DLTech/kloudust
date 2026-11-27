@@ -3,16 +3,16 @@
 "command": "tablelist",
 "type": "table_display",
 "i18n": {"en": {
-    "HOSTS_hostname": "Host", "HOSTS_hostaddress": "Address", "HOSTS_cores": "CPU (Cores)", "HOSTS_memory": "Memory (GB)", "HOSTS_disk": "Disk (GB)", "HOSTS_processorarchitecture": "Processor Architecture", "HOSTS_eviction_label": "Eviction",
+    "HOSTS_hostname": "Host", "HOSTS_hostaddress": "Address", "HOSTS_cores": "CPU (Cores)", "HOSTS_memory": "Memory (GB)", "HOSTS_disk": "Disk (GB)", "HOSTS_processorarchitecture": "Processor Architecture", "HOSTS_status_label": "Status",
     "HOSTSConsole": "Console", "HOSTSVMs": "VMs", "HOSTSMigrateVM": "Migrate VMs", "HOSTSReboot": "Reboot"
 }, "hi": {
-    "HOSTS_hostname": "Host", "HOSTS_hostaddress": "Address", "HOSTS_cores": "CPU (Cores)", "HOSTS_memory": "Memory (GB)", "HOSTS_disk": "Disk (GB)", "HOSTS_processorarchitecture": "Processor Architecture", "HOSTS_eviction_label": "Eviction",
+    "HOSTS_hostname": "Host", "HOSTS_hostaddress": "Address", "HOSTS_cores": "CPU (Cores)", "HOSTS_memory": "Memory (GB)", "HOSTS_disk": "Disk (GB)", "HOSTS_processorarchitecture": "Processor Architecture", "HOSTS_status_label": "Status",
     "HOSTSConsole": "Console", "HOSTSVMs": "VMs", "HOSTSMigrateVM": "Migrate VMs", "HOSTSReboot": "Reboot"
 }, "ja": {
-    "HOSTS_hostname": "Host", "HOSTS_hostaddress": "Address", "HOSTS_cores": "CPU (Cores)", "HOSTS_memory": "Memory (GB)", "HOSTS_disk": "Disk (GB)", "HOSTS_processorarchitecture": "Processor Architecture", "HOSTS_eviction_label": "Eviction",
+    "HOSTS_hostname": "Host", "HOSTS_hostaddress": "Address", "HOSTS_cores": "CPU (Cores)", "HOSTS_memory": "Memory (GB)", "HOSTS_disk": "Disk (GB)", "HOSTS_processorarchitecture": "Processor Architecture", "HOSTS_status_label": "Status",
     "HOSTSConsole": "Console", "HOSTSVMs": "VMs", "HOSTSMigrateVM": "Migrate VMs", "HOSTSReboot": "Reboot"
 }, "zh": {
-    "HOSTS_hostname": "Host", "HOSTS_hostaddress": "Address", "HOSTS_cores": "CPU (Cores)", "HOSTS_memory": "Memory (GB)", "HOSTS_disk": "Disk (GB)", "HOSTS_processorarchitecture": "Processor Architecture", "HOSTS_eviction_label": "Eviction",
+    "HOSTS_hostname": "Host", "HOSTS_hostaddress": "Address", "HOSTS_cores": "CPU (Cores)", "HOSTS_memory": "Memory (GB)", "HOSTS_disk": "Disk (GB)", "HOSTS_processorarchitecture": "Processor Architecture", "HOSTS_status_label": "Status",
     "HOSTSConsole": "Console", "HOSTSVMs": "VMs", "HOSTSMigrateVM": "Migrate VMs", "HOSTSReboot": "Reboot"
 }},
 "tabledef": {
@@ -48,7 +48,7 @@
         "   .replace(\"window.monkshu_env.apps[APP_CONSTANTS.APP_NAME].iconlist.cmdClicked('livemigrate')\", 'APP_CONSTANTS.ENV._hostsMigrateVM()')",
         "   .replace(\"window.monkshu_env.apps[APP_CONSTANTS.APP_NAME].iconlist.cmdClicked('reboothost')\", 'APP_CONSTANTS.ENV._hostsReboot()');",
         "tabledef.onclickrow_html.push(html);",
-        "for (const host of hostsResult.resources||[]) { host.eviction_label = host.evicted ? 'Evicted' : 'Active'; host.memory = Math.round(Number(host.memory||0)/1073741824); host.disk = Math.round(Number(host.disk||0)/1073741824); }",
-        "return {keys:['hostname','hostaddress','cores','memory','disk','processorarchitecture','eviction_label'], table:hostsResult.resources||[]};"
+        "for (const host of hostsResult.resources||[]) { host.status_label = host.evicted ? 'Evicted' : 'Active'; host.memory = Math.round(Number(host.memory||0)/1073741824); host.disk = Math.round(Number(host.disk||0)/1073741824); }",
+        "return {keys:['hostname','hostaddress','cores','memory','disk','processorarchitecture','status_label'], table:hostsResult.resources||[]};"
     ]
 }}
