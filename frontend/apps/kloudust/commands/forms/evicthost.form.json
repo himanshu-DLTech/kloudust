@@ -1,0 +1,48 @@
+{
+"id": "evicthost",
+"command": "evictHost",
+"type": "kloudust_cmdline",
+"kloudust_cmdline_params": ["hostname", "evicted", "forceDrainVMs"],
+"title": "{{{i18n.EvictHostTitle}}}",
+"i18n": {
+    "en": {"Required": "Required", "EvictHostTitle": "Evict Host", "EvictHostDescription": "Evict a host from new VM placement or restore it to service.", "HostName": "Host name", "EvictionAction": "Action", "Evict": "Evict", "Unevict": "Unevict", "ForceDrainVMs": "Force drain VMs", "Yes": "Yes", "No": "No", "EvictHostSubmitLabel": "Submit"},
+    "hi": {"Required": "Required", "EvictHostTitle": "Evict Host", "EvictHostDescription": "Evict a host from new VM placement or restore it to service.", "HostName": "Host name", "EvictionAction": "Action", "Evict": "Evict", "Unevict": "Unevict", "ForceDrainVMs": "Force drain VMs", "Yes": "Yes", "No": "No", "EvictHostSubmitLabel": "Submit"},
+    "ja": {"Required": "Required", "EvictHostTitle": "Evict Host", "EvictHostDescription": "Evict a host from new VM placement or restore it to service.", "HostName": "Host name", "EvictionAction": "Action", "Evict": "Evict", "Unevict": "Unevict", "ForceDrainVMs": "Force drain VMs", "Yes": "Yes", "No": "No", "EvictHostSubmitLabel": "Submit"},
+    "zh": {"Required": "Required", "EvictHostTitle": "Evict Host", "EvictHostDescription": "Evict a host from new VM placement or restore it to service.", "HostName": "Host name", "EvictionAction": "Action", "Evict": "Evict", "Unevict": "Unevict", "ForceDrainVMs": "Force drain VMs", "Yes": "Yes", "No": "No", "EvictHostSubmitLabel": "Submit"}
+},
+"form": {
+    "description": "{{{i18n.EvictHostDescription}}}",
+    "required_label": "{{{i18n.Required}}}",
+    "required_fields": [
+        {"id": "hostname", "multioption": true, "type": "select", "label": "{{{i18n.HostName}}}", "options": []},
+        {"id": "evicted", "multioption": true, "type": "select", "label": "{{{i18n.EvictionAction}}}", "options": [{"value": "true", "label": "{{{i18n.Evict}}}"}, {"value": "false", "label": "{{{i18n.Unevict}}}"}]},
+        {"id": "forceDrainVMs", "multioption": true, "type": "select", "label": "{{{i18n.ForceDrainVMs}}}", "options": [{"value": "true", "label": "{{{i18n.Yes}}}"}, {"value": "false", "label": "{{{i18n.No}}}"}]}
+    ],
+    "load_javascript": [
+        "const { cmdmanager } = await import(`${APP_CONSTANTS.LIB_PATH}/cmdmanager.mjs`);",
+        "const form = arguments[0]||{};",
+        "const selectedHostname = APP_CONSTANTS.ENV._evicthost_hostname||''; delete APP_CONSTANTS.ENV._evicthost_hostname;",
+        "const hostnameSelect = form.required_fields.find(field => field.id == 'hostname');",
+        "if (selectedHostname) hostnameSelect.options.push({value: selectedHostname, label: selectedHostname});",
+        "else { const hostsResult = await cmdmanager.kdcmd('listHosts', [], {}, undefined, true); if (hostsResult.result) for (const host of hostsResult.resources||[]) hostnameSelect.options.push({value: host.hostname, label: host.hostname}); }",
+        "return form;"
+    ],
+    "rendered_javascript": [
+        "const form = arguments[0], shadowroot = form._form_shadowroot;",
+        "const evictionSelect = shadowroot.querySelector('select#evicted');",
+        "const forceDrainSelect = shadowroot.querySelector('select#forceDrainVMs');",
+        "const forceDrainLabel = shadowroot.querySelector(\"label[for='forceDrainVMs']\");",
+        "const updateForceDrainVisibility = () => { const visible = evictionSelect.value === 'true'; forceDrainSelect.style.display = visible ? '' : 'none'; forceDrainLabel.style.display = visible ? '' : 'none'; };",
+        "evictionSelect.value = 'true'; forceDrainSelect.value = 'true';",
+        "evictionSelect.addEventListener('change', updateForceDrainVisibility);",
+        "updateForceDrainVisibility();",
+        "return true;"
+    ],
+    "submit_javascript": [
+        "const values = arguments[0]||{};",
+        "if (values.evicted !== 'true') values.forceDrainVMs = 'false';",
+        "return true;"
+    ],
+    "submitlabel": "{{{i18n.EvictHostSubmitLabel}}}"
+}
+}
