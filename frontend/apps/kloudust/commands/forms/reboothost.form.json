@@ -10,28 +10,28 @@
     "en": {
         "Required": "Required",
         "RebootHostTitle": "Reboot Host",
-        "RebootHostDescription": "Reboot the selected physical host. The host will be placed in maintenance mode while it restarts.",
+        "RebootHostDescription": "Reboot the selected physical host. The host will be evicted from VM placement while it restarts.",
         "HostName": "Host name",
         "RebootHostSubmitLabel": "Reboot"
     },
     "hi": {
         "Required": "Required",
         "RebootHostTitle": "Reboot Host",
-        "RebootHostDescription": "Reboot the selected physical host. The host will be placed in maintenance mode while it restarts.",
+        "RebootHostDescription": "Reboot the selected physical host. The host will be evicted from VM placement while it restarts.",
         "HostName": "Host name",
         "RebootHostSubmitLabel": "Reboot"
     },
     "ja": {
         "Required": "Required",
         "RebootHostTitle": "Reboot Host",
-        "RebootHostDescription": "Reboot the selected physical host. The host will be placed in maintenance mode while it restarts.",
+        "RebootHostDescription": "Reboot the selected physical host. The host will be evicted from VM placement while it restarts.",
         "HostName": "Host name",
         "RebootHostSubmitLabel": "Reboot"
     },
     "zh": {
         "Required": "Required",
         "RebootHostTitle": "Reboot Host",
-        "RebootHostDescription": "Reboot the selected physical host. The host will be placed in maintenance mode while it restarts.",
+        "RebootHostDescription": "Reboot the selected physical host. The host will be evicted from VM placement while it restarts.",
         "HostName": "Host name",
         "RebootHostSubmitLabel": "Reboot"
     }

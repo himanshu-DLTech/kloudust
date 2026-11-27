@@ -98,10 +98,10 @@ exports.updateHostSynctime = async(hostname, timestamp) => {
     return await _db().runCmd(query, [timestamp, hostname]);
 }
 
-/** Marks a host unavailable/available for new VM placement. */
-exports.setHostMaintenance = async(hostname, maintenance) => {
+/** Marks a host evicted/available for new VM placement. */
+exports.setHostEvicted = async(hostname, evicted) => {
     if (!roleman.checkAccess(roleman.ACTIONS.edit_cloud_resource)) {_logUnauthorized(); return false; }
-    return await _db().runCmd("update hosts set maintenance = ? where hostname = ? collate nocase", [maintenance ? 1 : 0, hostname]);
+    return await _db().runCmd("update hosts set evicted = ? where hostname = ? collate nocase", [evicted ? 1 : 0, hostname]);
 }
 
 /** Records an auditable physical-host action. */
@@ -348,7 +348,7 @@ exports.getAvailableHosts = async (vcpu, ram, disk, arch, factors) => {
             LEFT JOIN vms v ON v.hostname = h.hostname
             WHERE h.processorarchitecture = ?
             AND h.org = ? COLLATE NOCASE
-            AND IFNULL(h.maintenance, 0) = 0
+            AND IFNULL(h.evicted, 0) = 0
             GROUP BY h.hostname
         ),
         host_free AS (
