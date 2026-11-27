@@ -39,5 +39,10 @@ module.exports.exec = async function(params) {
     }
 
     const results = await xforge(xforgeArgs);
+    if (results.result) await new Promise(resolve => setTimeout(resolve, 60000));
+
+    const unevictParams = [hostname, false, false]; unevictParams.consoleHandlers = params.consoleHandlers;
+    const unevictionResult = await evictHost.exec(unevictParams);
+    if (!unevictionResult.result) return unevictionResult;
     return {...results, result: true};    // reboot always will return 1 as if successful, there is still a network error
 }
