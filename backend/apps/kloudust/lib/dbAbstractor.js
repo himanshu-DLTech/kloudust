@@ -1466,7 +1466,7 @@ exports.getHostForIP = async function(ip, for_allocation) {
 
 exports.getHostWithVnets = async function(vnet_ids) {
     if (!roleman.checkAccess(roleman.ACTIONS.lookup_project_resource)) {_logUnauthorized(); return false;}
-    const query = `SELECT pk2 AS hostname, COUNT(*) AS matched_vnet_count, GROUP_CONCAT(pk1) AS matched_vnets FROM relationships WHERE type='vnethost' AND pk1 IN (${vnet_ids.map(_=>"?").join(",")}) GROUP BY pk2 ORDER BY matched_vnet_count DESC LIMIT 1;`;
+    const query = `SELECT r.pk2 AS hostname, COUNT(*) AS matched_vnet_count, GROUP_CONCAT(r.pk1) AS matched_vnets FROM relationships r INNER JOIN hosts h ON h.hostname = r.pk2 COLLATE NOCASE WHERE r.type='vnethost' AND r.pk1 IN (${vnet_ids.map(_=>"?").join(",")}) AND IFNULL(h.evicted, 0) = 0 GROUP BY r.pk2 ORDER BY matched_vnet_count DESC LIMIT 1;`;
     const results = await _db().getQuery(query, vnet_ids);
     return results[0];
 }
