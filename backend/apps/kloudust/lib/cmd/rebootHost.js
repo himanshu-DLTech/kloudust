@@ -9,6 +9,7 @@
 
 const roleman = require(`${KLOUD_CONSTANTS.LIBDIR}/roleenforcer.js`);
 const dbAbstractor = require(`${KLOUD_CONSTANTS.LIBDIR}/dbAbstractor.js`);
+const evictHost = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/evictHost.js`);
 const {xforge} = require(`${KLOUD_CONSTANTS.THIRD_PARTY_DIR}/xforge/xforge`);
 const CMD_CONSTANTS = require(`${KLOUD_CONSTANTS.LIBDIR}/cmd/cmdconstants.js`);
 
@@ -22,9 +23,9 @@ module.exports.exec = async function(params) {
     const hostname = params[0], hostInfo = await dbAbstractor.getHostEntry(hostname); 
     if (!hostInfo) {params.consoleHandlers.LOGERROR("Bad hostname or host not found"); return CMD_CONSTANTS.FALSE_RESULT();}
     // Prevent any new placement while the host is unavailable during reboot.
-    if (!await dbAbstractor.setHostEvicted(hostname, true)) {
-        params.consoleHandlers.LOGERROR("Unable to evict host before reboot"); return CMD_CONSTANTS.FALSE_RESULT();
-    }
+    const evictParams = [hostname, true, false]; evictParams.consoleHandlers = params.consoleHandlers;
+    const evictionResult = await evictHost.exec(evictParams);
+    if (!evictionResult.result) return evictionResult;
     await dbAbstractor.auditHostAction(hostname, "reboot", KLOUD_CONSTANTS.env.userid());
 
     const xforgeArgs = {
